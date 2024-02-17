@@ -1,0 +1,11 @@
+inherit_from: ../.rubocop.yml
+
+Metrics/BlockLength:
+  AllowedMethods:
+    - describe
+    - context
+    - feature
+    - configure
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false

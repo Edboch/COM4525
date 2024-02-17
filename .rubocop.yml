@@ -1,0 +1,21 @@
+require:
+  - rubocop-rails
+  - rubocop-haml
+  - rubocop-capybara
+  - rubocop-factory_bot
+  - rubocop-rspec
+
+
+inherit_mode:
+  merge:
+    - Include
+    - Exclude
+
+
+AllCops:
+  TargetRubyVersion: 3.1.x
+  NewCops: enable
+  UseCache: false
+
+RSpec/ExampleLength:
+  Enabled: false

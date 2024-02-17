@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied do |exception|
     redirect_to root_url, alert: exception.message
@@ -26,9 +28,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
-    def update_headers_to_disable_caching
-      response.headers['Cache-Control'] = 'no-cache, no-cache="set-cookie", no-store, private, proxy-revalidate'
-      response.headers['Pragma'] = 'no-cache'
-      response.headers['Expires'] = '-1'
-    end
+
+  def update_headers_to_disable_caching
+    response.headers['Cache-Control'] = 'no-cache, no-cache="set-cookie", no-store, private, proxy-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
+  end
 end

@@ -92,6 +92,7 @@ GEM
     annotate (3.2.0)
       activerecord (>= 3.2, < 8.0)
       rake (>= 10.4, < 14.0)
+    ast (2.4.2)
     base64 (0.2.0)
     bcrypt (3.1.20)
     bcrypt_pbkdf (1.1.0)
@@ -174,6 +175,8 @@ GEM
       rchardet (~> 1.8)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    hamli (0.5.1)
+      temple
     hamlit (3.0.3)
       temple (>= 0.8.2)
       thor
@@ -185,6 +188,8 @@ GEM
       railties (>= 4.0.1)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
+    json (2.7.1)
+    language_server-protocol (3.17.0.3)
     launchy (2.5.2)
       addressable (~> 2.8)
     letter_opener (1.8.1)
@@ -226,6 +231,10 @@ GEM
       racc (~> 1.4)
     orm_adapter (0.5.0)
     package_json (0.1.0)
+    parallel (1.24.0)
+    parser (3.3.0.5)
+      ast (~> 2.4.1)
+      racc
     pg (1.5.4)
     public_suffix (5.0.4)
     puma (6.4.2)
@@ -264,6 +273,7 @@ GEM
       rake (>= 12.2)
       thor (~> 1.0)
       zeitwerk (~> 2.5)
+    rainbow (3.1.1)
     rake (13.1.0)
     rchardet (1.8.0)
     regexp_parser (2.9.0)
@@ -290,6 +300,36 @@ GEM
       rspec-mocks (~> 3.12)
       rspec-support (~> 3.12)
     rspec-support (3.12.1)
+    rubocop (1.60.2)
+      json (~> 2.3)
+      language_server-protocol (>= 3.17.0)
+      parallel (~> 1.10)
+      parser (>= 3.3.0.2)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 3.0)
+    rubocop-ast (1.30.0)
+      parser (>= 3.2.1.0)
+    rubocop-capybara (2.20.0)
+      rubocop (~> 1.41)
+    rubocop-factory_bot (2.25.1)
+      rubocop (~> 1.41)
+    rubocop-haml (0.2.2)
+      hamli (~> 0.5)
+      rubocop (~> 1.45)
+    rubocop-rails (2.23.1)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 1.33.0, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
+    rubocop-rspec (2.26.1)
+      rubocop (~> 1.40)
+      rubocop-capybara (~> 2.17)
+      rubocop-factory_bot (~> 2.22)
+    ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     sanitize_email (2.0.3)
@@ -331,6 +371,7 @@ GEM
     timeout (0.4.1)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    unicode-display_width (2.5.0)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (4.2.1)
@@ -384,6 +425,12 @@ DEPENDENCIES
   puma (~> 6.0)
   rails (>= 7.0.8, < 7.1)
   rspec-rails
+  rubocop
+  rubocop-capybara
+  rubocop-factory_bot
+  rubocop-haml
+  rubocop-rails
+  rubocop-rspec
   sanitize_email
   selenium-webdriver
   sentry-rails
