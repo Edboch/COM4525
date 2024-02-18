@@ -1,15 +1,23 @@
 .lnd-opener-bg
   .container{ style: 'height: 100%;' }
     .row.pb-5{ style: 'height: 100%;' }
-      .col-md-8.pb-5.align-self-center.mb-5
+      .col-md-7.pb-5.align-self-center.mb-5
         %h1.fw-bold.fst-italic.text-white Lead Your Team
         %h2.text-white Take control on and off the pitch
-      .col-md-4.align-self-end.pb-5.mb-5
-        .login
-          %h2 Login
-          = form_for("user", url: user_session_path) do |f|
-            = f.label :email
-            = f.email_field :email, required: true
-            = f.label :password
-            = f.password_field :password, required: true
-            = f.submit "Log in"
+      .col-md-4.align-self-center.pb-5.mb-5
+        .container.py-5
+          .row.justify-content-center
+            .col-md-8
+              .card.bg-opacity-50{ style: "background-color: rgba(255, 255, 255, 0.5);" }
+                .card-body
+                  %h4.card-title.text-center.mb-4 Login
+                  = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+                    .form-outline.mb-4
+                      = f.email_field :email, class: "form-control", placeholder: "Email", required: true
+                    .form-outline.mb-4
+                      = f.password_field :password, class: "form-control", placeholder: "Password", required: true
+                    .text-center.my-3
+                      = f.submit "Log in", class: "btn btn-primary rounded-pill"
+                  .d-flex.align-items-center.justify-content-center.pb-4 
+                    %p.mb-0.me-2 Don't have an account?
+                    = link_to 'Register', new_user_registration_path, class: 'btn btn-outline-danger'
