@@ -1,0 +1,15 @@
+.lnd-opener-bg
+  .container{ style: 'height: 100%;' }
+    .row.pb-5{ style: 'height: 100%;' }
+      .col-md-8.pb-5.align-self-center.mb-5
+        %h1.fw-bold.fst-italic.text-white Lead Your Team
+        %h2.text-white Take control on and off the pitch
+      .col-md-4.align-self-end.pb-5.mb-5
+        .login
+          %h2 Login
+          = form_for("user", url: user_session_path) do |f|
+            = f.label :email
+            = f.email_field :email, required: true
+            = f.label :password
+            = f.password_field :password, required: true
+            = f.submit "Log in"
