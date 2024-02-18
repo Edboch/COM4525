@@ -89,7 +89,8 @@ SimpleForm.setup do |config|
 
   # vertical input for inline radio buttons and check boxes
   config.wrappers :vertical_collection_inline, item_wrapper_class: 'form-check form-check-inline',
-                                               item_label_class: 'form-check-label', class: 'form-group', error_class: 'form-group-invalid' do |b|
+                                               item_label_class: 'form-check-label', class: 'form-group',
+                                               error_class: 'form-group-invalid' do |b|
     b.use :html5
     b.optional :readonly
     b.wrapper :legend_tag, tag: 'label', class: 'col-form-label pt-0 d-block' do |ba|
@@ -188,7 +189,8 @@ SimpleForm.setup do |config|
 
   # horizontal input for inline radio buttons and check boxes
   config.wrappers :horizontal_collection_inline, item_wrapper_class: 'form-check form-check-inline',
-                                                 item_label_class: 'form-check-label', tag: 'div', class: 'form-group row', error_class: 'form-group-invalid' do |b|
+                                                 item_label_class: 'form-check-label', tag: 'div',
+                                                 class: 'form-group row', error_class: 'form-group-invalid' do |b|
     b.use :html5
     b.optional :readonly
     b.use :label, class: 'col-sm-3 col-form-label pt-0'
@@ -313,7 +315,8 @@ SimpleForm.setup do |config|
 
   # custom input for inline radio buttons and check boxes
   config.wrappers :custom_collection_inline, item_wrapper_class: 'custom-control custom-control-inline',
-                                             item_label_class: 'custom-control-label', class: 'form-group', error_class: 'form-group-invalid' do |b|
+                                             item_label_class: 'custom-control-label', class: 'form-group',
+                                             error_class: 'form-group-invalid' do |b|
     b.use :html5
     b.optional :readonly
     b.wrapper :legend_tag, tag: 'label', class: 'col-form-label pt-0 d-block' do |ba|

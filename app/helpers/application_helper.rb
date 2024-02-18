@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Application-wide helper module
 module ApplicationHelper
   def resource_name
     :user

@@ -48,7 +48,8 @@ namespace :monit do
   task :unmonitor do
     on roles(fetch(:monit_roles, :db)) do
       sudo 'monit', '-g', fetch(:user), 'unmonitor'
-    rescue StandardError
+      # TODO: Rubocop does not want use to suppress these
+      # rescue StandardError
     end
   end
 end
@@ -64,7 +65,10 @@ set :whenever_roles,          [:db]
 set :whenever_environment,    -> { fetch(:rails_env) || fetch(:stage) }
 set :whenever_identifier,     -> { "#{fetch(:application)}-#{fetch(:whenever_environment)}" }
 set :whenever_variables,      lambda {
-  "\"environment=#{fetch(:whenever_environment)}&delayed_job_args_p=#{fetch(:delayed_job_identifier)}&delayed_job_args_n=#{fetch(:delayed_job_workers)}\""
+  <<~VARS.gsub(/\s+/, '').strip
+    "environment=#{fetch(:whenever_environment)}&delayed_job_args_p=#{fetch(:delayed_job_identifier)}
+     &delayed_job_args_n=#{fetch(:delayed_job_workers)}"
+  VARS
 }
 
 ## Delayed Job configuration

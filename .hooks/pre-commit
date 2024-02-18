@@ -2,23 +2,21 @@
 
 abort=false
 
-echo "TODO Uncomment this rubocop runner when rubocop's output is clean"
-rubocop
-# echo 'Running Rubocop...'
-# rubocop > rubocop_output.txt
-# if [ $? -ne 0 ]; then
-#   echo 'Rubocop Errors. Check rubocop_output.txt'
-#   abort=true
-# fi
+dir=$(mktemp -d)
 
-echo "TODO Uncomment this rubocop runner when RSpec's output is clean"
-rspec
-# echo "Running RSpec..."
-# rspec > rspec_output.txt
-# if [ $? -ne 0 ]; then
-#   echo 'RSpec Errors. Check rspec_output.txt'
-#   abort=true
-# fi
+echo "Running Rubocop..."
+bundle exec rubocop > "$dir/rubocop.txt"
+if [ $? -ne 0 ]; then
+  echo "Rubocop Errors. Check $dir/rubocop.txt"
+  abort=true
+fi
+
+echo "Running RSpec..."
+bundle exec rspec > "$dir/rspec.txt"
+if [ $? -ne 0 ]; then
+  echo "RSpec Errors. Check $dir/rspec.txt"
+  abort=true
+fi
 
 if [ "$abort" = true ]; then
   echo '==========================='

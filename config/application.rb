@@ -20,6 +20,7 @@ require 'action_view/railtie'
 Bundler.require(*Rails.groups)
 
 module Project
+  # Configuration for the entire project
   class Application < Rails::Application
     config.load_defaults 7.0
 

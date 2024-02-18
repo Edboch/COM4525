@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Pages controller (probably won't survive)
 class PagesController < ApplicationController
   before_action :redirect_if_authenticated
 

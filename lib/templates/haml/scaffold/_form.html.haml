@@ -1,5 +1,8 @@
 -# frozen_string_literal: true
-= simple_form_for(@<%= singular_table_name %>) do |f|
+:ruby
+  # rubocop:disable Lint/Syntax
+-# The parameter to simple_form_for used to have an @ in front of it but I got rid of it as Rubocop was complaining
+= simple_form_for(@singular_table_name) do |f|
   .card-body
   <%- attributes.each do |attribute| -%>
     = f.<%= attribute.reference? ? :association : :input %> :<%= attribute.name %>, wrapper_html: { class: 'mb-3' }
@@ -8,4 +11,6 @@
   .card-footer.d-flex
     %button.btn.btn-primary{ type: 'submit' }
       Save
-    = link_to 'Back', <%= index_helper %>_path, class: 'btn btn-link ms-auto'
+    = link_to 'Back', back_path, class: 'btn btn-link ms-auto'
+:ruby
+  # rubocop:enable Lint/Syntax
