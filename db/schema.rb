@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_25_101256) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_16_154053) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -29,6 +29,101 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_25_101256) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
+  create_table "landing_page_views", force: :cascade do |t|
+    t.bigint "landing_page_id"
+    t.datetime "visit_at", null: false
+    t.decimal "view_duration", default: "0.0", null: false
+    t.bigint "landing_viewer_id"
+    t.index ["landing_page_id"], name: "index_landing_page_views_on_landing_page_id"
+  end
+
+  create_table "landing_pages", force: :cascade do |t|
+    t.string "page_name", null: false
+  end
+
+  create_table "landing_users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
+    t.integer "failed_attempts", default: 0, null: false
+    t.string "unlock_token"
+    t.datetime "locked_at"
+    t.integer "role", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "latitude", default: "0.0", null: false
+    t.decimal "longitude", default: "0.0", null: false
+    t.index ["email"], name: "index_landing_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_landing_users_on_reset_password_token", unique: true
+  end
+
+  create_table "landing_viewers", force: :cascade do |t|
+    t.bigint "landing_user_id"
+    t.integer "selected_plan", default: 0, null: false
+    t.index ["landing_user_id"], name: "index_landing_viewers_on_landing_user_id"
+  end
+
+  create_table "landing_visitor_locations", force: :cascade do |t|
+    t.decimal "latitude", default: "0.0", null: false
+    t.decimal "longitude", default: "0.0", null: false
+  end
+
+  create_table "like_answers", force: :cascade do |t|
+    t.bigint "landing_user_id", null: false
+    t.bigint "question_answer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["landing_user_id"], name: "index_like_answers_on_landing_user_id"
+    t.index ["question_answer_id"], name: "index_like_answers_on_question_answer_id"
+  end
+
+  create_table "like_reviews", force: :cascade do |t|
+    t.bigint "review_id", null: false
+    t.bigint "landing_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["landing_user_id"], name: "index_like_reviews_on_landing_user_id"
+    t.index ["review_id"], name: "index_like_reviews_on_review_id"
+  end
+
+  create_table "page_to_page_step_counts", force: :cascade do |t|
+    t.bigint "landing_page_id_from", null: false
+    t.bigint "landing_page_id_to", null: false
+    t.integer "count", default: 0, null: false
+  end
+
+  create_table "penultimate_page_counts", force: :cascade do |t|
+    t.bigint "landing_page_id", null: false
+    t.integer "count", default: 0, null: false
+  end
+
+  create_table "question_answers", force: :cascade do |t|
+    t.string "question", null: false
+    t.string "answer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "show", default: false, null: false
+    t.integer "clicks", default: 0, null: false
+  end
+
+  create_table "reviews", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.text "experience"
+    t.boolean "visibility"
+    t.integer "likes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "display_priority", limit: 2, default: 1, null: false
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.string "session_id", null: false
     t.text "data"
@@ -38,4 +133,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_25_101256) do
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
+  create_table "users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  add_foreign_key "like_answers", "landing_users"
+  add_foreign_key "like_answers", "question_answers"
+  add_foreign_key "like_reviews", "landing_users"
+  add_foreign_key "like_reviews", "reviews"
 end
