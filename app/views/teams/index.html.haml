@@ -1,0 +1,18 @@
+.card
+  .card-header.d-flex.align-items-center
+    %span Listing Teams
+
+    = link_to 'New Team', singular_table_name.new_path, class: 'btn btn-outline-secondary ms-auto'
+
+  %table.table
+    %thead
+      %tr
+        %th
+    %tbody
+      - @teams.each do |team|
+        %tr
+          %td
+            .btn-toolbar.float-end
+              = link_to 'Show', team, class: 'btn btn-outline-secondary btn-sm'
+              = link_to 'Edit', edit_team_path(team), class: 'btn btn-outline-secondary ms-1 btn-sm'
+              = link_to 'Destroy', team, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-outline-danger ms-1 btn-sm'

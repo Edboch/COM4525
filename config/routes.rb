@@ -1,9 +1,15 @@
 Rails.application.routes.draw do
-  resources :users, only: [:show]
+  resources :teams
+
+  devise_for :users
 
   get 'profile', to: 'user#show', as: :user_profile
+  get 'profile/edit', to: 'user#edit', as: :edit_user_profile
+  patch 'profile', to: 'user#update'
+  delete 'profile', to: 'user#destroy', as: :delete_user_profile
+
   get 'dashboard', to: 'dashboard#index', as: :dashboard
-  devise_for :users
+  
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")

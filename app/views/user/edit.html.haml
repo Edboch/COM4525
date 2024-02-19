@@ -1,0 +1,14 @@
+%h2 Edit Profile
+
+= simple_form_for(current_user, as: :user, url: user_profile_path, html: { method: :patch }) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :email, required: true, autofocus: true
+    = f.input :name, required: true, autofocus: true 
+
+
+  .form-actions
+    = f.button :submit, 'Update'
+    = link_to 'Cancel', user_profile_path
+    
