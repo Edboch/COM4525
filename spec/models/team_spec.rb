@@ -4,9 +4,11 @@
 #
 # Table name: teams
 #
-#  id         :bigint           not null, primary key
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id            :bigint           not null, primary key
+#  location_name :string
+#  name          :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #
 require 'rails_helper'
 

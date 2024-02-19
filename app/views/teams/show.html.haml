@@ -4,7 +4,11 @@
       .card-header
         Team details
       .card-body
-        %dl.row.mb-0
+        .row.mb-0
+          %h3= "Team name: #{@team.name}"
+          %h3= "Team location: #{@team.location_name}"
       .card-footer.d-flex
         = link_to 'Edit', edit_team_path(@team), class: 'btn btn-link'
+        - if current_user.type == 'Manager'
+          = link_to 'Delete', team_path(@team), method: :delete, data: { confirm: 'Are you sure you want to delete the team?' }, class: 'btn btn-link'
         = link_to 'Back', teams_path, class: 'btn btn-link ms-auto'

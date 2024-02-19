@@ -43,7 +43,7 @@ class TeamsController < ApplicationController
   # DELETE /teams/1
   def destroy
     @team.destroy
-    redirect_to teams_url, notice: I18n.t('team.destroy.success'), status: :see_other
+    redirect_to dashboard_path, notice: I18n.t('team.destroy.success'), status: :see_other
   end
 
   private
@@ -55,6 +55,6 @@ class TeamsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def team_params
-    params.fetch(:team, {})
+    params.require(:team).permit(:name, :location_name)
   end
 end
