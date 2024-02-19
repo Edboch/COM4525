@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Decorator for User views
 class UserDecorator < ApplicationDecorator
   delegate_all
 
@@ -9,5 +12,4 @@ class UserDecorator < ApplicationDecorator
   #       object.created_at.strftime("%a %m/%d/%y")
   #     end
   #   end
-
 end

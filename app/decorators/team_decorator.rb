@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Decorator for Team views
 class TeamDecorator < ApplicationDecorator
   delegate_all
 
@@ -9,5 +12,4 @@ class TeamDecorator < ApplicationDecorator
   #       object.created_at.strftime("%a %m/%d/%y")
   #     end
   #   end
-
 end

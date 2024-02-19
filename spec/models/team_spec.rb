@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: teams
@@ -8,6 +10,6 @@
 #
 require 'rails_helper'
 
-RSpec.describe Team, type: :model do
+RSpec.describe Team do
   pending "add some examples to (or delete) #{__FILE__}"
 end

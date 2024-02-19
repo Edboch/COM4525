@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
+# Controller for managing users in the application
 class UserController < ApplicationController
   before_action :authenticate_user!
-  
+
   def show
     @user = current_user
   end
@@ -8,7 +11,7 @@ class UserController < ApplicationController
   def update
     @user = current_user
     if @user.update(user_params)
-      redirect_to user_profile_path, notice: 'Profile was successfully updated.'
+      redirect_to user_profile_path, notice: I18n.t('profile.update.success')
     else
       render :edit
     end
@@ -16,7 +19,7 @@ class UserController < ApplicationController
 
   def destroy
     current_user.destroy
-    redirect_to root_path, notice: 'Your account has been successfully deleted.'
+    redirect_to root_path, notice: I18n.t('account.destroy.success')
   end
 
   private

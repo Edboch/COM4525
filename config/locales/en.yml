@@ -31,3 +31,20 @@
 
 en:
   hello: "Hello world"
+  team:
+    create:
+      success: "Team was successfully created."
+    update:
+      success: "Team was successfully updated."
+    destroy:
+      success: "Team was successfully deleted."
+  profile:
+    update:
+      success: "Profile was successfully updated."
+  account:
+    destroy:
+      success: "Your account has been successfully deleted."
+
+
+
+

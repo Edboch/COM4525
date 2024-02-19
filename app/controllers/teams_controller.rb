@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
+# Controller for managing teams in the application
 class TeamsController < ApplicationController
-  before_action :set_team, only: %i[ show edit update destroy ]
+  before_action :set_team, only: %i[show edit update destroy]
 
   # GET /teams
   def index
@@ -7,8 +10,7 @@ class TeamsController < ApplicationController
   end
 
   # GET /teams/1
-  def show
-  end
+  def show; end
 
   # GET /teams/new
   def new
@@ -16,15 +18,14 @@ class TeamsController < ApplicationController
   end
 
   # GET /teams/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /teams
   def create
     @team = Team.new(team_params)
 
     if @team.save
-      redirect_to @team, notice: "Team was successfully created."
+      redirect_to @team, notice: I18n.t('team.create.success')
     else
       render :new, status: :unprocessable_entity
     end
@@ -33,7 +34,7 @@ class TeamsController < ApplicationController
   # PATCH/PUT /teams/1
   def update
     if @team.update(team_params)
-      redirect_to @team, notice: "Team was successfully updated.", status: :see_other
+      redirect_to @team, notice: I18n.t('team.update.success'), status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
@@ -42,17 +43,18 @@ class TeamsController < ApplicationController
   # DELETE /teams/1
   def destroy
     @team.destroy
-    redirect_to teams_url, notice: "Team was successfully destroyed.", status: :see_other
+    redirect_to teams_url, notice: I18n.t('team.destroy.success'), status: :see_other
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_team
-      @team = Team.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def team_params
-      params.fetch(:team, {})
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_team
+    @team = Team.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def team_params
+    params.fetch(:team, {})
+  end
 end
