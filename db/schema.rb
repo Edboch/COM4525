@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_19_004049) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_19_011216) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -138,6 +138,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_19_004049) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "user_teams", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "team_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_user_teams_on_team_id"
+    t.index ["user_id"], name: "index_user_teams_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -156,4 +165,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_19_004049) do
   add_foreign_key "like_answers", "question_answers"
   add_foreign_key "like_reviews", "landing_users"
   add_foreign_key "like_reviews", "reviews"
+  add_foreign_key "user_teams", "teams"
+  add_foreign_key "user_teams", "users"
 end

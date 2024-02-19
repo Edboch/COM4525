@@ -1,2 +1,8 @@
-%h1 Dashboard#index
-%p Find me in app/views/dashboard/index.html.haml
+- if current_user.type == 'Manager'
+  %h1 You are the gaffer 
+  =link_to 'Create a team', create_team_path
+
+
+- if current_user.type == 'Player'
+  %h1 You are a player
+
