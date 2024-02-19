@@ -21,23 +21,28 @@
     = javascript_pack_tag 'application'
 
   %body
-    %header.navbar.navbar-expand-lg.bg-light.mb-3
-      .container-fluid
-        = link_to '#', class: 'navbar-brand' do
-          = image_pack_tag 'images/logo.png', height: 40
-        %button.navbar-toggler{ type: :button, data: { bs_toggle: :collapse, bs_target: '#navbar-content' }, aria: { controls: 'navbar-content', expanded: 'false', label: 'Toggle navigation' } }
-          %span.navbar-toggler-icon
-        #navbar-content.navbar-collapse.collapse
-          %nav.navbar-nav
-            = link_to '/', class: 'active nav-link' do
-              %i.bi-house-fill
-              Home
+    %header.navbar.navbar-expand-lg.bd-navbar.sticky-top.bg-body-tertiary
+      %nav.lnd-nav.navbar.navbar-expand-lg.bg-body-tertiary.container-xxl
+        .container-fluid
+          %a.navbar-brand{ href: root_url } PitchWize
+          %button.navbar-toggler{ 'aria-controls' => 'navbarNav', 'aria-expanded' => 'false', 'aria-label' => 'Toggle navigation', 'data-bs-target' => '#navbarNav', 'data-bs-toggle' => 'collapse', :type => 'button' }
+            %span.navbar-toggler-icon
+          #navbarNav.collapse.navbar-collapse
+            %ul.navbar-nav.ms-auto.ps-1.pt-1
+              %li.nav-item
+                %p Nav Item
+
+            - if user_signed_in?
+              %li.nav-item.list-unstyled.ps-1.pt-1
+                = link_to 'Logout', destroy_user_session_path, method: :delete, class: 'logout btn btn-outline rounded-pill lnd-button'
+              %li.nav-item.list-unstyled.ps-1.pt-1
+                = link_to 'My Profile', user_profile_path, class: 'btn btn-outline rounded-pill lnd-button'
 
     - if flash.present?
       .container-fluid.flash-messages
         - flash.each do |message_type, message|
           - next unless message_type == 'alert' || message_type == 'notice'
-          .alert{ class: "alert-#{message_type == 'notice' ? 'success' : 'danger'}" }= message
+          .alert{ class: "alert-#{ message_type == 'notice' ? 'success' : 'danger' }" }= message
 
     %main
       .container-fluid
