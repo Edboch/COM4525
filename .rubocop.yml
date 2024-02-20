@@ -23,6 +23,9 @@ RSpec/ExampleLength:
 Metrics/MethodLength:
   Enabled: false
 
+Metrics/AbcSize:
+  Max: 32
+
 Rails/UnknownEnv:
   Environments:
     - production

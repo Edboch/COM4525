@@ -106,6 +106,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_25_210755) do
     t.integer "count", default: 0, null: false
   end
 
+  create_table "page_visits", force: :cascade do |t|
+    t.datetime "visit_start"
+    t.datetime "visit_end"
+  end
+
   create_table "penultimate_page_counts", force: :cascade do |t|
     t.bigint "landing_page_id", null: false
     t.integer "count", default: 0, null: false

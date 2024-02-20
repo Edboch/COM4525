@@ -14,8 +14,13 @@
 
     %title= ['PitchWize', content_for(:title)].compact.join(' - ')
 
+    %meta(name='visit-id'){ content: @page_visit.id }
+    %meta(name='visitor-track'){ content: visitor_tracker_url }
+
     = csrf_meta_tags
     = csp_meta_tag
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 
     = stylesheet_pack_tag 'styles', media: 'all'
     = javascript_pack_tag 'application'
