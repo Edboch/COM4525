@@ -9,10 +9,12 @@
 #  name          :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  owner_id      :bigint
 #
 class Team < ApplicationRecord
-  validates :name, presence: true
   validates :location_name, presence: true
+  validates :name, presence: true
+  validates :owner_id, presence: true
 
   has_many :user_teams, dependent: :destroy
   has_many :users, through: :user_teams

@@ -1,6 +1,10 @@
 - if current_user.type == 'Manager'
   %h1 You are the gaffer 
-  =link_to 'Create a team', create_team_path
+  =link_to 'Create a new team', create_team_path
+  - for team in @teams
+    %h2= "Team name: #{team.name}"
+    =link_to 'View team', team_path(team)
+
 
 
 - if current_user.type == 'Player'

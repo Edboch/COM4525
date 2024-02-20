@@ -11,4 +11,4 @@
         = link_to 'Edit', edit_team_path(@team), class: 'btn btn-link'
         - if current_user.type == 'Manager'
           = link_to 'Delete', team_path(@team), method: :delete, data: { confirm: 'Are you sure you want to delete the team?' }, class: 'btn btn-link'
-        = link_to 'Back', teams_path, class: 'btn btn-link ms-auto'
+        = link_to 'Back', dashboard_path, class: 'btn btn-link ms-auto'

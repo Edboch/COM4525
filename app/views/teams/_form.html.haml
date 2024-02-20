@@ -6,6 +6,9 @@
         - @team.errors.full_messages.each do |message|
           %li= message
 
+  .field 
+    =form.hidden_field :owner_id, value: current_user.id
+
   .field
     = form.label :name
     = form.text_field :name, id: :team_name
