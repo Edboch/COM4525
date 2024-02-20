@@ -18,4 +18,6 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root 'pages#index'
+
+  post 'visitor-tracker', to: 'pages#visitors'
 end
