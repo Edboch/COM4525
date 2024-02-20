@@ -3,6 +3,10 @@
 Rails.application.routes.draw do
   resources :teams
 
+  resources :teams do
+    resources :user_teams
+  end
+
   devise_for :users
 
   get 'profile', to: 'user#show', as: :user_profile

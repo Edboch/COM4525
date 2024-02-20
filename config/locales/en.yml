@@ -44,6 +44,9 @@ en:
   account:
     destroy:
       success: "Your account has been successfully deleted."
+  userteam:
+    create:
+      success: "Invite was successfully sent."
 
 
 

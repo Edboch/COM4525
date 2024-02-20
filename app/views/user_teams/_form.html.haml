@@ -1,0 +1,13 @@
+= form_with(model: [@team, @user_team], local: true) do |form|
+  - if @user_team.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(user_team.errors.count, 'error')} prohibited this team from being saved:"
+      %ul
+        - @user_team.errors.full_messages.each do |message|
+          %li= message
+  .field 
+    = form.label :email, "Player's Email"
+    = form.email_field :email, id: :email
+
+  .actions
+    = form.submit
