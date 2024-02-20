@@ -2,7 +2,8 @@
 
 # Controller for managing user team relations in the application
 class UserTeamsController < ApplicationController
-  before_action :set_team
+  before_action :set_team, only: [:create]
+  before_action :set_user_team, only: %i[accept reject]
 
   def show; end
 
@@ -19,6 +20,17 @@ class UserTeamsController < ApplicationController
     else
       handle_no_user
     end
+  end
+
+  def accept
+    @user_team.update(accepted: true)
+    redirect_to dashboard_path, notice: I18n.t('userteam.respond.accept')
+  end
+
+  # a user rejects the invitation, which destroys the db record
+  def reject
+    @user_team.destroy
+    redirect_to dashboard_path, notice: I18n.t('userteam.respond.reject')
   end
 
   private
@@ -41,6 +53,10 @@ class UserTeamsController < ApplicationController
 
   def set_team
     @team = Team.find(params[:team_id])
+  end
+
+  def set_user_team
+    @user_team = UserTeam.find(params[:id])
   end
 
   def user_team_params

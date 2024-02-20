@@ -7,6 +7,13 @@ Rails.application.routes.draw do
     resources :user_teams
   end
 
+  resources :user_teams do
+    member do
+      post 'accept'
+      delete 'reject'
+    end
+  end
+
   devise_for :users
 
   get 'profile', to: 'user#show', as: :user_profile
@@ -15,6 +22,7 @@ Rails.application.routes.draw do
   delete 'profile', to: 'user#destroy', as: :delete_user_profile
 
   get 'create_team', to: 'teams#new', as: :create_team
+  get 'players/invites', to: 'players#invites', as: :player_invites
 
   get 'dashboard', to: 'dashboard#index', as: :dashboard
 

@@ -47,6 +47,9 @@ en:
   userteam:
     create:
       success: "Invite was successfully sent."
+    respond:
+      accept: "Invite accepted."
+      reject: "Invite rejected."
 
 
 
