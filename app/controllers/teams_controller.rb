@@ -2,7 +2,7 @@
 
 # Controller for managing teams in the application
 class TeamsController < ApplicationController
-  before_action :set_team, only: %i[show edit update destroy]
+  before_action :set_team, only: %i[show edit update destroy players]
 
   # GET /teams
   def index
@@ -44,6 +44,20 @@ class TeamsController < ApplicationController
   def destroy
     @team.destroy
     redirect_to dashboard_path, notice: I18n.t('team.destroy.success'), status: :see_other
+  end
+
+  def players
+    # fetch all userteams with this team id
+    user_teams = UserTeam.where(team_id: @team.id)
+
+    # fetch all players with userteams user id
+    players = []
+    user_teams.each do |user_team|
+      players.append(User.find_by(id: user_team.id))
+    end
+
+    # send all players to view
+    @players = players
   end
 
   private

@@ -12,4 +12,5 @@
         - if current_user.type == 'Manager'
           = link_to 'Delete', team_path(@team), method: :delete, data: { confirm: 'Are you sure you want to delete the team?' }, class: 'btn btn-link'
         = link_to 'Back', dashboard_path, class: 'btn btn-link ms-auto'
+    = link_to 'Show all Players', team_players_path(@team), class: 'btn btn-rounded'
     = link_to 'Invite a Player', new_team_user_team_path(@team), class: 'btn btn-rounded'
