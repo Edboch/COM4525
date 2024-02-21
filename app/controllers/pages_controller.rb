@@ -5,7 +5,7 @@ class PagesController < ApplicationController
   include ApplicationHelper
   include MetricsHelper
   before_action :redirect_if_authenticated
-  before_action :check_visitor
+  before_action :fill_visitor
 
   def index; end
 
@@ -53,7 +53,7 @@ class PagesController < ApplicationController
     redirect_to dashboard_path if user_signed_in?
   end
 
-  def check_visitor
+  def fill_visitor
     @page_visit = find_page_visit
   end
 end

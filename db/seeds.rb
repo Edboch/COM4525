@@ -11,3 +11,9 @@ roles = %w[Manager Player]
 roles.each do |role_name|
   Role.find_or_create_by!(name: role_name)
 end
+
+User.destroy_all
+SiteAdmin.destroy_all
+
+sa_user = User.create email: 'site@admin.com', password: 'password', name: 'Dominic Admin'
+SiteAdmin.create user_id: sa_user.id

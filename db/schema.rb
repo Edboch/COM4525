@@ -158,6 +158,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_25_210755) do
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
+  create_table "site_admins", force: :cascade do |t|
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_site_admins_on_user_id"
+  end
+
   create_table "teams", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

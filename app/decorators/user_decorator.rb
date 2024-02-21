@@ -12,4 +12,7 @@ class UserDecorator < ApplicationDecorator
   #       object.created_at.strftime("%a %m/%d/%y")
   #     end
   #   end
+  def site_admin?
+    SiteAdmin.exists? user_id: object.id
+  end
 end
