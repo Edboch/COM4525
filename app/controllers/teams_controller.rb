@@ -53,7 +53,7 @@ class TeamsController < ApplicationController
     # fetch all players with userteams user id
     players = []
     user_teams.each do |user_team|
-      players.append(User.find_by(id: user_team.id))
+      players.append(User.find_by(id: user_team.user_id))
     end
 
     # send all players to view

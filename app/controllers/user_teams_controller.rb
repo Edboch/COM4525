@@ -2,7 +2,7 @@
 
 # Controller for managing user team relations in the application
 class UserTeamsController < ApplicationController
-  before_action :set_team, only: [:create]
+  before_action :set_team, only: %i[new create destroy]
   before_action :set_user_team, only: %i[accept reject]
 
   def show; end
@@ -20,6 +20,14 @@ class UserTeamsController < ApplicationController
     else
       handle_no_user
     end
+  end
+
+  # takes both a team id player id as a parameter
+  def destroy
+    user_team = UserTeam.find_by(team_id: params[:team_id], user_id: params[:user_id])
+
+    user_team.destroy
+    redirect_to team_players_path(@team), notice: I18n.t('team.players.remove')
   end
 
   def accept

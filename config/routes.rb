@@ -22,7 +22,9 @@ Rails.application.routes.draw do
   delete 'profile', to: 'user#destroy', as: :delete_user_profile
 
   get 'create_team', to: 'teams#new', as: :create_team
+
   get 'teams/:id/players', to: 'teams#players', as: :team_players
+  delete 'teams/:team_id/players/:user_id', to: 'user_teams#destroy', as: 'remove_team_player'
 
   get 'player/invites', to: 'players#invites', as: :player_invites
 

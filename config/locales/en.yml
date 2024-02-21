@@ -38,6 +38,8 @@ en:
       success: "Team was successfully updated."
     destroy:
       success: "Team was successfully deleted."
+    players:
+      remove: "Player removed from your team successfully."
   profile:
     update:
       success: "Profile was successfully updated."
