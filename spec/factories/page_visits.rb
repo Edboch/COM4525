@@ -8,7 +8,3 @@
 #  visit_end   :datetime
 #  visit_start :datetime
 #
-# FactoryBot.define do
-#   factory :page_visit do
-#   end
-# end

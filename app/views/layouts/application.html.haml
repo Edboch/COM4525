@@ -14,8 +14,9 @@
 
     %title= ['PitchWize', content_for(:title)].compact.join(' - ')
 
-    %meta(name='visit-id'){ content: @page_visit.id }
-    %meta(name='visitor-track'){ content: visitor_tracker_url }
+    - unless @page_visit.nil?
+      %meta(name='visit-id'){ content: @page_visit.id }
+      %meta(name='visitor-track'){ content: visitor_tracker_url }
 
     = csrf_meta_tags
     = csp_meta_tag
@@ -38,6 +39,9 @@
                 %p Nav Item
 
             - if user_signed_in?
+              - if current_user.decorate.site_admin?
+                %li.nav-item.list-unstyled.ps-1.pt-1
+                  = link_to 'Admin', admin_page_path(current_user), class: 'btn btn-outline rounded-pill lnd-button'
               %li.nav-item.list-unstyled.ps-1.pt-1
                 = link_to 'Logout', destroy_user_session_path, method: :delete, class: 'logout btn btn-outline rounded-pill lnd-button'
               %li.nav-item.list-unstyled.ps-1.pt-1
