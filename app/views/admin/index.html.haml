@@ -9,6 +9,8 @@
     = stylesheet_pack_tag 'admin_styles', media: 'all'
     = javascript_pack_tag 'admin_script'
 
+    %meta(name='popularity'){ content: metrics_popularity_url }
+
     %body
       = render 'layouts/nav'
 

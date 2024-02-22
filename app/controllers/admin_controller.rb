@@ -5,7 +5,20 @@ class AdminController < ApplicationController
   layout false
   before_action :check_access_rights
 
+  ####################
+  # GET
+
   def index; end
+
+  ############
+  # POST
+
+  def retrieve_popularity_metrics
+    response = { total: PageVisit.count, avgm: 0, avgw: 0 }
+    render json: response
+  end
+
+  private
 
   ############
   # ACTIONS
