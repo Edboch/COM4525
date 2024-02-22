@@ -14,7 +14,6 @@ SiteAdmin.destroy_all
 sa_user = User.create email: 'site@admin.com', password: 'password', name: 'Dominic Admin'
 SiteAdmin.create user_id: sa_user.id
 
-# player = User.create email: 'reg@player.com', password: 'password', name: 'Player Messi', type: :player
-#
-# manager = User.create email: 'man@manager.com', password: 'password', name: 'John Manager', type: :manager
+Player.create email: 'reg@player.com', password: 'password', name: 'Player Messi'
 
+Manager.create email: 'man@manager.com', password: 'password', name: 'John Manager'

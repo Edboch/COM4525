@@ -23,5 +23,21 @@
 require 'rails_helper'
 
 RSpec.describe User do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'role awareness' do
+    it 'UserDecorator.site_admin? returns true on admins' do
+      sa = described_class.create email: 'grand@authority.com', password: 'password', name: 'Eye of Sauron'
+      SiteAdmin.create user_id: sa.id
+      expect(sa.decorate.site_admin?).to be true
+    end
+
+    it 'UserDecorator.site_admin? returns false on players' do
+      player = Player.create email: 'player@1.com', password: 'password', name: 'Striking Name'
+      expect(player.decorate.site_admin?).to be false
+    end
+
+    it 'UserDecorator.site_admin? returns false on managers' do
+      manager = Manager.create email: 'da@manager.com', password: 'password', name: 'Striking Name (Retired)'
+      expect(manager.decorate.site_admin?).to be false
+    end
+  end
 end
