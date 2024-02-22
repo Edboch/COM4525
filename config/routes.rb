@@ -18,6 +18,10 @@ Rails.application.routes.draw do
     get '/:id/site-admin', to: 'admin#index', as: :admin_page
   end
 
+  scope '/metrics' do
+    post '/popularity', to: 'admin#retrieve_popularity_metrics', as: :metrics_popularity
+  end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")

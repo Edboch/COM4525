@@ -12,8 +12,9 @@ window.SERVER = (function($) {
   }
 
   mod.fetch = async function(metaName) {
+    const url = UTIL.getMetaData(metaName);
     return await fetch(
-      UTIL.getMetaData(metaName),
+      url,
       {
         method: 'POST', headers: getHeaders()
       }
@@ -21,8 +22,9 @@ window.SERVER = (function($) {
   };
 
   mod.send = async function(metaName, body) {
+    const url = UTIL.getMetaData(metaName);
     return await fetch(
-      UTIL.getMetaData(metaName),
+      url,
       {
         method: 'POST', headers: getHeaders(),
         body: new URLSearchParams(body),
