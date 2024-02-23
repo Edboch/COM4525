@@ -18,6 +18,45 @@ class AdminController < ApplicationController
     render json: response
   end
 
+  def retrieve_users
+    # Target Query
+    # SELECT users.id, users.email, users.type,
+    #     CASE
+    #       WHEN site_admins.user_id = users.id THEN true
+    #       ELSE false
+    #     END AS is_admin
+    # FROM users
+    # FULL JOIN site_admins ON users.id=site_admins.user_id;
+
+    # The idea is that a user will only be assigned to the array of their
+    # highest role
+    # The arrays below are in ascending order
+    players = []
+    managers = []
+    site_admins = []
+
+    User.select(:id, :name, :email, :type).decorate.each do |user|
+      if user.type == 'Player'
+        players.append({
+          id: user.id, name: user.name, email: user.email, roles: [ 'player' ]
+        })
+      end
+      if user.type == 'Manager'
+        managers.append({
+          id: user.id, name: user.name, email: user.email, roles: [ 'manager' ]
+        })
+      end
+      if user.site_admin?
+        site_admins.append({
+          id: user.id, name: user.name, email: user.email, roles: [ 'site-admin' ]
+        })
+      end
+    end
+
+    response = { players: players, managers: managers, site_admins: site_admins }
+    render json: response
+  end
+
   private
 
   ############

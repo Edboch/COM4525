@@ -22,6 +22,10 @@ Rails.application.routes.draw do
     post '/popularity', to: 'admin#retrieve_popularity_metrics', as: :metrics_popularity
   end
 
+  scope '/admin' do
+    post '/all-users', to: 'admin#retrieve_users', as: :admin_all_users
+  end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")

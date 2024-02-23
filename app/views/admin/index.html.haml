@@ -10,6 +10,7 @@
     = javascript_pack_tag 'admin_script'
 
     %meta(name='popularity'){ content: metrics_popularity_url }
+    %meta(name='get-users'){ content: admin_all_users_url }
 
     %body
       = render 'layouts/nav'
@@ -46,12 +47,15 @@
 
 %template.user-card
   .user-card
-    .i
     %input(name='name')
     %input(name='email')
-    %select
-      %option(value=0) Player
-      %option(value=1) Manager
-      %option(value=2) Site Admin
+
+    %input(type='checkbox' name='player')
+    %label(for='player') Player
+    %input(type='checkbox' name='manager')
+    %label(for='manager') Manager
+    %input(type='checkbox' name='site-admin')
+    %label(for='site-admin') Site Admin
+
     %button Reset Password
 

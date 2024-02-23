@@ -4,6 +4,8 @@ let POP_TOTAL;
 let POP_AVGM;
 let POP_AVGW;
 
+let USER_CARDS;
+
 const Q_CONTROL_BUTTON = '#control-panel > button';
 
 async function updatePopularity() {
@@ -15,6 +17,41 @@ async function updatePopularity() {
   POP_TOTAL.html(json['total']);
   POP_AVGM.html(json['avgm']);
   POP_AVGW.html(json['avgw']);
+}
+
+async function populateUsers() {
+  const response = await SERVER.fetch('get-users');
+  const json = await response.json();
+
+  let userCard = $('template.user-card').contents()[1];
+
+  function addCard(user) {
+    let card = $(userCard).clone();
+    card.find('[name="name"]').val(user.name);
+    card.find('[name="email"]').val(user.email);
+
+    user.roles.forEach(function(role) {
+      let tickbox = card.find('input:checkbox[name="' + role + '"]');
+      if (tickbox) {
+        console.log(tickbox);
+        tickbox.prop('checked', true);
+      }
+    });
+    // if (user.roles.includes('player'))
+    //   card.find('[type="checkbox",name="player"]').prop('checked', true);
+    // if (user.roles.includes('manager'))
+    //   card.find('[type="checkbox",name="player"]').prop('checked', true);
+    // if (user.roles.includes('site-admin'))
+    //   card.find('[type="checkbox",name="site-admin"]').prop('checked', true);
+
+    USER_CARDS.append(card);
+  }
+
+  // Players then managers then site admins
+  // This will be configurable
+  json.players.forEach(addCard);
+  json.managers.forEach(addCard);
+  json.site_admins.forEach(addCard);
 }
 
 function mkfn_selectInfoView(target) {
@@ -38,6 +75,8 @@ document.addEventListener('DOMContentLoaded', function() {
   POP_TOTAL = $('#gnrl-popularity .total .value');
   POP_AVGM = $('#gnrl-popularity .avgm .value');
   POP_AVGW = $('#gnrl-popularity .avgw .value');
+
+  USER_CARDS = $('#users .card-list');
 
   let buttons = $(Q_CONTROL_BUTTON).toArray();
   let infoViews = $('#info-block > *').toArray();
@@ -73,5 +112,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   updatePopularity();
+  populateUsers();
 });
 

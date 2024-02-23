@@ -34,9 +34,10 @@ main {
 }
 
 #info-block {
+  overflow-y: scroll;
 
   & > * {
-    padding-top: 1em;
+    padding: 1em 0;
   }
 }
 
