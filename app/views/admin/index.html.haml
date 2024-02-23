@@ -17,7 +17,11 @@
       %main
         #admin-panel
           %aside#control-panel
+            -# TODO: An option for the admin to select their default view
+            -#       Would work by giving the selected class to the appropriate button
+            -#       and then the JS will handle the rest
             %button#general.selected General Stats
+            %button#users Users
 
 
           %section#info-block
@@ -35,3 +39,19 @@
                   .avgw
                     .label Average / Week
                     .value
+
+            #users
+              .card-list
+
+
+%template.user-card
+  .user-card
+    .i
+    %input(name='name')
+    %input(name='email')
+    %select
+      %option(value=0) Player
+      %option(value=1) Manager
+      %option(value=2) Site Admin
+    %button Reset Password
+
