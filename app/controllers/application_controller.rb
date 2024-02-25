@@ -2,6 +2,8 @@
 
 # Base controller for all other controllers
 class ApplicationController < ActionController::Base
+  before_action :authenticate_user!
+
   rescue_from CanCan::AccessDenied do |exception|
     redirect_to root_url, alert: exception.message
   end
@@ -34,7 +36,7 @@ class ApplicationController < ActionController::Base
   end
 
   private
-
+  
   def update_headers_to_disable_caching
     response.headers['Cache-Control'] = 'no-cache, no-cache="set-cookie", no-store, private, proxy-revalidate'
     response.headers['Pragma'] = 'no-cache'
