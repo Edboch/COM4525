@@ -44,14 +44,14 @@ passwords = %w[
   password 12345678 pass1234
 ]
 
-firstnames = [
-  'Michael', 'Matthew', 'Mark', 'Luke', 'John', 'Paul', 'Patrick',
-  'Rebecca','Jennifer', 'Amy', 'Jemima', 'Isabelle'
+firstnames = %w[
+  Michael Matthew Mark Luke John Paul Patrick
+  Rebecca Jennifer Amy Jemima Isabelle
 ]
 
-surnames = [
-  'Smith', 'Cook', 'Xixiang', 'Allen', 'Bateman',
-  'Green', 'Repuga'
+surnames = %w[
+  Smith Cook Xixiang Allen Bateman
+  Green Repuga
 ]
 
 # TODO: Improve this by making use of the insert_all method
@@ -64,15 +64,14 @@ rand(35..60).times do
 
   roll = rand 100
   if roll < 48
-    Player.create email: email, password: pw, name: name
+    Player.create(email: email, password: pw, name: name)
   elsif roll < 98
-    Manager.create email: email, password: pw, name: name
+    Manager.create(email: email, password: pw, name: name)
   else
-    sa = User.create email: email, password: pw, name: name
+    sa = User.create(email: email, password: pw, name: name)
     SiteAdmin.create user_id: sa.id
   end
 end
 
 ############
 # TODO: Generate page visits
-

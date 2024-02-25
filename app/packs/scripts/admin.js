@@ -6,6 +6,8 @@ let POP_AVGW;
 
 let USER_CARDS;
 
+let IDX_OPEN_CARD = -1;
+
 const Q_CONTROL_BUTTON = '#control-panel > button';
 
 async function updatePopularity() {
@@ -24,27 +26,60 @@ async function populateUsers() {
   const json = await response.json();
 
   let userCard = $('template.user-card').contents()[1];
+  let idxCard = 0;
 
   function addCard(user) {
     let card = $(userCard).clone();
-    card.find('[name="name"]').val(user.name);
-    card.find('[name="email"]').val(user.email);
+    card.attr('id', 'user-' + user.id);
 
-    user.roles.forEach(function(role) {
+    const index = idxCard;
+    card.on('click', function(evt) {
+      // console.log(`UID: ${user.id} CIDX: ${index} IOC: ${IDX_OPEN_CARD}`);
+      let target = $(evt.target);
+      if (IDX_OPEN_CARD == index) {
+        if (!(target.is(card) || target.is(card.find('.uc-enlarge'))))
+          return;
+
+        card.removeClass('open');
+        IDX_OPEN_CARD = -1;
+        return;
+      }
+
+      if (IDX_OPEN_CARD > -1)
+        USER_CARDS.children().eq(IDX_OPEN_CARD).removeClass('open');
+
+      card.addClass('open');
+      IDX_OPEN_CARD = index;
+    });
+
+    card.find('.email').text(user.email);
+    let inpName = card.find('[name="name"]');
+    inpName.val(user.name);
+    let inpEmail = card.find('[name="email"]');
+    inpEmail.val(user.email);
+
+    let roleList = card.find('.role-list span');
+    user.roles.forEach(function(role, idx) {
       let tickbox = card.find('input:checkbox[name="' + role + '"]');
+
+      let text = roleList.text();
+      if (idx != 0)
+        text += " | ";
+      roleList.text(text + role);
+
       if (tickbox) {
-        console.log(tickbox);
         tickbox.prop('checked', true);
       }
     });
-    // if (user.roles.includes('player'))
-    //   card.find('[type="checkbox",name="player"]').prop('checked', true);
-    // if (user.roles.includes('manager'))
-    //   card.find('[type="checkbox",name="player"]').prop('checked', true);
-    // if (user.roles.includes('site-admin'))
-    //   card.find('[type="checkbox",name="site-admin"]').prop('checked', true);
+
+    card.find('button.save').on('click', function() {
+      let name = inpName.val();
+      let email = inpEmail.val();
+      SERVER.send('update-user', { 'id': user.id, 'name': name, 'email': email });
+    });
 
     USER_CARDS.append(card);
+    idxCard++;
   }
 
   // Players then managers then site admins

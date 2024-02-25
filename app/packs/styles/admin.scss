@@ -77,3 +77,46 @@ main {
   }
 }
 
+// ##################################
+// Users
+// ##################################
+
+.user-card {
+  margin: 0.4em;
+  background-color: white;
+  color: black;
+  padding: 0.2em .3em;
+
+  .uc-enlarge {
+    display: none;
+  }
+
+  &.open {
+    .uc-pill {
+      display: none;
+    }
+
+    .uc-enlarge {
+      display: block;
+    }
+  }
+}
+
+.uc-pill {
+  display: flex;
+  flex-flow: row nowrap;
+
+  .email {
+    font-size: 1.4em;
+    width: 28%;
+    overflow-x: hidden;
+    margin-right: 1em;
+  }
+
+  .role-list {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+  }
+}
+

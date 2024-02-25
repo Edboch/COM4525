@@ -11,6 +11,7 @@
 
     %meta(name='popularity'){ content: metrics_popularity_url }
     %meta(name='get-users'){ content: admin_all_users_url }
+    %meta(name='update-user'){ content: admin_update_user_url }
 
     %body
       = render 'layouts/nav'
@@ -21,8 +22,8 @@
             -# TODO: An option for the admin to select their default view
             -#       Would work by giving the selected class to the appropriate button
             -#       and then the JS will handle the rest
-            %button#general.selected General Stats
-            %button#users Users
+            %button#general General Stats
+            %button#users.selected Users
 
 
           %section#info-block
@@ -47,15 +48,22 @@
 
 %template.user-card
   .user-card
-    %input(name='name')
-    %input(name='email')
+    .uc-pill
+      .email
+      .role-list
+        %span
 
-    %input(type='checkbox' name='player')
-    %label(for='player') Player
-    %input(type='checkbox' name='manager')
-    %label(for='manager') Manager
-    %input(type='checkbox' name='site-admin')
-    %label(for='site-admin') Site Admin
+    .uc-enlarge
+      %input(name='name')
+      %input(name='email')
 
-    %button Reset Password
+      %input(type='checkbox' name='player')
+      %label(for='player') Player
+      %input(type='checkbox' name='manager')
+      %label(for='manager') Manager
+      %input(type='checkbox' name='site-admin')
+      %label(for='site-admin') Site Admin
+
+      %button.save Save
+      %button.pwreset Reset Password
 

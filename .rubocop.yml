@@ -26,6 +26,9 @@ Metrics/MethodLength:
 Metrics/AbcSize:
   Max: 32
 
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never
+
 Rails/UnknownEnv:
   Environments:
     - production

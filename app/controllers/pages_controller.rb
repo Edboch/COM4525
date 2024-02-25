@@ -12,8 +12,6 @@ class PagesController < ApplicationController
   def visitors
     return unless are_visitor_params_valid?
 
-    # vid = params[:visitor_id].to_i
-
     tz = params[:time_zone]
     if !params[:end_time].nil?
       datetime = get_timezone_time tz, params[:end_time].to_i

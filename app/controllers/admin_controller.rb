@@ -38,23 +38,32 @@ class AdminController < ApplicationController
     User.select(:id, :name, :email, :type).decorate.each do |user|
       if user.type == 'Player'
         players.append({
-          id: user.id, name: user.name, email: user.email, roles: [ 'player' ]
-        })
+                         id: user.id, name: user.name, email: user.email, roles: ['player']
+                       })
       end
       if user.type == 'Manager'
         managers.append({
-          id: user.id, name: user.name, email: user.email, roles: [ 'manager' ]
-        })
+                          id: user.id, name: user.name, email: user.email, roles: ['manager']
+                        })
       end
-      if user.site_admin?
-        site_admins.append({
-          id: user.id, name: user.name, email: user.email, roles: [ 'site-admin' ]
-        })
-      end
+      next unless user.site_admin?
+
+      site_admins.append({
+                           id: user.id, name: user.name, email: user.email, roles: ['site-admin']
+                         })
     end
 
     response = { players: players, managers: managers, site_admins: site_admins }
     render json: response
+  end
+
+  def update_user
+    user = User.find_by id: params[:id]
+    return if user.nil?
+
+    user.name = params[:name]
+    user.email = params[:email]
+    user.save
   end
 
   private
