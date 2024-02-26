@@ -13,13 +13,13 @@
 #
 require 'rails_helper'
 
-RSpec.describe Team do 
-  it "is valid with valid attributes" do
+RSpec.describe Team do
+  it 'is valid with valid attributes' do
     team = build(:team)
     expect(team).to be_valid
   end
 
-  it "is not valid without a name" do
+  it 'is not valid without a name' do
     team = build(:team, name: nil)
     expect(team).not_to be_valid
   end

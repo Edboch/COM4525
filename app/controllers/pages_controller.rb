@@ -3,7 +3,6 @@
 # Pages controller (probably won't survive)
 class PagesController < ApplicationController
   before_action :redirect_if_authenticated
-  skip_before_action :authenticate_user!
 
   def index; end
 
