@@ -2,10 +2,12 @@ let POP_TOTAL;
 let POP_AVGM;
 let POP_AVGW;
 
+/**
+  * Pulls popularity data from the database and uses it
+  * to fill the appropriate fields
+  */
 async function updatePopularity() {
   const response = await SERVER.fetch('popularity');
-  // const text = await response.text();
-  // console.log(text);
   const json = await response.json();
 
   POP_TOTAL.html(json['total']);
