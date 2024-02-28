@@ -63,7 +63,8 @@ class AdminController < ApplicationController
 
     user.name = params[:name]
     user.email = params[:email]
-    user.save
+    result = user.save
+    render json: { success: result }
   end
 
   private
