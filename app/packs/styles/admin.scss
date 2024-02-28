@@ -1,0 +1,70 @@
+main {
+  height: 85vh;
+
+  .container-fluid {
+    height: 100%;
+  }
+}
+
+#admin-panel {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 16em auto;
+  gap: 1em;
+
+  color: white;
+  background-color: rgb(20, 20, 20);
+}
+
+#control-panel {
+  background-color: rgb(102, 102, 102);
+
+  button {
+    margin-top: .6em;
+    width: 100%;
+    border: none;
+    background-color: rgb(60, 60, 60);
+    color: inherit;
+
+    &.selected {
+      background-color: rgb(150, 150, 150);
+      font-size: 1.3em;
+    }
+  }
+}
+
+#info-block {
+
+  & > * {
+    padding-top: 1em;
+  }
+}
+
+// ##################################
+// General
+// ##################################
+
+#gnrl-popularity {
+  display: flex;
+  flex-direction: row;
+  gap: 4em;
+
+  .ltitle {
+    min-width: 4em;
+    font-size: 2.8em;
+  }
+
+  section {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    gap: 1.4em;
+    font-size: 1.2em;
+    text-align: center;
+  }
+
+  .value {
+    font-size: 1.4em;
+  }
+}
+

@@ -1,0 +1,37 @@
+-# Use <template> for automatically hidden HTML that can be cloned and used with JS
+!!!
+%html{ lang: 'en-GB' }
+  %head
+    = render 'layouts/tags'
+
+    %title Admin - Pitch Wize
+
+    = stylesheet_pack_tag 'admin_styles', media: 'all'
+    = javascript_pack_tag 'admin_script'
+
+    %meta(name='popularity'){ content: metrics_popularity_url }
+
+    %body
+      = render 'layouts/nav'
+
+      %main
+        #admin-panel
+          %aside#control-panel
+            %button#general.selected General Stats
+
+
+          %section#info-block
+
+            #general
+              #gnrl-popularity
+                .ltitle Site Visits
+                %section
+                  .total
+                    .label Total
+                    .value 10000
+                  .avgm
+                    .label Average / Month
+                    .value
+                  .avgw
+                    .label Average / Week
+                    .value
