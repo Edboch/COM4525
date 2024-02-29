@@ -35,13 +35,13 @@ class AdminController < ApplicationController
     managers = []
     site_admins = []
 
-    User.select(:id, :name, :email, :type).decorate.each do |user|
-      if user.type == 'Player'
+    User.select(:id, :name, :email).decorate.each do |user|
+      if user.player?
         players.append({
                          id: user.id, name: user.name, email: user.email, roles: ['player']
                        })
       end
-      if user.type == 'Manager'
+      if user.manager?
         managers.append({
                           id: user.id, name: user.name, email: user.email, roles: ['manager']
                         })

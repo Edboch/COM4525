@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# frozon_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe 'Admin Edit Users', :js do
@@ -11,7 +9,13 @@ RSpec.describe 'Admin Edit Users', :js do
     sa
   end
 
-  let!(:player) { Player.create email: 'player@1.com', password: 'password', name: 'John' }
+  # TODO: Player and Manager generation to factories
+  let!(:player) do
+    user = User.create email: 'player@1.com', password: 'password', name: 'John'
+    role_player = Role.find_or_create_by! name: 'Player'
+    UserRole.create user_id: user.id, role_id: role_player.id
+    user
+  end
 
   before do
     visit '/'
