@@ -5,6 +5,7 @@ module Users
   class RegistrationsController < Devise::RegistrationsController
     before_action :configure_sign_up_params, only: [:create]
     before_action :configure_account_update_params, only: [:update]
+    skip_before_action :check_user_authenticated
 
     def create
       super(resource)
@@ -17,7 +18,8 @@ module Users
     protected
 
     def configure_sign_up_params
-      devise_parameter_sanitizer.permit(:sign_up, keys: %i[email password password_confirmation type])
+      devise_parameter_sanitizer.permit(:sign_up,
+                                        keys: [:email, :password, :password_confirmation, :name, { role_ids: [] }])
     end
 
     def configure_account_update_params

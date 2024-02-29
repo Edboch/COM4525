@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_20_201921) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_25_210755) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -93,6 +93,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_201921) do
     t.index ["review_id"], name: "index_like_reviews_on_review_id"
   end
 
+  create_table "managers", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_managers_on_user_id"
+  end
+
   create_table "page_to_page_step_counts", force: :cascade do |t|
     t.bigint "landing_page_id_from", null: false
     t.bigint "landing_page_id_to", null: false
@@ -107,6 +114,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_201921) do
   create_table "penultimate_page_counts", force: :cascade do |t|
     t.bigint "landing_page_id", null: false
     t.integer "count", default: 0, null: false
+  end
+
+  create_table "players", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_players_on_user_id"
   end
 
   create_table "question_answers", force: :cascade do |t|
@@ -129,6 +143,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_201921) do
     t.integer "display_priority", limit: 2, default: 1, null: false
   end
 
+  create_table "roles", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.string "session_id", null: false
     t.text "data"
@@ -146,6 +166,18 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_201921) do
   create_table "teams", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
+    t.string "location_name"
+    t.bigint "owner_id"
+  end
+
+  create_table "user_roles", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["role_id"], name: "index_user_roles_on_role_id"
+    t.index ["user_id"], name: "index_user_roles_on_user_id"
   end
 
   create_table "user_teams", force: :cascade do |t|
@@ -153,6 +185,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_201921) do
     t.bigint "team_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "accepted", default: false
     t.index ["team_id"], name: "index_user_teams_on_team_id"
     t.index ["user_id"], name: "index_user_teams_on_user_id"
   end
@@ -165,7 +198,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_201921) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "type"
     t.string "name"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -175,6 +207,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_201921) do
   add_foreign_key "like_answers", "question_answers"
   add_foreign_key "like_reviews", "landing_users"
   add_foreign_key "like_reviews", "reviews"
+  add_foreign_key "managers", "users"
+  add_foreign_key "players", "users"
+  add_foreign_key "user_roles", "roles"
+  add_foreign_key "user_roles", "users"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"
 end

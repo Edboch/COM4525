@@ -2,26 +2,26 @@
 
 # == Schema Information
 #
-# Table name: user_teams
+# Table name: user_roles
 #
 #  id         :bigint           not null, primary key
-#  accepted   :boolean          default(FALSE)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  team_id    :bigint           not null
+#  role_id    :bigint           not null
 #  user_id    :bigint           not null
 #
 # Indexes
 #
-#  index_user_teams_on_team_id  (team_id)
-#  index_user_teams_on_user_id  (user_id)
+#  index_user_roles_on_role_id  (role_id)
+#  index_user_roles_on_user_id  (user_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (team_id => teams.id)
+#  fk_rails_...  (role_id => roles.id)
 #  fk_rails_...  (user_id => users.id)
 #
-class UserTeam < ApplicationRecord
-  belongs_to :user
-  belongs_to :team
+require 'rails_helper'
+
+RSpec.describe UserRole do
+  pending "add some examples to (or delete) #{__FILE__}"
 end

@@ -1,8 +1,13 @@
-- if current_user.type == 'Manager'
-  %h1 You are the gaffer 
-  =link_to 'Create a team', create_team_path
+- if current_user.manager?
+  %h1 Manage Your Team
+  =link_to 'Create a new team', create_team_path
+  - for team in @teams
+    %h2= "Team name: #{team.name}"
+    =link_to 'View team', team_path(team)
 
 
-- if current_user.type == 'Player'
-  %h1 You are a player
+
+- if current_user.player?
+  %h1 Player
+  = link_to 'View invites', player_invites_path
 

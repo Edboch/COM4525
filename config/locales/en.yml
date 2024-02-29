@@ -38,12 +38,20 @@ en:
       success: "Team was successfully updated."
     destroy:
       success: "Team was successfully deleted."
+    players:
+      remove: "Player removed from your team successfully."
   profile:
     update:
       success: "Profile was successfully updated."
   account:
     destroy:
       success: "Your account has been successfully deleted."
+  userteam:
+    create:
+      success: "Invite was successfully sent."
+    respond:
+      accept: "Invite accepted."
+      reject: "Invite rejected."
 
 
 

@@ -11,7 +11,6 @@
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
-#  type                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
@@ -20,5 +19,26 @@
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
-class Manager < User
+FactoryBot.define do
+  factory :user do
+    email { 'test@email.com' }
+    name { 'Test' }
+    password { 'Password' }
+
+    trait :player do
+      id { 0 }
+      after(:create) do |user|
+        player_role = Role.find_or_create_by!(name: 'Player')
+        user.roles << player_role
+      end
+    end
+
+    trait :manager do
+      id { 1 }
+      after(:create) do |user|
+        manager_role = Role.find_or_create_by!(name: 'Manager')
+        user.roles << manager_role
+      end
+    end
+  end
 end
