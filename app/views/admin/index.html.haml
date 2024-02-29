@@ -10,6 +10,8 @@
     = javascript_pack_tag 'admin_script'
 
     %meta(name='popularity'){ content: metrics_popularity_url }
+    %meta(name='get-users'){ content: admin_all_users_url }
+    %meta(name='update-user'){ content: admin_update_user_url }
 
     %body
       = render 'layouts/nav'
@@ -17,7 +19,11 @@
       %main
         #admin-panel
           %aside#control-panel
-            %button#general.selected General Stats
+            -# TODO: An option for the admin to select their default view
+            -#       Would work by giving the selected class to the appropriate button
+            -#       and then the JS will handle the rest
+            %button#general General Stats
+            %button#users.selected Users
 
 
           %section#info-block
@@ -35,3 +41,29 @@
                   .avgw
                     .label Average / Week
                     .value
+
+            #users
+              .card-list
+
+
+%template.user-card
+  .user-card
+    .uc-pill
+      .email
+      .role-list
+        %span
+
+    .uc-enlarge
+      %input(name='name')
+      %input(name='email')
+
+      %input(type='checkbox' name='player')
+      %label(for='player') Player
+      %input(type='checkbox' name='manager')
+      %label(for='manager') Manager
+      %input(type='checkbox' name='site-admin')
+      %label(for='site-admin') Site Admin
+
+      %button.save Save
+      %button.pwreset Reset Password
+
