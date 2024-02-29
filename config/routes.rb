@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   resources :teams do
     resources :user_teams
+    resources :matches
+    get 'fixtures', to: 'matches#fixtures', as: :fixtures
   end
 
   resources :user_teams do

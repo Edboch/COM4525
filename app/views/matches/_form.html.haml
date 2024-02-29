@@ -1,0 +1,7 @@
+= form_with(model: [@team, @match], local: true) do |f|
+  .card-body
+
+  .card-footer.d-flex
+    %button.btn.btn-primary{ type: 'submit' }
+      Save
+    = link_to 'Back', back_path, class: 'btn btn-link ms-auto'
