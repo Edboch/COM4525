@@ -2,6 +2,7 @@
 
 # Controller for managing the dashboard in the application
 class DashboardController < ApplicationController
+  include AuthenticationHelper
   include MetricsHelper
 
   before_action :check_user_authenticated

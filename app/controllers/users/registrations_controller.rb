@@ -3,6 +3,8 @@
 module Users
   # Controller for handling registrations with devise in the application
   class RegistrationsController < Devise::RegistrationsController
+    include AuthenticationHelper
+
     before_action :configure_sign_up_params, only: [:create]
     before_action :configure_account_update_params, only: [:update]
     skip_before_action :check_user_authenticated
