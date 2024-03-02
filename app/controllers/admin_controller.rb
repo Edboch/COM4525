@@ -67,6 +67,19 @@ class AdminController < ApplicationController
     render json: { success: result }
   end
 
+  def new_user
+    # TODO: Send email with current password telling the user to update it
+
+    user = User.create name: params[:name], email: params[:email], password: params[:password]
+    user.save
+
+    role_player = Role.find_or_create_by! name: 'Player'
+    role_manager = Role.find_or_create_by! name: 'Manager'
+
+    UserRole.create(user_id: user.id, role_id: role_player.id) if params[:roles].include? 'p'
+    UserRole.create(user_id: user.id, role_id: role_manager.id) if params[:roles].include? 'm'
+  end
+
   private
 
   ############

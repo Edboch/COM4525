@@ -10,6 +10,10 @@ let IDX_OPEN_CARD = -1;
 
 const Q_CONTROL_BUTTON = '#control-panel > button';
 
+const GENERATED_PASSWORD_LENGTH = 8;
+
+// TODO Email format validation
+
 /**
   * Pulls popularity data from the database and uses it
   * to fill the appropriate fields
@@ -21,6 +25,62 @@ async function updatePopularity() {
   POP_TOTAL.html(json['total']);
   POP_AVGM.html(json['avgm']);
   POP_AVGW.html(json['avgw']);
+}
+
+async function wireUpCreateNewUser() {
+  const domNewUser = $('#new-user');
+  let domPassword = domNewUser.find('[name="password"]');
+
+  domNewUser.find('#new-user-regen-pw').on('click', function() {
+    let generated = '';
+    for (let i = 0; i < GENERATED_PASSWORD_LENGTH; i++) {
+      if (Math.random() < 0.5) {
+        let ascii = 97 + Math.floor(Math.random() * 26);
+        generated += String.fromCharCode(ascii);
+      }
+      else {
+        let number = Math.floor(Math.random() * 10);
+        generated += number.toString();
+      }
+    }
+
+    domPassword.val(generated);
+  });
+
+  let domName = domNewUser.find('[name="name"]');
+  let domEmail = domNewUser.find('[name="email"]');
+  let domPlayer = domNewUser.find('[name="player"]');
+  let domManager = domNewUser.find('[name="manager"]');
+
+  domNewUser.find('#new-user-submit').on('click', function() {
+    if (domName.val() === '') {
+      console.error('NEW USER No name provided');
+      return;
+    }
+    if (domEmail.val() === '') {
+      console.error('NEW USER No email provided');
+      return;
+    }
+    if (domPassword.val() === '') {
+      console.error('NEW USER No password provided');
+      return;
+    }
+
+    if (! (domPlayer.prop('checked') || domManager.prop('checked'))) {
+      console.error('NEW USER No role set');
+      return;
+    }
+
+    let roles = '';
+    if (domPlayer.prop('checked'))
+      roles += 'p';
+    if (domManager.prop('manager'))
+      roles += 'm';
+
+    SERVER.send('new-user', {
+      'name': domName.val(), 'email': domEmail.val(), 'password': domPassword.val(), 'roles': roles
+    });
+  });
 }
 
 async function populateUsers() {
@@ -149,5 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   updatePopularity();
   populateUsers();
+
+  wireUpCreateNewUser();
 });
 
