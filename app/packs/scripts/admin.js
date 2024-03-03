@@ -74,7 +74,7 @@ async function wireUpCreateNewUser() {
     let roles = '';
     if (domPlayer.prop('checked'))
       roles += 'p';
-    if (domManager.prop('manager'))
+    if (domManager.prop('checked'))
       roles += 'm';
 
     SERVER.send('new-user', {
