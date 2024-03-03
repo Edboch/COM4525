@@ -14,6 +14,17 @@ const GENERATED_PASSWORD_LENGTH = 8;
 
 // TODO Email format validation
 
+function getRoles(parent) {
+  let roles = '';
+  if (parent.find('[name="player"]').prop('checked'))
+    roles += 'p';
+  if (parent.find('[name="manager"]').prop('checked'))
+    roles += 'm';
+  if (parent.find('[name="site-admin"]').prop('checked'))
+    roles += 's';
+  return roles;
+}
+
 /**
   * Pulls popularity data from the database and uses it
   * to fill the appropriate fields
@@ -51,8 +62,9 @@ async function wireUpCreateNewUser() {
   let domEmail = domNewUser.find('[name="email"]');
   let domPlayer = domNewUser.find('[name="player"]');
   let domManager = domNewUser.find('[name="manager"]');
+  let domSiteAdmin = domNewUser.find('[name="site-admin"]');
 
-  domNewUser.find('#new-user-submit').on('click', function() {
+  domNewUser.find('#new-user-submit').on('click', async function() {
     if (domName.val() === '') {
       console.error('NEW USER No name provided');
       return;
@@ -66,26 +78,31 @@ async function wireUpCreateNewUser() {
       return;
     }
 
-    if (! (domPlayer.prop('checked') || domManager.prop('checked'))) {
+    let roles = getRoles(domNewUser);
+    if (roles === '') {
       console.error('NEW USER No role set');
       return;
     }
 
-    let roles = '';
-    if (domPlayer.prop('checked'))
-      roles += 'p';
-    if (domManager.prop('checked'))
-      roles += 'm';
-
-    SERVER.send('new-user', {
+    const response = await SERVER.send('new-user', {
       'name': domName.val(), 'email': domEmail.val(), 'password': domPassword.val(), 'roles': roles
     });
+
+    populateUsers();
+    domName.val('');
+    domEmail.val('');
+    domPassword.val('');
+    domPlayer.prop('checked', false);
+    domManager.prop('checked', false);
+    domSiteAdmin.prop('checked', false);
   });
 }
 
 async function populateUsers() {
   const response = await SERVER.fetch('get-users');
   const json = await response.json();
+
+  USER_CARDS.empty();
 
   let userCard = $('template.user-card').contents()[1];
   let idxCard = 0;
@@ -136,7 +153,14 @@ async function populateUsers() {
     card.find('button.save').on('click', function() {
       let name = inpName.val();
       let email = inpEmail.val();
-      SERVER.send('update-user', { 'id': user.id, 'name': name, 'email': email });
+      // TODO Are you sure alert if a role change is detected
+      // If site admin is changed also ask for password confirmation
+      let roles = getRoles(card);
+      if (roles === '') {
+        console.error('EDIT USER No role set');
+        return;
+      }
+      SERVER.send('update-user', { 'id': user.id, 'name': name, 'email': email, 'roles': roles });
     });
 
     USER_CARDS.append(card);
