@@ -28,13 +28,17 @@ RSpec.describe 'Admin Edit Users', :js do
   end
 
   context 'when editing existing users' do
+    let!(:user_card) do
+      uc = find "#user-#{player.id}.user-card"
+      uc.click
+      uc
+    end
+
     specify 'The user cards are being loaded onto the page' do
       expect(page).to have_css("#user-#{player.id}.user-card", visible: :visible)
     end
 
-    specify 'A user\'s name can be changed', :js do
-      user_card = find('.user-card')
-      user_card.click
+    specify 'A user\'s name can be changed' do
       within user_card do
         find(:css, '[name="name"]').set('Dominic')
         find(:css, 'button.save').click
@@ -47,8 +51,6 @@ RSpec.describe 'Admin Edit Users', :js do
     specify 'A user\'s email can be changed' do
       email = 'get.me.out.of.here@outlook.com'
 
-      user_card = find('.user-card')
-      user_card.click
       within user_card do
         find(:css, '[name="email"]').set email
         click_on 'Save'
@@ -56,6 +58,41 @@ RSpec.describe 'Admin Edit Users', :js do
 
       sleep 0.2
       expect(player.reload.email).to eq email
+    end
+
+    specify 'A user\'s role can be changed to also be manager' do
+      within user_card do
+        find(:css, '[name="manager"]').set true
+        click_on 'Save'
+      end
+
+      sleep 0.2
+      player.reload
+      expect(player.player? && player.manager? && !player.decorate.site_admin?).to be true
+    end
+
+    specify 'A user\'s role can be changed to only be manager' do
+      within user_card do
+        find(:css, '[name="player"]').set false
+        find(:css, '[name="manager"]').set true
+        click_on 'Save'
+      end
+
+      sleep 0.2
+      player.reload
+      expect(!player.player? && player.manager? && !player.decorate.site_admin?).to be true
+    end
+
+    specify 'A user\'s role can be changed to be all roles' do
+      within user_card do
+        find(:css, '[name="site-admin"]').set true
+        find(:css, '[name="manager"]').set true
+        click_on 'Save'
+      end
+
+      sleep 0.2
+      player.reload
+      expect(player.player? && player.manager? && player.decorate.site_admin?).to be true
     end
   end
 
@@ -70,6 +107,7 @@ RSpec.describe 'Admin Edit Users', :js do
 
           find(:css, '[name="player"]').set false
           find(:css, '[name="manager"]').set false
+          find(:css, '[name="site-admin"]').set false
         end
         sleep 0.1
       end
@@ -78,28 +116,46 @@ RSpec.describe 'Admin Edit Users', :js do
         email = ''
         within :css, '#new-user' do
           find(:css, '[name="player"]').set true
-          find_by_id('new-user-submit').click
           email = find(:css, '[name="email"]').value
+          find_by_id('new-user-submit').click
         end
 
-        sleep 0.2
+        sleep 0.3
 
         user = User.find_by email: email
-        expect(!user.nil? && user.player? && !user.manager?).to be true
+        expect(!user.nil? && user.player? && !user.manager? && !user.decorate.site_admin?).to be true
       end
 
       specify 'I can create a new manager' do
         email = ''
         within :css, '#new-user' do
+          find(:css, '[name="player"]').set false
           find(:css, '[name="manager"]').set true
-          find_by_id('new-user-submit').click
+          find(:css, '[name="site-admin"]').set false
           email = find(:css, '[name="email"]').value
+          find_by_id('new-user-submit').click
         end
 
-        sleep 0.2
+        sleep 0.3
 
         user = User.find_by email: email
-        expect(!user.nil? && !user.player? && user.manager?).to be true
+        expect(!user.nil? && !user.player? && user.manager? && !user.decorate.site_admin?).to be true
+      end
+
+      specify 'I can create a new site admin' do
+        email = ''
+        within :css, '#new-user' do
+          find(:css, '[name="player"]').set false
+          find(:css, '[name="manager"]').set false
+          find(:css, '[name="site-admin"]').set true
+          email = find(:css, '[name="email"]').value
+          find_by_id('new-user-submit').click
+        end
+
+        sleep 0.3
+
+        user = User.find_by email: email
+        expect(!user.nil? && !user.player? && !user.manager? && user.decorate.site_admin?).to be true
       end
     end
 
@@ -114,7 +170,7 @@ RSpec.describe 'Admin Edit Users', :js do
         find_by_id('new-user-submit').click
       end
 
-      sleep 0.2
+      sleep 0.3
       user = User.find_by email: email
       expect(user).to be_nil
     end
