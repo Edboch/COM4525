@@ -78,6 +78,12 @@ async function populateUsers() {
       SERVER.send('update-user', { 'id': user.id, 'name': name, 'email': email });
     });
 
+    card.find('button.remove').on('click',function(){
+      let name = inpName.val();
+      let email = inpEmail.val();
+      SERVER.send('remove-user', { 'id': user.id, 'name': name, 'email': email });
+    })
+
     USER_CARDS.append(card);
     idxCard++;
   }

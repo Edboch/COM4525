@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_20_201921) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_20_201921) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -140,7 +140,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_201921) do
 
   create_table "site_admins", force: :cascade do |t|
     t.bigint "user_id"
-    t.index ["user_id"], name: "index_site_admins_on_user_id"
+    t.index ["user_id"], name: "index_site_admins_on_user_id", unique: true
   end
 
   create_table "teams", force: :cascade do |t|
@@ -175,6 +175,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_201921) do
   add_foreign_key "like_answers", "question_answers"
   add_foreign_key "like_reviews", "landing_users"
   add_foreign_key "like_reviews", "reviews"
+  add_foreign_key "site_admins", "users"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"
 end

@@ -66,6 +66,14 @@ class AdminController < ApplicationController
     user.save
   end
 
+  def remove_user
+    user = User.find_by id: params[:id]
+    return if user.nil?
+
+    user.name = params[:name]
+    user.email = params[:email]
+    user.destroy
+  end
   private
 
   ############
