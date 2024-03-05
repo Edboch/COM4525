@@ -80,3 +80,17 @@ end
 
 ############
 # TODO: Generate page visits
+
+date_start = 3.years.ago
+
+rand(200..300).times do |_i|
+  next_visit_time = rand(date_start..20.minutes.ago)
+  rand(1..20).times do |_j|
+    v_start = next_visit_time
+    v_end = v_start + rand(0..5).minutes + rand(1..59).seconds
+    PageVisit.create visit_start: v_start, visit_end: v_end
+    break if v_end > Time.current
+  end
+end
+
+Rake::Task['page_visits:collate_visits'].invoke
