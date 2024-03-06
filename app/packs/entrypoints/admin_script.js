@@ -7,5 +7,4 @@ window.$ = $;
 
 import '../scripts/util/util.js';
 import '../scripts/util/server.js';
-import '../scripts/metrics.js';
-
+import '../scripts/admin.js';
