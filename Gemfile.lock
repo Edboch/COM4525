@@ -202,6 +202,9 @@ GEM
       activesupport (>= 4.0.1)
       hamlit (>= 1.2.0)
       railties (>= 4.0.1)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     io-console (0.7.2)
@@ -228,6 +231,7 @@ GEM
     minitest (5.21.2)
     msgpack (1.7.2)
     multi_json (1.15.0)
+    multi_xml (0.6.0)
     mutex_m (0.2.0)
     net-imap (0.4.10)
       date
@@ -450,8 +454,10 @@ DEPENDENCIES
   factory_bot_rails
   hamlit
   hamlit-rails
+  httparty
   launchy
   letter_opener
+  nokogiri
   pg (~> 1.1)
   puma (~> 6.0)
   rack (>= 3.0.9.1)
