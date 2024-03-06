@@ -1,8 +1,6 @@
 let BUTTON_VIEWS = {};
 
-let POP_TOTAL;
-let POP_AVGM;
-let POP_AVGW;
+let POP_ELEMS = {};
 
 let USER_CARDS;
 
@@ -18,9 +16,16 @@ async function updatePopularity() {
   const response = await SERVER.fetch('popularity');
   const json = await response.json();
 
-  POP_TOTAL.html(json['total']);
-  POP_AVGM.html(json['avgm']);
-  POP_AVGW.html(json['avgw']);
+  for (const [name, jq] of Object.entries(POP_ELEMS))
+    jq.html(json[name]);
+
+  // POP_ELEMS.total.html(json['total']);
+  // POP_ELEMS.avgw.html(json['avgw']);
+  // POP_ELEMS.avgm.html(json['avgm']);
+  // POP_ELEMS.avgy.html(json['avgy']);
+  // POP_ELEMS.pastw.html(json['pastw']);
+  // POP_ELEMS.pastm.html(json['pastm']);
+  // POP_ELEMS.pasty.html(json['pasty']);
 }
 
 async function populateUsers() {
@@ -108,9 +113,16 @@ function mkfn_selectInfoView(target) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  POP_TOTAL = $('#gnrl-popularity .total .value');
-  POP_AVGM = $('#gnrl-popularity .avgm .value');
-  POP_AVGW = $('#gnrl-popularity .avgw .value');
+  const k_popularity = $('#gnrl-popularity');
+  POP_ELEMS = {
+    'total': k_popularity.find('.total p'),
+    'pastw': k_popularity.find('.pastw .value'),
+    'pastm': k_popularity.find('.pastm .value'),
+    'pasty': k_popularity.find('.pasty .value'),
+    'avgw': k_popularity.find('.avgw .value'),
+    'avgm': k_popularity.find('.avgm .value'),
+    'avgy': k_popularity.find('.avgy .value'),
+  };
 
   USER_CARDS = $('#users .card-list');
 
@@ -147,7 +159,8 @@ document.addEventListener('DOMContentLoaded', function() {
     $(BUTTON_VIEWS[first]).show();
   }
 
-  updatePopularity();
+  // TODO: some sort of reload button
+  // updatePopularity();
   populateUsers();
 });
 

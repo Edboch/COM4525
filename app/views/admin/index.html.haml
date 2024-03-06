@@ -30,21 +30,31 @@
 
             #general
               #gnrl-popularity
-                .ltitle Site Visits
-                %section
-                  .total
-                    .label Total
-                    .value 10000
-                  .avgm
-                    .label Average / Month
-                    .value
-                  .avgw
-                    .label Average / Week
-                    .value
+                %h2.title
+                  %p Site Visits
+                %h3.total
+                  %p= @visit_metrics[:total]
+                .pastw
+                  %span.label Past Week
+                  %span.value= @visit_metrics[:pastw]
+                .pastm
+                  %span.label Past Month
+                  %span.value= @visit_metrics[:pastm]
+                .pasty
+                  %span.label Past Year
+                  %span.value= @visit_metrics[:pasty]
+                .avgw
+                  %span.label Weekly Average
+                  %span.value= @visit_metrics[:avgw]
+                .avgm
+                  %span.label Monthly Average
+                  %span.value= @visit_metrics[:avgm]
+                .avgy
+                  %span.label Yearly Average
+                  %span.value= @visit_metrics[:avgy]
 
-                %section
-                  
-
+            -# TODO: Rather than wait for JS to populate this, we populate it in haml
+            -#       using a partial then place that partial in the template below
             #users
               .card-list
 

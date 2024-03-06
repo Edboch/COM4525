@@ -8,14 +8,15 @@ class AdminController < ApplicationController
   ####################
   # GET
 
-  def index; end
+  def index
+    @visit_metrics = retrieve_popularity_metrics
+  end
 
   ############
   # POST
 
   def retrieve_popularity_metrics
-    response = { total: PageVisit.count, avgm: 0, avgw: 0 }
-    render json: response
+    render json: retrieve_popularity_metrics
   end
 
   def retrieve_users
@@ -68,6 +69,18 @@ class AdminController < ApplicationController
   end
 
   private
+
+  def retrieve_popularity_metrics
+    {
+      total: PageVisit.count,
+      avgw: PageVisitGrouping.where(category: 'avg week').first.count,
+      avgm: PageVisitGrouping.where(category: 'avg month').first.count,
+      avgy: PageVisitGrouping.where(category: 'avg year').first.count,
+      pastw: PageVisitGrouping.where(category: 'past week').first.count,
+      pastm: PageVisitGrouping.where(category: 'past month').first.count,
+      pasty: PageVisitGrouping.where(category: 'past year').first.count
+    }
+  end
 
   ############
   # ACTIONS

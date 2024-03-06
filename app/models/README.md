@@ -10,4 +10,7 @@ The `category` field states what kind of data the field is holding.
 - `past week`: The number of visits (`count`) in the past week
 - `past month`: The number of visits (`count`) in the past month
 - `past year`: The number of visits (`count`) in the past year
+- `avg week`: The average number of visits (`count`) per week
+- `avg month`: The average number of visits (`count`) per month
+- `avg year`: The average number of visits (`count`) per year
 
