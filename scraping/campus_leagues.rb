@@ -31,7 +31,8 @@ class CampusLeaguesScraper
       'GD' => :goal_difference,
       'Pts' => :points
     }
-    @league = League.new(extract_teams_from_league)
+    # TODO: add this back in
+    # @league = League.new(extract_teams_from_league)
   end
 
   def extract_league_url_suffix(url)
@@ -49,9 +50,9 @@ class CampusLeaguesScraper
   end
 
   def extract_teams_from_league
-    league_url = build_url('view')
-    league_html = get_raw_html(league_url)
-    table = league_html.css('table.division-table')
+    url = build_url('view')
+    html = get_raw_html(url)
+    table = html.css('table.division-table')
 
     teams = []
     headers = table.css('tr').first.css('th').map { |header| header.text.strip }
@@ -64,9 +65,39 @@ class CampusLeaguesScraper
   end
 
   def extract_fixtures
-    fixtures_url = build_url('fixtures')
-    fixtures_html = get_raw_html(fixtures_url)
-    puts fixtures_html
+    url = build_url('fixtures')
+    html = get_raw_html(url)
+    puts html
+  end
+
+  def extract_game(row)
+    {
+      team_a: extract_team(row, '.team-a'),
+      team_b: extract_team(row, '.team-b'),
+      score_a: extract_score_from_fixture(row, '.score', :first),
+      score_b: extract_score_from_fixture(row, '.score', :last)
+    }
+  end
+
+  def extract_team_from_fixture(row, selector)
+    row.at_css(selector).text.strip
+  end
+
+  def extract_score_from_fixture(row, selector, position)
+    scores = row.css(selector).map(&:text).map(&:strip)
+    position == :first ? scores.first : scores.last
+  end
+
+  def extract_results
+    url = build_url('results')
+    html = get_raw_html(url)
+    html.css('tr[id]').map { |row| extract_game(row) }
+  end
+
+  def display_results
+    @results.each do |game|
+      puts "#{game[:team_a]} #{game[:score_a]} vs #{game[:score_b]} #{game[:team_b]}"
+    end
   end
 end
 
@@ -112,5 +143,6 @@ url = 'https://sportsheffield.sportpad.net/leagues/view/1497/86'
 # url = 'https://sportsheffield.sportpad.net/leagues/view/1471/86'
 
 cl_scraper = CampusLeaguesScraper.new(url)
+cl_scraper.extract_results
 
-cl_scraper.league.display_table
+# cl_scraper.league.display_table
