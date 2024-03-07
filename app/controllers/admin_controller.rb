@@ -10,26 +10,26 @@ class AdminController < ApplicationController
   # GET
 
   def index
-    @visit_metrics = retrieve_popularity_metrics
-    @earliest = PageVisitGrouping.where(category: 'earliest').first&.period_start
-    @earliest = Time.current - 1.day unless @earliest
+    @visit_metrics = popularity_data
+    @earliest = PageVisitGrouping.where(category: 'earliest').first&.period_start || 1.day.ago
   end
 
   ############
   # POST
 
   def retrieve_popularity_metrics
-    render json: retrieve_popularity_metrics
+    render json: popularity_data
   end
 
   def retrieve_popularity_range
-    if params[:start].nil? || params[:end].nil? || params[:time_zone].nil?
+    if params[:start].nil? || params[:end].nil?
       render body: '', status: :unprocessible_entity
       return
     end
 
-    start_time = get_timezone_time params[:time_zone], params[:start].to_i
-    end_time = get_timezone_time params[:time_zone], params[:end].to_i
+    time_zone = params[:time_zone] || Time.time_zone
+    start_time = get_timezone_time time_zone, params[:start].to_i
+    end_time = get_timezone_time time_zone, params[:end].to_i
 
     total = PageVisitGrouping.where(category: 'day').where(period_start: (start_time..end_time)).pluck(:count).sum
 
@@ -76,7 +76,7 @@ class AdminController < ApplicationController
 
   private
 
-  def retrieve_popularity_metrics
+  def popularity_data
     {
       total: PageVisit.count,
       avgw: PageVisitGrouping.where(category: 'avg week').first&.count,

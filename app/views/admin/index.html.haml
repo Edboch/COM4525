@@ -58,10 +58,10 @@
                 - min_date = @earliest.strftime('%Y-%m-%d')
                 - max_date = Time.current.strftime('%Y-%m-%d')
                 %label(for='start-date') Start
-                %input(type='date' name='start-date'){ :min => min_date, :max => max_date }
+                %input(type='date' name='start-date'){ min: min_date, max: max_date }
 
                 %label(for='end-date') Start
-                %input(type='date' name='end-date'){ :min => min_date, :max => max_date }
+                %input(type='date' name='end-date'){ min: min_date, max: max_date }
 
                 %button.send Send
 

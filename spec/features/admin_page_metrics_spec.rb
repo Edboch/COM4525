@@ -6,42 +6,36 @@ require 'rake'
 Rails.application.load_tasks
 
 RSpec.describe 'Admin View Page Metrics' do
-  let!(:site_admin) do
-    sa = User.create email: 'the@eggman.com', password: 'password', name: 'Ivo Robotnik'
-    SiteAdmin.create user_id: sa.id
-    sa
-  end
-
+  # rubocop:disable RSpec/BeforeAfterAll
   before :all do
     100.times do |_i|
-      v_start = rand(2.years.ago..1.minutes.ago)
-      v_end = rand(v_start..([ 1.minutes.ago, v_start + rand(6).minutes ].min))
+      v_start = rand(2.years.ago..1.minute.ago)
+      v_end = rand(v_start..([1.minute.ago, v_start + rand(6).minutes].min))
       PageVisit.create visit_start: v_start, visit_end: v_end
     end
 
     Rake::Task['page_visits:collate_visits'].invoke
 
     sleep 2
-
-    @sa = User.create email: 'the@eggman.com', password: 'password', name: 'Ivo Robotnik'
-    SiteAdmin.create user_id: @sa.id
   end
 
+  after :all do
+    PageVisitGrouping.destroy_all
+    PageVisit.destroy_all
+  end
+  # rubocop:enable RSpec/BeforeAfterAll
+
   before do
+    sa = User.create email: 'the@eggman.com', password: 'password', name: 'Ivo Robotnik'
+    SiteAdmin.create user_id: sa.id
+
     visit '/'
-    fill_in 'user[email]', with: @sa.email
+    fill_in 'user[email]', with: sa.email
     fill_in 'user[password]', with: 'password'
     click_on 'Log in'
     click_on 'Admin'
 
     click_on 'General Stats'
-  end
-
-  after :all do
-    @sa.destroy
-
-    PageVisitGrouping.destroy_all
-    PageVisit.destroy_all
   end
 
   specify 'The result for the past week is correct' do
@@ -59,12 +53,12 @@ RSpec.describe 'Admin View Page Metrics' do
     expect(find(:css, '#gnrl-popularity .pasty')).to have_content pyear.to_s
   end
 
-  specify '', js: true do
+  specify 'The result from a date range is correct', :js do
     from = 1.year.ago - 3.months
     til = from + 6.months
     total = PageVisitGrouping.where(category: 'day').where(period_start: (from..til)).pluck(:count).sum
 
-    within find('#gnrl-pop-range') do
+    within '#gnrl-pop-range' do
       fill_in 'start-date', with: from
       fill_in 'end-date', with: til
       click_on 'Send'
