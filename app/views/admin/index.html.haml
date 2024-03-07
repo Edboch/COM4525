@@ -12,6 +12,7 @@
     %meta(name='popularity'){ content: metrics_popularity_url }
     %meta(name='get-users'){ content: admin_all_users_url }
     %meta(name='update-user'){ content: admin_update_user_url }
+    %meta(name='pop-date-range'){ content: metrics_popularity_range_url }
 
     %body
       = render 'layouts/nav'
@@ -53,8 +54,23 @@
                   %span.label Yearly Average
                   %span.value= @visit_metrics[:avgy]
 
+              #gnrl-pop-range
+                - min_date = @earliest.strftime('%Y-%m-%d')
+                - max_date = Time.current.strftime('%Y-%m-%d')
+                %label(for='start-date') Start
+                %input(type='date' name='start-date'){ :min => min_date, :max => max_date }
+
+                %label(for='end-date') Start
+                %input(type='date' name='end-date'){ :min => min_date, :max => max_date }
+
+                %button.send Send
+
+                .output
+
             -# TODO: Rather than wait for JS to populate this, we populate it in haml
             -#       using a partial then place that partial in the template below
+            -# TODO: Rather than using pure JS, use Rails JS remote elements to update the users
+            -#       https://git.shefcompsci.org.uk/com4525-2023-24/materials/javascript-in-rails/-/blob/main/README.md
             #users
               .card-list
 

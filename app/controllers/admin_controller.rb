@@ -2,6 +2,7 @@
 
 # Controller for the admin page
 class AdminController < ApplicationController
+  include MetricsHelper
   layout false
   before_action :check_access_rights
 
@@ -10,6 +11,7 @@ class AdminController < ApplicationController
 
   def index
     @visit_metrics = retrieve_popularity_metrics
+    @earliest = PageVisitGrouping.where(category: 'earliest').first.period_start
   end
 
   ############
@@ -19,23 +21,29 @@ class AdminController < ApplicationController
     render json: retrieve_popularity_metrics
   end
 
-  def retrieve_users
-    # Target Query
-    # SELECT users.id, users.email, users.type,
-    #     CASE
-    #       WHEN site_admins.user_id = users.id THEN true
-    #       ELSE false
-    #     END AS is_admin
-    # FROM users
-    # FULL JOIN site_admins ON users.id=site_admins.user_id;
+  def retrieve_popularity_range
+    if params[:start].nil? || params[:end].nil? || params[:time_zone].nil?
+      render body: '', status: :unprocessible_entity
+      return
+    end
 
-    # The idea is that a user will only be assigned to the array of their
-    # highest role
-    # The arrays below are in ascending order
+    start_time = get_timezone_time params[:time_zone], params[:start].to_i
+    end_time = get_timezone_time params[:time_zone], params[:end].to_i
+
+    total = 0
+    PageVisitGrouping.where(category: 'day').where(period_start: (start_time..end_time)).find_each do |pvg|
+      total += pvg.count
+    end
+
+    render json: { total: total }
+  end
+
+  def retrieve_users
     players = []
     managers = []
     site_admins = []
 
+    # TODO: Look into using CanCanCan abilities to resolve this
     User.select(:id, :name, :email).decorate.each do |user|
       if user.player?
         players.append({

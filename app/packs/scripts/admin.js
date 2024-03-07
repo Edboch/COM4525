@@ -1,12 +1,73 @@
 let BUTTON_VIEWS = {};
 
 let POP_ELEMS = {};
+let DATE_RANGES = {};
 
 let USER_CARDS;
 
 let IDX_OPEN_CARD = -1;
 
 const Q_CONTROL_BUTTON = '#control-panel > button';
+
+function setupDateRange() {
+  const popRange = $('#gnrl-pop-range');
+  let start = popRange.find('[name="start-date"]');
+  let end = popRange.find('[name="end-date"]');
+  let btnSave = popRange.find('button.send');
+  let output = popRange.find('.output');
+
+  start.on('change', function() {
+    let strValue = $(this).val();
+    let valDate = Date.parse(strValue);
+    let endDate = Date.parse(end.val());
+
+    end.attr('min', strValue);
+    if (valDate > endDate)
+      end.val(strValue);
+  });
+  end.on('change', function() {
+    let strValue = $(this).val();
+    let valDate = Date.parse(strValue);
+    let startDate = Date.parse(start.val());
+
+    start.attr('max', strValue);
+    if (valDate < startDate)
+      start.val(strValue);
+  });
+
+  btnSave.on('click', async function() {
+    let strStart = start.val();
+    let strEnd = end.val();
+
+    let quit = false;
+    if (strStart === '') {
+      console.error('Start Date is empty');
+      quit = true;
+    }
+    if (strEnd === '') {
+      console.error('End Date is empty');
+      quit = true;
+    }
+
+    if (quit) return;
+
+    let dateStart = Date.parse(strStart);
+    let dateEnd = Date.parse(strEnd);
+    if (dateStart > dateEnd) {
+      console.error('Start Date is later than End Date');
+      return;
+    }
+
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const response = await SERVER.send(
+      'pop-date-range',
+      { 'start': dateStart, 'end': dateEnd, 'time_zone': timeZone }
+    );
+    const json = await response.json();
+
+    output.html(json.total);
+  });
+}
 
 /**
   * Pulls popularity data from the database and uses it
@@ -18,14 +79,6 @@ async function updatePopularity() {
 
   for (const [name, jq] of Object.entries(POP_ELEMS))
     jq.html(json[name]);
-
-  // POP_ELEMS.total.html(json['total']);
-  // POP_ELEMS.avgw.html(json['avgw']);
-  // POP_ELEMS.avgm.html(json['avgm']);
-  // POP_ELEMS.avgy.html(json['avgy']);
-  // POP_ELEMS.pastw.html(json['pastw']);
-  // POP_ELEMS.pastm.html(json['pastm']);
-  // POP_ELEMS.pasty.html(json['pasty']);
 }
 
 async function populateUsers() {
@@ -162,5 +215,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // TODO: some sort of reload button
   // updatePopularity();
   populateUsers();
+  setupDateRange();
 });
 

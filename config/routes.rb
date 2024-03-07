@@ -36,6 +36,7 @@ Rails.application.routes.draw do
 
   scope '/metrics' do
     post '/popularity', to: 'admin#retrieve_popularity_metrics', as: :metrics_popularity
+    post '/range_popularity', to: 'admin#retrieve_popularity_range', as: :metrics_popularity_range
   end
 
   scope '/admin' do
