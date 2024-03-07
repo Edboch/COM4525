@@ -1,7 +1,16 @@
 = form_with(model: [@team, @match], local: true) do |f|
-  .card-body
 
-  .card-footer.d-flex
-    %button.btn.btn-primary{ type: 'submit' }
-      Save
-    = link_to 'Back', back_path, class: 'btn btn-link ms-auto'
+  .field 
+    = f.label :start_time, 'Date and Time of Kick Off'
+    = f.datetime_select :start_time, id: :start_time, start_year: 2020, end_year: 2030
+
+  .field
+    = f.label :location
+    = f.text_field :location, id: :location
+
+  .field
+    = f.label :opposition
+    = f.text_field :opposition, id: :opposition
+
+  .actions
+    = f.submit 'Create Match'
