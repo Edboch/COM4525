@@ -83,7 +83,7 @@ end
 
 date_start = 3.years.ago
 
-rand(200..300).times do |_i|
+rand(1200..1500).times do |_i|
   next_visit_time = rand(date_start..20.minutes.ago)
   rand(1..20).times do |_j|
     v_start = next_visit_time

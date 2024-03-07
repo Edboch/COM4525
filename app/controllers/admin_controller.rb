@@ -11,7 +11,8 @@ class AdminController < ApplicationController
 
   def index
     @visit_metrics = retrieve_popularity_metrics
-    @earliest = PageVisitGrouping.where(category: 'earliest').first.period_start
+    @earliest = PageVisitGrouping.where(category: 'earliest').first&.period_start
+    @earliest = Time.current - 1.day unless @earliest
   end
 
   ############
@@ -30,10 +31,7 @@ class AdminController < ApplicationController
     start_time = get_timezone_time params[:time_zone], params[:start].to_i
     end_time = get_timezone_time params[:time_zone], params[:end].to_i
 
-    total = 0
-    PageVisitGrouping.where(category: 'day').where(period_start: (start_time..end_time)).find_each do |pvg|
-      total += pvg.count
-    end
+    total = PageVisitGrouping.where(category: 'day').where(period_start: (start_time..end_time)).pluck(:count).sum
 
     render json: { total: total }
   end
@@ -81,12 +79,12 @@ class AdminController < ApplicationController
   def retrieve_popularity_metrics
     {
       total: PageVisit.count,
-      avgw: PageVisitGrouping.where(category: 'avg week').first.count,
-      avgm: PageVisitGrouping.where(category: 'avg month').first.count,
-      avgy: PageVisitGrouping.where(category: 'avg year').first.count,
-      pastw: PageVisitGrouping.where(category: 'past week').first.count,
-      pastm: PageVisitGrouping.where(category: 'past month').first.count,
-      pasty: PageVisitGrouping.where(category: 'past year').first.count
+      avgw: PageVisitGrouping.where(category: 'avg week').first&.count,
+      avgm: PageVisitGrouping.where(category: 'avg month').first&.count,
+      avgy: PageVisitGrouping.where(category: 'avg year').first&.count,
+      pastw: PageVisitGrouping.where(category: 'past week').first&.count,
+      pastm: PageVisitGrouping.where(category: 'past month').first&.count,
+      pasty: PageVisitGrouping.where(category: 'past year').first&.count
     }
   end
 
