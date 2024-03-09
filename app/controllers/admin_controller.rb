@@ -8,7 +8,9 @@ class AdminController < ApplicationController
   ####################
   # GET
 
-  def index; end
+  def index
+    @users = user_data
+  end
 
   ############
   # POST
@@ -19,6 +21,23 @@ class AdminController < ApplicationController
   end
 
   def retrieve_users
+    response = user_data
+    render json: response
+  end
+
+  def update_user
+    user = User.find_by id: params[:id]
+    return if user.nil?
+
+    user.name = params[:name]
+    user.email = params[:email]
+    result = user.save
+    render json: { success: result }
+  end
+
+  private
+
+  def user_data
     # Target Query
     # SELECT users.id, users.email, users.type,
     #     CASE
@@ -53,21 +72,8 @@ class AdminController < ApplicationController
                          })
     end
 
-    response = { players: players, managers: managers, site_admins: site_admins }
-    render json: response
+    { players: players, managers: managers, site_admins: site_admins }
   end
-
-  def update_user
-    user = User.find_by id: params[:id]
-    return if user.nil?
-
-    user.name = params[:name]
-    user.email = params[:email]
-    result = user.save
-    render json: { success: result }
-  end
-
-  private
 
   ############
   # ACTIONS

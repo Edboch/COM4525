@@ -44,26 +44,11 @@
 
             #users
               .card-list
+                - @users.each do |category, users|
+                  - users.each do |user|
+                    = render partial: 'admin/user_card', locals: { user: user }
 
 
 %template.user-card
-  .user-card
-    .uc-pill
-      .email
-      .role-list
-        %span
-
-    .uc-enlarge
-      %input(name='name')
-      %input(name='email')
-
-      %input(type='checkbox' name='player')
-      %label(for='player') Player
-      %input(type='checkbox' name='manager')
-      %label(for='manager') Manager
-      %input(type='checkbox' name='site-admin')
-      %label(for='site-admin') Site Admin
-
-      %button.save Save
-      %button.pwreset Reset Password
+  = render partial: 'admin/user_card', locals: { user: { id: 0, name: '', email: '', roles: [] } }
 

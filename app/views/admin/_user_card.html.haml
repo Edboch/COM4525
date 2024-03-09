@@ -1,0 +1,19 @@
+.user-card{ id: "user-card-#{user[:id]}" }
+  .uc-pill
+    .email= user[:email]
+    .role-list
+      %span= user[:roles].join ' '
+
+  .uc-enlarge
+    %input(name='name'){ value: user[:name] }
+    %input(name='email'){ value: user[:email] }
+
+    %input(type='checkbox' name='player'){ checked: user[:roles].include?('player') }
+    %label(for='player') Player
+    %input(type='checkbox' name='manager'){ checked: user[:roles].include?('manager') }
+    %label(for='manager') Manager
+    %input(type='checkbox' name='site-admin'){ checked: user[:roles].include?('site-admin') }
+    %label(for='site-admin') Site Admin
+
+    %button.save Save
+    %button.pwreset Reset Password

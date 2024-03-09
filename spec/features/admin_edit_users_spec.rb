@@ -28,7 +28,7 @@ RSpec.describe 'Admin Edit Users', :js do
   end
 
   specify 'The user cards are being loaded onto the page' do
-    expect(page).to have_css("#user-#{player.id}.user-card", visible: :visible)
+    expect(page).to have_css("#user-card-#{player.id}.user-card", visible: :visible)
   end
 
   specify 'A user\'s name can be changed', :js do

@@ -22,19 +22,14 @@ async function updatePopularity() {
   POP_AVGM.html(json['avgm']);
   POP_AVGW.html(json['avgw']);
 }
-
-async function populateUsers() {
-  const response = await SERVER.fetch('get-users');
-  const json = await response.json();
-
-  let userCard = $('template.user-card').contents()[1];
+ /**
+  * Wires up
+  */
+function wireupUserCards() {
   let idxCard = 0;
-
-  function addCard(user) {
-    let card = $(userCard).clone();
-    card.attr('id', 'user-' + user.id);
-
-    const index = idxCard;
+  USER_CARDS.children().each(function() {
+    let card = $(this);
+    const index = idxCard; // Necessary due to closures
     card.on('click', function(evt) {
       let target = $(evt.target);
       if (IDX_OPEN_CARD == index) {
@@ -53,41 +48,18 @@ async function populateUsers() {
       IDX_OPEN_CARD = index;
     });
 
-    card.find('.email').text(user.email);
-    let inpName = card.find('[name="name"]');
-    inpName.val(user.name);
-    let inpEmail = card.find('[name="email"]');
-    inpEmail.val(user.email);
-
-    let roleList = card.find('.role-list span');
-    user.roles.forEach(function(role, idx) {
-      let tickbox = card.find('input:checkbox[name="' + role + '"]');
-
-      let text = roleList.text();
-      if (idx != 0)
-        text += " | ";
-      roleList.text(text + role);
-
-      if (tickbox) {
-        tickbox.prop('checked', true);
-      }
+    card.find('button.pwreset').on('click', function() {
+      // TODO: Reset password
     });
 
     card.find('button.save').on('click', function() {
-      let name = inpName.val();
-      let email = inpEmail.val();
-      SERVER.send('update-user', { 'id': user.id, 'name': name, 'email': email });
+      let id = card.attr('id').split('-')[2];
+      let name = card.find('[name="name"]').val();
+      let email = card.find('[name="email"]').val();
+      SERVER.send('update-user', { 'id': id, 'name': name, 'email': email });
     });
-
-    USER_CARDS.append(card);
     idxCard++;
-  }
-
-  // Players then managers then site admins
-  // This will be configurable
-  json.players.forEach(addCard);
-  json.managers.forEach(addCard);
-  json.site_admins.forEach(addCard);
+  });
 }
 
 function mkfn_selectInfoView(target) {
@@ -148,6 +120,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   updatePopularity();
-  populateUsers();
+  wireupUserCards();
 });
 
