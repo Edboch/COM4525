@@ -40,10 +40,10 @@ RSpec.describe 'Managing users' do
       create(:user)
     end
 
-    before { 
+    before do
       login_as(user1, scope: :user)
       visit dashboard_path
-     }
+    end
 
     specify 'then i can delete my account' do
       click_on 'My Profile'
