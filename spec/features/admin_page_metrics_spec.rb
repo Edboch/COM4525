@@ -54,8 +54,8 @@ RSpec.describe 'Admin View Page Metrics' do
   end
 
   specify 'The result from a date range is correct', :js do
-    from = 1.year.ago - 3.months
-    til = from + 6.months
+    from = (1.year.ago - 3.months).beginning_of_day
+    til = (from + 6.months).beginning_of_day
     total = PageVisitGrouping.where(category: 'day').where(period_start: (from..til)).pluck(:count).sum
 
     within '#gnrl-pop-range' do
