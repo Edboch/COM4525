@@ -2,12 +2,13 @@
 
 # Controller for Matches
 class MatchesController < ApplicationController
-  before_action :set_team, only: %i[create new show edit]
+  before_action :set_team, only: %i[create new show edit update fixtures]
   before_action :set_match, only: %i[show edit update destroy]
 
   # passed a team_id to display that teams matches
   def fixtures
-    @matches = Match.where(team_id: params[:team_id]).order(:start_time)
+    @matches = Match.where(team_id: @team.id).order(:start_time)
+    @team = Team.find(@team.id)
   end
 
   # GET /matches/1
@@ -37,7 +38,7 @@ class MatchesController < ApplicationController
   # PATCH/PUT /matches/1
   def update
     if @match.update(match_params)
-      redirect_to @match, notice: I18n.t('match.update'), status: :see_other
+      redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.update'), status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
@@ -70,6 +71,6 @@ class MatchesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def match_params
-    params.require(:match).permit(:location, :start_time, :opposition)
+    params.require(:match).permit(:location, :start_time, :opposition, :goals_for, :goals_against)
   end
 end

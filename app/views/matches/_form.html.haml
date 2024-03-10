@@ -11,6 +11,15 @@
   .field
     = f.label :opposition
     = f.text_field :opposition, id: :opposition
+  
+  - if match_in_past?(@match)
+    .field 
+      = f.label :goals_for
+      = f.number_field :goals_for, min: 0, step: 1, value: @match.goals_for || 0
+
+    .field 
+      = f.label :goals_against
+      = f.number_field :goals_against, min: 0, step: 1, value: @match.goals_against || 0
 
   .actions
-    = f.submit 'Create Match'
+    = f.submit 'Submit'
