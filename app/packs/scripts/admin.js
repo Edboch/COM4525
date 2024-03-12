@@ -14,6 +14,10 @@ const GENERATED_PASSWORD_LENGTH = 8;
 
 // TODO Email format validation
 
+/**
+ * Checks the tickboxes of the roles in the passed in parent
+ * Returns a string with a character for each role ticked
+ */
 function getRoles(parent) {
   let roles = '';
   if (parent.find('[name="player"]').prop('checked'))
@@ -26,9 +30,9 @@ function getRoles(parent) {
 }
 
 /**
-  * Pulls popularity data from the database and uses it
-  * to fill the appropriate fields
-  */
+ * Pulls popularity data from the database and uses it
+ * to fill the appropriate fields
+ */
 async function updatePopularity() {
   const response = await SERVER.fetch('popularity');
   const json = await response.json();
@@ -38,10 +42,14 @@ async function updatePopularity() {
   POP_AVGW.html(json['avgw']);
 }
 
+/**
+ * Wires up the functionality of the create new user dialogue bo
+ */
 async function wireUpCreateNewUser() {
   const domNewUser = $('#new-user');
   let domPassword = domNewUser.find('[name="password"]');
 
+  // Generates a random string for the password
   domNewUser.find('#new-user-regen-pw').on('click', function() {
     let generated = '';
     for (let i = 0; i < GENERATED_PASSWORD_LENGTH; i++) {
@@ -65,6 +73,7 @@ async function wireUpCreateNewUser() {
   let domSiteAdmin = domNewUser.find('[name="site-admin"]');
 
   domNewUser.find('#new-user-submit').on('click', async function() {
+    // Checks to see the name, email and password fields are not empty
     if (domName.val() === '') {
       console.error('NEW USER No name provided');
       return;
@@ -78,6 +87,7 @@ async function wireUpCreateNewUser() {
       return;
     }
 
+    // Check to see if any roles have been sent
     let roles = getRoles(domNewUser);
     if (roles === '') {
       console.error('NEW USER No role set');
@@ -98,10 +108,15 @@ async function wireUpCreateNewUser() {
   });
 }
 
+/**
+ * Pulls the users from the server then uses them to populate the user table div
+ * Also wires uup the functionallity in the card
+ */
 async function populateUsers() {
   const response = await SERVER.fetch('get-users');
   const json = await response.json();
 
+  // Deletes all children
   USER_CARDS.empty();
 
   let userCard = $('template.user-card').contents()[1];
@@ -113,6 +128,9 @@ async function populateUsers() {
 
     const index = idxCard;
     card.on('click', function(evt) {
+      // When a closed card is clicked, close an other open card then
+      // open the clicked card
+      // When an open card is clicked close it
       let target = $(evt.target);
       if (IDX_OPEN_CARD == index) {
         if (!(target.is(card) || target.is(card.find('.uc-enlarge'))))
@@ -153,7 +171,7 @@ async function populateUsers() {
     card.find('button.save').on('click', function() {
       let name = inpName.val();
       let email = inpEmail.val();
-      // TODO Are you sure alert if a role change is detected
+      // TODO 'Are you sure' alert if a role change is detected
       // If site admin is changed also ask for password confirmation
       let roles = getRoles(card);
       if (roles === '') {
