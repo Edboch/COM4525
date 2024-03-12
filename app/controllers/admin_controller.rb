@@ -2,7 +2,7 @@
 
 # Controller for the admin page
 class AdminController < ApplicationController
-  layout false
+  layout 'admin'
   before_action :check_access_rights
 
   ####################

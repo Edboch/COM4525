@@ -1,0 +1,19 @@
+!!!
+%html{ lang: 'en-GB' }
+  %head
+    = render 'layouts/tags'
+
+    %title Admin - Pitch Wize
+
+    = stylesheet_pack_tag 'admin_styles', media: 'all'
+    = javascript_pack_tag 'admin_script'
+
+    %meta(name='popularity'){ content: metrics_popularity_url }
+    %meta(name='get-users'){ content: admin_all_users_url }
+    %meta(name='update-user'){ content: admin_update_user_url }
+
+    %body
+      = render 'layouts/nav'
+
+      %main
+        = yield
