@@ -31,6 +31,9 @@ class AdminController < ApplicationController
 
     user.name = params[:name]
     user.email = params[:email]
+
+    # TODO: Remeber to remove/add the site admin role when changing user roles
+
     result = user.save
     render json: { success: result }
   end
@@ -38,41 +41,62 @@ class AdminController < ApplicationController
   private
 
   def user_data
+    # Rather than returning separate arrays of the different types, we'll
+    # do the sorting in the SQL query, which will be configurable by url params
+    # TODO: Implement sorting options
+
     # Target Query
-    # SELECT users.id, users.email, users.type,
-    #     CASE
-    #       WHEN site_admins.user_id = users.id THEN true
-    #       ELSE false
-    #     END AS is_admin
-    # FROM users
-    # FULL JOIN site_admins ON users.id=site_admins.user_id;
+    # SELECT subq.id, subq.name, subq.email, array_agg(subq.role_name order by subq.role_name desc) AS roles
+    # FROM
+    #   ( SELECT users.id, users.name, users.email,
+    #       CASE
+    #         WHEN roles.name='Site Admin' THEN 2
+    #         WHEN roles.name='Manager' THEN 1
+    #         ELSE 0
+    #       END AS role_name
+    #     FROM user_roles
+    #     LEFT OUTER JOIN users ON users.id=user_roles.user_id
+    #     LEFT OUTER JOIN roles ON user_roles.role_id=roles.id
+    #     ORDER BY users.id
+    #   ) AS subq
+    # GROUP BY subq.id, subq.name, subq.email
+    # ORDER BY roles;
+    player = 0
+    manager = 1
+    site_admin = 2
 
-    # The idea is that a user will only be assigned to the array of their
-    # highest role
-    # The arrays below are in ascending order
-    players = []
-    managers = []
-    site_admins = []
+    subq = UserRole.select('users.id', 'users.name', 'users.email')
+                   .select(%(
+                           CASE
+                            WHEN roles.name='Site Admin' THEN #{site_admin}
+                            WHEN roles.name='Manager' THEN #{manager}
+                            ELSE #{player}
+                           END AS role_enum
+                   ))
+                   .left_outer_joins(:user).left_outer_joins(:role)
+                   .order('users.id')
+    query = UserRole.from(subq, :subq)
+                    .select('subq.id', 'subq.name', 'subq.email')
+                    .select('JSON_AGG(subq.role_enum ORDER BY subq.role_enum DESC)::TEXT as roles')
+                    .group('subq.id', 'subq.name', 'subq.email')
+                    .order('roles')
 
-    User.select(:id, :name, :email).decorate.each do |user|
-      if user.player?
-        players.append({
-                         id: user.id, name: user.name, email: user.email, roles: ['player']
-                       })
+    query.all.map do |user|
+      roles = JSON.parse(user.roles).map do |role_enum|
+        case role_enum
+        when site_admin
+          'site-admin'
+        when manager
+          'manager'
+        else
+          'player'
+        end
       end
-      if user.manager?
-        managers.append({
-                          id: user.id, name: user.name, email: user.email, roles: ['manager']
-                        })
-      end
-      next unless user.site_admin?
-
-      site_admins.append({
-                           id: user.id, name: user.name, email: user.email, roles: ['site-admin']
-                         })
+      {
+        id: user.id, name: user.name, email: user.email,
+        roles: roles
+      }
     end
-
-    { players: players, managers: managers, site_admins: site_admins }
   end
 
   ############

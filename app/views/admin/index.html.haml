@@ -44,9 +44,8 @@
 
             #users
               .card-list
-                - @users.each do |category, users|
-                  - users.each do |user|
-                    = render partial: 'admin/user_card', locals: { user: user }
+                - @users.each do |user|
+                  = render partial: 'admin/user_card', locals: { user: user }
 
 
 %template.user-card
