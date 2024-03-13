@@ -3,6 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin Access' do
+  # TODO: Move these to factories
+  let!(:role_player) { Role.find_or_create_by! name: 'Player' }
+  let!(:role_manager) { Role.find_or_create_by! name: 'Manager' }
+
   specify 'A site visitor cannot access the site admin page' do
     visit '/'
     visit '/dashboard/1/site-admin'
@@ -10,7 +14,8 @@ RSpec.describe 'Admin Access' do
   end
 
   specify 'A player cannot access the site admin page' do
-    player = Player.create email: 'player@1.com', password: 'password', name: 'Striking Name'
+    player = User.create email: 'player@1.com', password: 'password', name: 'Striking Name'
+    UserRole.create user_id: player.id, role_id: role_player.id
 
     visit '/'
     fill_in 'user[email]', with: player.email
@@ -21,7 +26,8 @@ RSpec.describe 'Admin Access' do
   end
 
   specify 'A manager cannot access the site admin page' do
-    manager = Manager.create email: 'da@manager.com', password: 'password', name: 'Striking Name (Retired)'
+    manager = User.create email: 'da@manager.com', password: 'password', name: 'Striking Name (Retired)'
+    UserRole.create user_id: manager.id, role_id: role_manager.id
 
     visit '/'
     fill_in 'user[email]', with: manager.email

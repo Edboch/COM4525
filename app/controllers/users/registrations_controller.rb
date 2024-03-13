@@ -3,6 +3,8 @@
 module Users
   # Controller for handling registrations with devise in the application
   class RegistrationsController < Devise::RegistrationsController
+    include AuthenticationHelper
+
     before_action :configure_sign_up_params, only: [:create]
     before_action :configure_account_update_params, only: [:update]
 
@@ -17,7 +19,8 @@ module Users
     protected
 
     def configure_sign_up_params
-      devise_parameter_sanitizer.permit(:sign_up, keys: %i[email password password_confirmation type])
+      devise_parameter_sanitizer.permit(:sign_up,
+                                        keys: [:email, :password, :password_confirmation, :name, { role_ids: [] }])
     end
 
     def configure_account_update_params

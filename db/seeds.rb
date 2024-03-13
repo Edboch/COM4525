@@ -7,6 +7,8 @@
 #
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
+role_player = Role.find_or_create_by! name: 'Player'
+role_manager = Role.find_or_create_by! name: 'Manager'
 
 User.destroy_all
 SiteAdmin.destroy_all
@@ -14,12 +16,14 @@ SiteAdmin.destroy_all
 ############
 # Known Users
 # So we can log in is a specific role during development
-sa_user = User.create email: 'site@admin.com', password: 'password', name: 'Dominic Admin'
+sa_user = User.create email: 'site-admin@grr.la', password: 'password', name: 'Dominic Admin'
 SiteAdmin.create user_id: sa_user.id
 
-Player.create email: 'reg@player.com', password: 'password', name: 'Player Messi'
+player = User.create email: 'player@grr.la', password: 'password', name: 'Player Messi'
+UserRole.create user_id: player.id, role_id: role_player.id
 
-Manager.create email: 'man@manager.com', password: 'password', name: 'John Manager'
+manager = User.create email: 'manager@grr.la', password: 'password', name: 'John Manager'
+UserRole.create user_id: manager.id, role_id: role_manager.id
 
 #############
 # Generated users
@@ -63,13 +67,14 @@ rand(35..60).times do
   name = "#{firstnames.sample} #{surnames.sample}"
 
   roll = rand 100
+  user = User.create email: email, password: pw, name: name
+
   if roll < 48
-    Player.create(email: email, password: pw, name: name)
+    UserRole.create user_id: user.id, role_id: role_player.id
   elsif roll < 98
-    Manager.create(email: email, password: pw, name: name)
+    UserRole.create user_id: user.id, role_id: role_manager.id
   else
-    sa = User.create(email: email, password: pw, name: name)
-    SiteAdmin.create user_id: sa.id
+    SiteAdmin.create user_id: user.id
   end
 end
 

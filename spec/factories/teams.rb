@@ -11,11 +11,10 @@
 #  updated_at    :datetime         not null
 #  owner_id      :bigint
 #
-class Team < ApplicationRecord
-  validates :location_name, presence: true
-  validates :name, presence: true
-  validates :owner_id, presence: true
-
-  has_many :user_teams, dependent: :destroy
-  has_many :users, through: :user_teams
+FactoryBot.define do
+  factory :team do
+    name { 'TeamName' }
+    location_name { 'TeamCity' }
+    owner_id { 1 } # matches the manager factorybot in /factories/user.rb
+  end
 end

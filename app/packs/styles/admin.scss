@@ -1,5 +1,5 @@
 main {
-  height: 90vh;
+  height: 85vh;
 
   .container-fluid {
     height: 100%;
@@ -37,7 +37,7 @@ main {
   overflow-y: scroll;
 
   & > * {
-    padding: 1em 0;
+    padding-top: 1em;
   }
 }
 
@@ -46,14 +46,6 @@ main {
 // ##################################
 
 #gnrl-popularity {
-  // display: grid;
-  // grid-template-columns: 40% auto auto auto;
-  // grid-template-rows: 2em 3em;
-  // grid-template-areas:
-  //   "title lttl lavgm lavgw"
-  //   "title total avgm avgw";
-  // gap: 0.4em 0.4em;
-
   display: flex;
   flex-direction: row;
   gap: 4em;
@@ -119,4 +111,3 @@ main {
     justify-content: center;
   }
 }
-

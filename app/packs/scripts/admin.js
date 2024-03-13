@@ -10,10 +10,12 @@ let IDX_OPEN_CARD = -1;
 
 const Q_CONTROL_BUTTON = '#control-panel > button';
 
+/**
+  * Pulls popularity data from the database and uses it
+  * to fill the appropriate fields
+  */
 async function updatePopularity() {
   const response = await SERVER.fetch('popularity');
-  // const text = await response.text();
-  // console.log(text);
   const json = await response.json();
 
   POP_TOTAL.html(json['total']);
@@ -34,7 +36,6 @@ async function populateUsers() {
 
     const index = idxCard;
     card.on('click', function(evt) {
-      // console.log(`UID: ${user.id} CIDX: ${index} IOC: ${IDX_OPEN_CARD}`);
       let target = $(evt.target);
       if (IDX_OPEN_CARD == index) {
         if (!(target.is(card) || target.is(card.find('.uc-enlarge'))))

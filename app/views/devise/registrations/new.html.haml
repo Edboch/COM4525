@@ -5,10 +5,10 @@
 
   .form-inputs
     .field
-      = f.label :type
-      %br/
-      = f.select :type, [%w[Player Player], %w[Manager Manager]], {}, { autofocus: true }
+      %label Roles
+      = f.collection_check_boxes :role_ids, Role.all, :id, :name
     = f.input :email, required: true, autofocus: true, input_html: { autocomplete: 'email' }
+    = f.input :name, required: true, autofocus: true, input_html: { autocomplete: 'name' }
     = f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), input_html: { autocomplete: 'new-password' }
     = f.input :password_confirmation, required: true, input_html: { autocomplete: 'new-password' }
 
@@ -16,4 +16,4 @@
   .form-actions
     = f.button :submit, 'Sign up'
 
-= render 'devise/shared/links'
+= link_to 'Log in', root_path

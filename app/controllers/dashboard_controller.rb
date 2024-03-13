@@ -2,11 +2,17 @@
 
 # Controller for managing the dashboard in the application
 class DashboardController < ApplicationController
+  include AuthenticationHelper
   include MetricsHelper
 
+  before_action :check_user_authenticated
   before_action :fill_visitor
 
-  def index; end
+  def index
+    return unless current_user.manager?
+
+    @teams = Team.where(owner_id: current_user.id)
+  end
 
   private
 

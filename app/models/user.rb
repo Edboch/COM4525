@@ -11,7 +11,6 @@
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
-#  type                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
@@ -28,5 +27,17 @@ class User < ApplicationRecord
 
   has_many :user_teams, dependent: :destroy
   has_many :teams, through: :user_teams
+
+  has_many :user_roles, dependent: :destroy
+  has_many :roles, through: :user_roles
+
   has_one :site_admin, dependent: :destroy
+
+  def manager?
+    roles.any? { |role| role.name == 'Manager' }
+  end
+
+  def player?
+    roles.any? { |role| role.name == 'Player' }
+  end
 end
