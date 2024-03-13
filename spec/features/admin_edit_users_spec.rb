@@ -32,7 +32,7 @@ RSpec.describe 'Admin Edit Users', :js do
   end
 
   specify 'A user\'s name can be changed', :js do
-    user_card = find('.user-card')
+    user_card = find("#user-card-#{player.id}.user-card")
     user_card.click
     within user_card do
       find(:css, '[name="name"]').set('Dominic')
@@ -46,7 +46,7 @@ RSpec.describe 'Admin Edit Users', :js do
   specify 'A user\'s email can be changed' do
     email = 'get.me.out.of.here@outlook.com'
 
-    user_card = find('.user-card')
+    user_card = find("#user-card-#{player.id}.user-card")
     user_card.click
     within user_card do
       find(:css, '[name="email"]').set email
