@@ -79,12 +79,12 @@ class AdminController < ApplicationController
   def popularity_data
     {
       total: PageVisit.count,
-      avgw: PageVisitGrouping.where(category: 'avg week').first&.count,
-      avgm: PageVisitGrouping.where(category: 'avg month').first&.count,
-      avgy: PageVisitGrouping.where(category: 'avg year').first&.count,
-      pastw: PageVisitGrouping.where(category: 'past week').first&.count,
-      pastm: PageVisitGrouping.where(category: 'past month').first&.count,
-      pasty: PageVisitGrouping.where(category: 'past year').first&.count
+      avg_week: PageVisitGrouping.where(category: 'avg week').first&.count,
+      avg_month: PageVisitGrouping.where(category: 'avg month').first&.count,
+      avg_year: PageVisitGrouping.where(category: 'avg year').first&.count,
+      past_week: PageVisitGrouping.where(category: 'past week').first&.count,
+      past_month: PageVisitGrouping.where(category: 'past month').first&.count,
+      past_year: PageVisitGrouping.where(category: 'past year').first&.count
     }
   end
 

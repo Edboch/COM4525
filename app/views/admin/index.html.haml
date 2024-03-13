@@ -37,22 +37,25 @@
                   %p= @visit_metrics[:total]
                 .pastw
                   %span.label Past Week
-                  %span.value= @visit_metrics[:pastw]
+                  %span.value= @visit_metrics[:past_week]
                 .pastm
                   %span.label Past Month
-                  %span.value= @visit_metrics[:pastm]
+                  %span.value= @visit_metrics[:past_month]
                 .pasty
                   %span.label Past Year
-                  %span.value= @visit_metrics[:pasty]
+                  %span.value= @visit_metrics[:past_year]
                 .avgw
                   %span.label Weekly Average
-                  %span.value= @visit_metrics[:avgw]
+                  %span.value= @visit_metrics[:avg_week]
                 .avgm
                   %span.label Monthly Average
-                  %span.value= @visit_metrics[:avgm]
+                  %span.value= @visit_metrics[:avg_month]
                 .avgy
                   %span.label Yearly Average
-                  %span.value= @visit_metrics[:avgy]
+                  %span.value= @visit_metrics[:avg_year]
+
+                %button.refr
+                  %span Refresh
 
               #gnrl-pop-range
                 - min_date = @earliest.strftime('%Y-%m-%d')

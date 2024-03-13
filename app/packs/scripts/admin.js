@@ -13,7 +13,7 @@ function setupDateRange() {
   const popRange = $('#gnrl-pop-range');
   let start = popRange.find('[name="start-date"]');
   let end = popRange.find('[name="end-date"]');
-  let btnSave = popRange.find('button.send');
+  let btnSend = popRange.find('button.send');
   let output = popRange.find('.output');
 
   start.on('change', function() {
@@ -35,7 +35,7 @@ function setupDateRange() {
       start.val(strValue);
   });
 
-  btnSave.on('click', async function() {
+  btnSend.on('click', async function() {
     let strStart = start.val();
     let strEnd = end.val();
 
@@ -69,16 +69,20 @@ function setupDateRange() {
   });
 }
 
-/**
-  * Pulls popularity data from the database and uses it
-  * to fill the appropriate fields
-  */
-async function updatePopularity() {
-  const response = await SERVER.fetch('popularity');
-  const json = await response.json();
+async function setupPopularityView() {
+  /**
+    * Pulls popularity data from the database and uses it to fill
+    * the appropriate fields to the refresh button
+    */
+  $('#gnrl-popularity button.refr').on('click', async function() {
+    const response = await SERVER.fetch('popularity');
+    const json = await response.json();
 
-  for (const [name, jq] of Object.entries(POP_ELEMS))
-    jq.html(json[name]);
+    for (const [name, jq] of Object.entries(POP_ELEMS))
+      jq.html(json[name]);
+  });
+
+  setupDateRange();
 }
 
 async function populateUsers() {
@@ -168,13 +172,13 @@ function mkfn_selectInfoView(target) {
 document.addEventListener('DOMContentLoaded', function() {
   const k_popularity = $('#gnrl-popularity');
   POP_ELEMS = {
-    'total': k_popularity.find('.total p'),
-    'pastw': k_popularity.find('.pastw .value'),
-    'pastm': k_popularity.find('.pastm .value'),
-    'pasty': k_popularity.find('.pasty .value'),
-    'avgw': k_popularity.find('.avgw .value'),
-    'avgm': k_popularity.find('.avgm .value'),
-    'avgy': k_popularity.find('.avgy .value'),
+    total: k_popularity.find('.total p'),
+    past_week: k_popularity.find('.pastw .value'),
+    past_month: k_popularity.find('.pastm .value'),
+    past_year: k_popularity.find('.pasty .value'),
+    avg_week: k_popularity.find('.avgw .value'),
+    avg_month: k_popularity.find('.avgm .value'),
+    avg_year: k_popularity.find('.avgy .value'),
   };
 
   USER_CARDS = $('#users .card-list');
@@ -212,9 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $(BUTTON_VIEWS[first]).show();
   }
 
-  // TODO: some sort of reload button
-  // updatePopularity();
+  setupPopularityView();
   populateUsers();
-  setupDateRange();
 });
 

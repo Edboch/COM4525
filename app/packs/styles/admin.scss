@@ -52,14 +52,14 @@ main {
 }
 
 #gnrl-popularity {
-  max-width: 50em;
+  max-width: 60em;
   width: 100%;
 
   display: grid;
   grid-template-rows: 4em 6em;
-  grid-template-columns: 4fr repeat(3, 3fr);
-  grid-template-areas: "title aw am ay"
-                       "total pw pm py";
+  grid-template-columns: 4fr repeat(3, 3fr) 1fr;
+  grid-template-areas: "title aw am ay refr"
+                       "total pw pm py refr";
 
   > div, .title, .total {
     display: flex;
@@ -84,6 +84,8 @@ main {
   .pastw { grid-area: pw; }
   .pastm { grid-area: pm; }
   .pasty { grid-area: py; }
+
+  .refresh { grid-area: refr; }
 }
 
 // ##################################
