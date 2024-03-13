@@ -30,6 +30,8 @@ Rails.application.routes.draw do
 
   get 'player/invites', to: 'players#invites', as: :player_invites
 
+  get 'player/upcoming_matches', to: 'players#upcoming_matches', as: :player_upcoming_matches
+
   get 'dashboard', to: 'dashboard#index', as: :dashboard
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
