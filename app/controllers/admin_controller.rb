@@ -67,6 +67,14 @@ class AdminController < ApplicationController
     render json: { success: result }
   end
 
+  def remove_user
+    user = User.find_by id: params[:id]
+    return if user.nil?
+
+    user.name = params[:name]
+    user.email = params[:email]
+    user.destroy
+  end
   private
 
   ############
