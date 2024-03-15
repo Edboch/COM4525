@@ -8,11 +8,11 @@
     %input(name='name'){ value: user[:name] }
     %input(name='email'){ value: user[:email] }
 
-    %input(type='checkbox' name='player'){ checked: user[:roles].include?('player') }
+    %input(type='checkbox' name='player'){ checked: user[:roles].include?('Player') }
     %label(for='player') Player
-    %input(type='checkbox' name='manager'){ checked: user[:roles].include?('manager') }
+    %input(type='checkbox' name='manager'){ checked: user[:roles].include?('Manager') }
     %label(for='manager') Manager
-    %input(type='checkbox' name='site-admin'){ checked: user[:roles].include?('site-admin') }
+    %input(type='checkbox' name='site-admin'){ checked: user[:roles].include?('Site Admin') }
     %label(for='site-admin') Site Admin
 
     %button.save Save
