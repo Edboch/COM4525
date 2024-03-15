@@ -25,7 +25,8 @@
             -#       Would work by giving the selected class to the appropriate button
             -#       and then the JS will handle the rest
             %button#general General Stats
-            %button#users.selected Users
+            %button#users Users
+            %button#teams.selected Teams
 
 
           %section#info-block
@@ -46,6 +47,23 @@
 
             #users
               .card-list
+
+            #teams
+              .team-list
+                - @teams.each do |team|
+                  .team-card{ id: "team-card-#{team[:id]}" }
+                    .tc-pill
+                      .team-name= team[:name]
+                      .manager-name= team[:manager][:name]
+
+                    .tc-body
+                      .tc-manager
+
+                      - team[:players].each do |player|
+                        .tc-player{ id: "t#{team[:id]}-p#{player[:id]}" }
+                          %span.tcp-name= player[:name]
+
+                          %button.delete Delete
 
 
 %template.user-card

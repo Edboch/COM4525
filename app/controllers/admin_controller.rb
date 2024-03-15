@@ -8,7 +8,10 @@ class AdminController < ApplicationController
   ####################
   # GET
 
-  def index; end
+  def index
+    @teams = user_teams
+    logger.info @teams
+  end
 
   ############
   # POST
@@ -75,7 +78,25 @@ class AdminController < ApplicationController
     user.email = params[:email]
     user.destroy
   end
+
   private
+
+  def user_teams
+    Team.select(:id, :name, :location_name, :owner_id)
+        .includes(:users)
+        .map do |team|
+          manager = User.find_by(id: team.owner_id)
+          players = team.users.pluck(:id, :name)
+                        .map { |u| { id: u[0], name: u[1] } }
+
+          {
+            id: team.id, name: team.name,
+            location: { name: team.location_name },
+            manager: { id: manager&.id, name: manager&.name },
+            players: players
+          }
+        end
+  end
 
   ############
   # ACTIONS
