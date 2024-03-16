@@ -99,6 +99,30 @@ async function populateUsers() {
 function wireupTeamsView() {
   let teams = $('.teams-list');
   UTIL.wireupPillFoldout(teams, '.team-card', '.tc-body');
+
+  const tmpl_entry = $($('template.search-entry').contents()[1]);
+  const createManagerEntry = function(jq_searchBox, manager) {
+    let entry = tmpl_entry.clone();
+    entry.html(`${manager.name} ${manager.email}`);
+
+    entry.on('click', function() {
+      const teamCard = jq_searchBox.parents('.team-card');
+      const id = teamCard.attr('id');
+      const teamID = id.split('-')[2];
+
+      SERVER.send('update-manager', { manager_id: manager.id, team_id: teamID });
+    });
+
+    return entry;
+  }
+
+  UTIL.createSearchBox(
+    teams.find('input[name="manager-search"]'),
+    (jq) => jq.siblings('.manager-search-dropdown'),
+    ALL_MANAGERS,
+    ['name', 'email'],
+    createManagerEntry
+  );
 }
 
 

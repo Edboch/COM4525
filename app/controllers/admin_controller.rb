@@ -10,7 +10,15 @@ class AdminController < ApplicationController
 
   def index
     @teams = user_teams
-    logger.info @teams
+    raw = User.includes(:roles)
+              .where(roles: { name: 'Manager' })
+              .pluck(:id, :name, :email)
+              .map { |m| { id: m[0], name: m[1], email: m[2] } }
+
+    as_strings = raw.map do |m|
+        "{ id: #{m[:id]}, name: '#{m[:name]}', email: '#{m[:email]}' }"
+      end
+    @js_managers = "[ #{as_strings.join(', ')} ]"
   end
 
   ############
