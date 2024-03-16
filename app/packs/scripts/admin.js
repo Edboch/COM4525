@@ -96,6 +96,12 @@ async function populateUsers() {
   json.site_admins.forEach(addCard);
 }
 
+function wireupTeamsView() {
+  let teams = $('.teams-list');
+  UTIL.wireupPillFoldout(teams, '.team-card', '.tc-body');
+}
+
+
 function mkfn_selectInfoView(target) {
   return function() {
     for (let [id, domView] of Object.entries(BUTTON_VIEWS)) {
@@ -155,5 +161,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   updatePopularity();
   populateUsers();
+  wireupTeamsView();
 });
 

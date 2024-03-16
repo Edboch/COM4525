@@ -49,21 +49,9 @@
               .card-list
 
             #teams
-              .team-list
+              .teams-list
                 - @teams.each do |team|
-                  .team-card{ id: "team-card-#{team[:id]}" }
-                    .tc-pill
-                      .team-name= team[:name]
-                      .manager-name= team[:manager][:name]
-
-                    .tc-body
-                      .tc-manager
-
-                      - team[:players].each do |player|
-                        .tc-player{ id: "t#{team[:id]}-p#{player[:id]}" }
-                          %span.tcp-name= player[:name]
-
-                          %button.delete Delete
+                  = render partial: 'admin/team_card', locals: { team: team }
 
 
 %template.user-card

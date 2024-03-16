@@ -111,3 +111,33 @@ main {
     justify-content: center;
   }
 }
+
+// ##################################
+// Teams
+// ##################################
+
+.team-card {
+  margin: .4em;
+  padding: .2em .3em;
+
+  background-color: white;
+  color: black;
+
+  .tc-body {
+    display: none;
+
+    margin-left: 2vw;
+
+    width: fit-content;
+  }
+
+  &.open {
+    .tc-pill {
+      display: none;
+    }
+
+    .tc-body {
+      display: block;
+    }
+  }
+}

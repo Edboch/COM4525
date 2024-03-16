@@ -1,0 +1,13 @@
+.team-card{ id: "team-card-#{team[:id]}" }
+  .tc-pill
+    %h2.team-name= team[:name]
+    %h4.manager-name= team[:manager][:name]
+
+  .tc-body
+    .tc-manager= team[:manager][:name]
+
+    - team[:players].each do |player|
+      .tc-player{ id: "t#{team[:id]}-p#{player[:id]}" }
+        %span.tcp-name= player[:name]
+
+        %button.delete Delete
