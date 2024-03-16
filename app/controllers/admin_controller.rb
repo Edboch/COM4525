@@ -87,6 +87,18 @@ class AdminController < ApplicationController
     user.destroy
   end
 
+  def update_team_manager
+    return if params[:manager_id].nil? || params[:team_id].nil?
+
+    manager_id = Integer params[:manager_id], exception: false
+    team_id = Integer params[:team_id], exception: false
+    return if manager_id.nil? || team_id.nil?
+
+    team = Team.find_by(id: team_id)
+    team.owner_id = manager_id
+    team.save
+  end
+
   private
 
   def user_teams
