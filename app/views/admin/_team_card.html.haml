@@ -11,8 +11,8 @@
     %div
       %input(name='player-search')
       .search-dropdown
-    - team[:players].each do |player|
-      .tc-player{ id: "t#{team[:id]}-p#{player[:id]}" }
-        %span.tcp-name= player[:name]
 
-        %button.delete Delete
+    .tc-player-list
+      - team[:players].each do |player|
+        - locals = { team_id: team[:id], player: player }
+        = render partial: 'admin/team_player', locals: locals

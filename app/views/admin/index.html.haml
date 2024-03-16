@@ -19,6 +19,8 @@
     %meta(name='update-user'){ content: admin_update_user_url }
     %meta(name='remove-user'){ content: admin_remove_user_url }
     %meta(name='update-manager'){ content: admin_update_team_manager_url }
+    %meta(name='add-player'){ content: admin_add_team_player_url }
+    %meta(name='remove-player'){ content: admin_remove_team_player_url }
 
     %body
       = render 'layouts/nav'
@@ -84,3 +86,6 @@
 %template.search-entry
   %span.search-entry
 
+%template.tc-player
+  - locals = { team_id: '{0}', player: { id: '{1}', name: '' } }
+  = render partial: 'admin/team_player', locals: locals

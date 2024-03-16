@@ -46,6 +46,10 @@ Rails.application.routes.draw do
     post('/update-manager',
          to: 'admin#update_team_manager',
          as: :admin_update_team_manager)
+    post '/add-player', to: 'admin#add_team_player', as: :admin_add_team_player
+    post('/remove-player',
+         to: 'admin#remove_team_player',
+         as: :admin_remove_team_player)
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

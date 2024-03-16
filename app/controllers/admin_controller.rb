@@ -10,26 +10,8 @@ class AdminController < ApplicationController
 
   def index
     @teams = user_teams
-    raw = User.includes(:roles)
-              .where(roles: { name: 'Manager' })
-              .pluck(:id, :name, :email)
-              .map { |m| { id: m[0], name: m[1], email: m[2] } }
-
-    as_strings = raw.map do |m|
-        "{ id: #{m[:id]}, name: '#{m[:name]}', email: '#{m[:email]}' }"
-      end
-    @js_managers = "[ #{as_strings.join(', ')} ]"
-
-
-    raw = User.includes(:roles)
-              .where(roles: { name: 'Player' })
-              .pluck(:id, :name, :email)
-              .map { |p| { id: p[0], name: p[1], email: p[2] } }
-
-    as_strings = raw.map do |p|
-        "{ id: #{p[:id]}, name: '#{p[:name]}', email: '#{p[:email]}' }"
-      end
-    @js_players = "[ #{as_strings.join(', ')} ]"
+    @js_managers = js_user_role 'Manager'
+    @js_players = js_user_role 'Player'
   end
 
   ############
@@ -110,12 +92,31 @@ class AdminController < ApplicationController
     team.save
   end
 
+  def add_team_player
+    return if params[:player_id].nil? || params[:team_id].nil?
+
+    player_id = Integer params[:player_id], exception: false
+    team_id = Integer params[:team_id], exception: false
+    return if player_id.nil? || team_id.nil?
+
+    UserTeam.create team_id: team_id, user_id: player_id
+  end
+
+  def remove_team_player
+    return if params[:player_id].nil? || params[:team_id].nil?
+
+    player_id = Integer params[:player_id], exception: false
+    team_id = Integer params[:team_id], exception: false
+    return if player_id.nil? || team_id.nil?
+
+    UserTeam.destroy_by team_id: team_id, user_id: player_id
+  end
+
   private
 
   def user_teams
     Team.select(:id, :name, :location_name, :owner_id)
-        .includes(:users)
-        .map do |team|
+        .includes(:users).map do |team|
           manager = User.find_by(id: team.owner_id)
           players = team.users.pluck(:id, :name)
                         .map { |u| { id: u[0], name: u[1] } }
@@ -127,6 +128,18 @@ class AdminController < ApplicationController
             players: players
           }
         end
+  end
+
+  def js_user_role(role)
+    raw = User.includes(:roles)
+              .where(roles: { name: role })
+              .pluck(:id, :name, :email)
+              .map { |p| { id: p[0], name: p[1], email: p[2] } }
+
+    as_strings = raw.map do |p|
+      "{ id: #{p[:id]}, name: '#{p[:name]}', email: '#{p[:email]}' }"
+    end
+    "[ #{as_strings.join(', ')} ]"
   end
 
   ############

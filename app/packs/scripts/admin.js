@@ -98,17 +98,41 @@ async function populateUsers() {
 
 function wireupTeamsView() {
   let teams = $('.teams-list');
-  UTIL.wireupPillFoldout(teams, '.team-card', '.tc-body');
+  UTIL.wireupPillFoldout(
+    teams, '.team-card', '.tc-body',
+    function(jq_pill) {
+     jq_pill.find('.search-dropdown').empty();
+    });
+
+  const getTeamID = function(teamCard) {
+    const id = teamCard.attr('id');
+    const teamID = id.split('-')[2];
+    return parseInt(teamID, 10);
+  };
+
+  const mkfn_onPlayerDelete = function(teamID, playerID, playerEntry) {
+    return async function() {
+      let body = { team_id: teamID, player_id: playerID };
+      const response = await SERVER.send('remove-player', body);
+      if (!response.ok) {
+        console.error("Failed to remove player");
+        return;
+      }
+
+      playerEntry.remove();
+    };
+  }
 
   const tmpl_entry = $($('template.search-entry').contents()[1]);
+  const tmpl_player = $($('template.tc-player').contents()[1]);
+
   const createManagerEntry = function(jq_searchBox, manager) {
     let entry = tmpl_entry.clone();
     entry.html(`${manager.name} ${manager.email}`);
 
     entry.on('click', function() {
       const teamCard = jq_searchBox.parents('.team-card');
-      const id = teamCard.attr('id');
-      const teamID = id.split('-')[2];
+      const teamID = getTeamID(teamCard);
 
       SERVER.send('update-manager', { manager_id: manager.id, team_id: teamID });
     });
@@ -117,9 +141,6 @@ function wireupTeamsView() {
   }
 
   const createPlayerEntry = function(jq_searchBox, player) {
-    let entry = tmpl_entry.clone();
-    entry.html(`${player.name} ${player.email}`);
-
     let teamCard = jq_searchBox.parents('.team-card');
     let players = teamCard.find('.tc-player').toArray();
     for (let p of players) {
@@ -129,6 +150,31 @@ function wireupTeamsView() {
       if (parseInt(playerID, 10) == player.id)
         return;
     }
+
+    let entry = tmpl_entry.clone();
+    entry.html(`${player.name} ${player.email}`);
+    entry.on('click', async function() {
+      const teamID = getTeamID(teamCard);
+
+      let body = { player_id: player.id, team_id: teamID };
+      const response = await SERVER.send('add-player', body);
+      if (!response.ok) {
+        console.error("Failed to add player");
+        return;
+      }
+
+      let playerEntry = tmpl_player.clone();
+      let idFormat = playerEntry.attr('id');
+      let id = idFormat.format(teamID, player.id);
+      playerEntry.attr('id', id);
+
+      playerEntry.find('.tcp-name').text(player.name);
+      playerEntry.find('button.delete')
+                 .on('click',
+                     mkfn_onPlayerDelete(teamID, player.id, playerEntry));
+
+      teamCard.find('.tc-player-list').append(playerEntry);
+    });
 
     return entry;
   };
@@ -148,6 +194,17 @@ function wireupTeamsView() {
     ['name', 'email'],
     createPlayerEntry
   );
+
+  teams.find('.tc-player').each(function () {
+    const regex = /t([0-9]+)-p([0-9]+)/;
+    const id = $(this).attr('id');
+    const match = regex.exec(id);
+
+    const playerEntry = $(this);
+    playerEntry.find('button.delete')
+               .on('click',
+                   mkfn_onPlayerDelete(match[1], match[2], playerEntry));
+  });
 }
 
 
