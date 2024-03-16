@@ -4,10 +4,13 @@
     %h4.manager-name= team[:manager][:name]
 
   .tc-body
-    %input(name='manager-search'){ value: team[:manager][:name] }
-    .manager-search-dropdown
+    %div
+      %input(name='manager-search'){ value: team[:manager][:name] }
+      .search-dropdown
 
-    %input(name='player-search')
+    %div
+      %input(name='player-search')
+      .search-dropdown
     - team[:players].each do |player|
       .tc-player{ id: "t#{team[:id]}-p#{player[:id]}" }
         %span.tcp-name= player[:name]

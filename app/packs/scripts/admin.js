@@ -116,12 +116,37 @@ function wireupTeamsView() {
     return entry;
   }
 
+  const createPlayerEntry = function(jq_searchBox, player) {
+    let entry = tmpl_entry.clone();
+    entry.html(`${player.name} ${player.email}`);
+
+    let teamCard = jq_searchBox.parents('.team-card');
+    let players = teamCard.find('.tc-player').toArray();
+    for (let p of players) {
+      let id = $(p).attr('id');
+      const regex = /t[0-9]+-p([0-9]+)/;
+      const playerID = regex.exec(id)[1];
+      if (parseInt(playerID, 10) == player.id)
+        return;
+    }
+
+    return entry;
+  };
+
   UTIL.createSearchBox(
     teams.find('input[name="manager-search"]'),
-    (jq) => jq.siblings('.manager-search-dropdown'),
+    (jq) => jq.siblings('.search-dropdown'),
     ALL_MANAGERS,
     ['name', 'email'],
     createManagerEntry
+  );
+
+  UTIL.createSearchBox(
+    teams.find('input[name="player-search"]'),
+    (jq) => jq.siblings('.search-dropdown'),
+    ALL_PLAYERS,
+    ['name', 'email'],
+    createPlayerEntry
   );
 }
 

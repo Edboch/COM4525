@@ -19,6 +19,17 @@ class AdminController < ApplicationController
         "{ id: #{m[:id]}, name: '#{m[:name]}', email: '#{m[:email]}' }"
       end
     @js_managers = "[ #{as_strings.join(', ')} ]"
+
+
+    raw = User.includes(:roles)
+              .where(roles: { name: 'Player' })
+              .pluck(:id, :name, :email)
+              .map { |p| { id: p[0], name: p[1], email: p[2] } }
+
+    as_strings = raw.map do |p|
+        "{ id: #{p[:id]}, name: '#{p[:name]}', email: '#{p[:email]}' }"
+      end
+    @js_players = "[ #{as_strings.join(', ')} ]"
   end
 
   ############

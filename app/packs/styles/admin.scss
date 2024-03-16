@@ -141,3 +141,16 @@ main {
     }
   }
 }
+
+.tc-body {
+  position: relative;
+}
+
+.search-dropdown {
+  position: absolute;
+
+  background-color: white;
+
+  display: flex;
+  flex-flow: column nowrap;
+}
