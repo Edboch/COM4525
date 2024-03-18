@@ -12,8 +12,8 @@
     %meta(name='popularity'){ content: metrics_popularity_url }
     %meta(name='get-users'){ content: admin_all_users_url }
     %meta(name='update-user'){ content: admin_update_user_url }
+    %meta(name='new-user'){ content: admin_new_user_url }
     %meta(name='remove-user'){ content: admin_remove_user_url }
-    
 
     %body
       = render 'layouts/nav'
@@ -45,6 +45,25 @@
                     .value
 
             #users
+              #new-user
+                #new-user-title New User
+                #new-user-foldout
+                  %label(for='name') Name
+                  %input(name='name')
+                  %label(for='email') Email
+                  %input(name='email' type='email')
+                  %input(name='password' readonly='readonly')
+                  %button#new-user-regen-pw Regenerate
+
+                  %label(for='player') Is Player?
+                  %input(type='checkbox' name='player')
+                  %label(for='manager') Is Manager?
+                  %input(type='checkbox' name='manager')
+                  %label(for='site-admin') Is Site Admin?
+                  %input(type='checkbox' name='site-admin')
+
+                  %button#new-user-submit Submit
+
               .card-list
 
 

@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   scope '/admin' do
     post '/all-users', to: 'admin#retrieve_users', as: :admin_all_users
     post '/update-user', to: 'admin#update_user', as: :admin_update_user
+    post '/new-user', to: 'admin#new_user', as: :admin_new_user
     post '/remove-user', to: 'admin#remove_user', as: :admin_remove_user
   end
 

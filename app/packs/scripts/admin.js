@@ -10,10 +10,29 @@ let IDX_OPEN_CARD = -1;
 
 const Q_CONTROL_BUTTON = '#control-panel > button';
 
+const GENERATED_PASSWORD_LENGTH = 8;
+
+// TODO Email format validation
+
 /**
-  * Pulls popularity data from the database and uses it
-  * to fill the appropriate fields
-  */
+ * Checks the tickboxes of the roles in the passed in parent
+ * Returns a string with a character for each role ticked
+ */
+function getRoles(parent) {
+  let roles = '';
+  if (parent.find('[name="player"]').prop('checked'))
+    roles += 'p';
+  if (parent.find('[name="manager"]').prop('checked'))
+    roles += 'm';
+  if (parent.find('[name="site-admin"]').prop('checked'))
+    roles += 's';
+  return roles;
+}
+
+/**
+ * Pulls popularity data from the database and uses it
+ * to fill the appropriate fields
+ */
 async function updatePopularity() {
   const response = await SERVER.fetch('popularity');
   const json = await response.json();
@@ -23,9 +42,82 @@ async function updatePopularity() {
   POP_AVGW.html(json['avgw']);
 }
 
+/**
+ * Wires up the functionality of the create new user dialogue bo
+ */
+async function wireUpCreateNewUser() {
+  const domNewUser = $('#new-user');
+  let domPassword = domNewUser.find('[name="password"]');
+
+  // Generates a random string for the password
+  domNewUser.find('#new-user-regen-pw').on('click', function() {
+    let generated = '';
+    for (let i = 0; i < GENERATED_PASSWORD_LENGTH; i++) {
+      if (Math.random() < 0.5) {
+        let ascii = 97 + Math.floor(Math.random() * 26);
+        generated += String.fromCharCode(ascii);
+      }
+      else {
+        let number = Math.floor(Math.random() * 10);
+        generated += number.toString();
+      }
+    }
+
+    domPassword.val(generated);
+  });
+
+  let domName = domNewUser.find('[name="name"]');
+  let domEmail = domNewUser.find('[name="email"]');
+  let domPlayer = domNewUser.find('[name="player"]');
+  let domManager = domNewUser.find('[name="manager"]');
+  let domSiteAdmin = domNewUser.find('[name="site-admin"]');
+
+  domNewUser.find('#new-user-submit').on('click', async function() {
+    // Checks to see the name, email and password fields are not empty
+    if (domName.val() === '') {
+      console.error('NEW USER No name provided');
+      return;
+    }
+    if (domEmail.val() === '') {
+      console.error('NEW USER No email provided');
+      return;
+    }
+    if (domPassword.val() === '') {
+      console.error('NEW USER No password provided');
+      return;
+    }
+
+    // Check to see if any roles have been sent
+    let roles = getRoles(domNewUser);
+    if (roles === '') {
+      console.error('NEW USER No role set');
+      return;
+    }
+
+    const response = await SERVER.send('new-user', {
+      'name': domName.val(), 'email': domEmail.val(), 'password': domPassword.val(), 'roles': roles
+    });
+
+    populateUsers();
+    domName.val('');
+    domEmail.val('');
+    domPassword.val('');
+    domPlayer.prop('checked', false);
+    domManager.prop('checked', false);
+    domSiteAdmin.prop('checked', false);
+  });
+}
+
+/**
+ * Pulls the users from the server then uses them to populate the user table div
+ * Also wires uup the functionallity in the card
+ */
 async function populateUsers() {
   const response = await SERVER.fetch('get-users');
   const json = await response.json();
+
+  // Deletes all children
+  USER_CARDS.empty();
 
   let userCard = $('template.user-card').contents()[1];
   let idxCard = 0;
@@ -36,6 +128,9 @@ async function populateUsers() {
 
     const index = idxCard;
     card.on('click', function(evt) {
+      // When a closed card is clicked, close an other open card then
+      // open the clicked card
+      // When an open card is clicked close it
       let target = $(evt.target);
       if (IDX_OPEN_CARD == index) {
         if (!(target.is(card) || target.is(card.find('.uc-enlarge'))))
@@ -76,7 +171,14 @@ async function populateUsers() {
     card.find('button.save').on('click', function() {
       let name = inpName.val();
       let email = inpEmail.val();
-      SERVER.send('update-user', { 'id': user.id, 'name': name, 'email': email });
+      // TODO 'Are you sure' alert if a role change is detected
+      // If site admin is changed also ask for password confirmation
+      let roles = getRoles(card);
+      if (roles === '') {
+        console.error('EDIT USER No role set');
+        return;
+      }
+      SERVER.send('update-user', { 'id': user.id, 'name': name, 'email': email, 'roles': roles });
     });
 
     card.find('button.remove').on('click',function(){
@@ -155,5 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   updatePopularity();
   populateUsers();
+
+  wireUpCreateNewUser();
 });
 
