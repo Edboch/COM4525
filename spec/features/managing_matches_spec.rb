@@ -14,8 +14,8 @@ RSpec.describe 'Managing Matches' do
   before do
     UserRole.create user_id: manager1.id, role_id: role_manager.id
 
-    create(:match, team:, opposition: 'Past Opposition', start_time: 1.day.ago)
-    create(:match, team:, opposition: 'Future Opposition', start_time: 1.day.from_now)
+    create(:match, team: team, opposition: 'Past Opposition', start_time: 1.day.ago)
+    create(:match, team: team, opposition: 'Future Opposition', start_time: 1.day.from_now)
 
     visit '/'
     login_as(manager1, scope: :user)
