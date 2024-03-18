@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_25_210755) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_05_134403) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -97,6 +97,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_25_210755) do
     t.bigint "landing_page_id_from", null: false
     t.bigint "landing_page_id_to", null: false
     t.integer "count", default: 0, null: false
+  end
+
+  create_table "page_visit_groupings", force: :cascade do |t|
+    t.string "category", null: false
+    t.integer "count", default: 0, null: false
+    t.datetime "period_start"
   end
 
   create_table "page_visits", force: :cascade do |t|

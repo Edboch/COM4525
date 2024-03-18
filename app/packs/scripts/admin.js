@@ -1,8 +1,7 @@
 let BUTTON_VIEWS = {};
 
-let POP_TOTAL;
-let POP_AVGM;
-let POP_AVGW;
+let POP_ELEMS = {};
+let DATE_RANGES = {};
 
 let USER_CARDS;
 
@@ -30,16 +29,82 @@ function getRoles(parent) {
 }
 
 /**
- * Pulls popularity data from the database and uses it
- * to fill the appropriate fields
+ * Wires up the functionality of the date range feature
  */
-async function updatePopularity() {
-  const response = await SERVER.fetch('popularity');
-  const json = await response.json();
+function setupDateRange() {
+  const popRange = $('#gnrl-pop-range');
+  let start = popRange.find('[name="start-date"]');
+  let end = popRange.find('[name="end-date"]');
+  let btnSend = popRange.find('button.send');
+  let output = popRange.find('.output');
 
-  POP_TOTAL.html(json['total']);
-  POP_AVGM.html(json['avgm']);
-  POP_AVGW.html(json['avgw']);
+  start.on('change', function() {
+    let strValue = $(this).val();
+    let valDate = Date.parse(strValue);
+    let endDate = Date.parse(end.val());
+
+    end.attr('min', strValue);
+    if (valDate > endDate)
+      end.val(strValue);
+  });
+  end.on('change', function() {
+    let strValue = $(this).val();
+    let valDate = Date.parse(strValue);
+    let startDate = Date.parse(start.val());
+
+    start.attr('max', strValue);
+    if (valDate < startDate)
+      start.val(strValue);
+  });
+
+  btnSend.on('click', async function() {
+    let strStart = start.val();
+    let strEnd = end.val();
+
+    let quit = false;
+    if (strStart === '') {
+      console.error('Start Date is empty');
+      quit = true;
+    }
+    if (strEnd === '') {
+      console.error('End Date is empty');
+      quit = true;
+    }
+
+    if (quit) return;
+
+    let dateStart = Date.parse(strStart);
+    let dateEnd = Date.parse(strEnd);
+    if (dateStart > dateEnd) {
+      console.error('Start Date is later than End Date');
+      return;
+    }
+
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const response = await SERVER.send(
+      'pop-date-range',
+      { 'start': dateStart, 'end': dateEnd, 'time_zone': timeZone }
+    );
+    const json = await response.json();
+
+    output.html(json.total);
+  });
+}
+
+async function setupPopularityView() {
+  /**
+    * Pulls popularity data from the database and uses it to fill
+    * the appropriate fields to the refresh button
+    */
+  $('#gnrl-popularity button.refr').on('click', async function() {
+    const response = await SERVER.fetch('popularity');
+    const json = await response.json();
+
+    for (const [name, jq] of Object.entries(POP_ELEMS))
+      jq.html(json[name]);
+  });
+
+  setupDateRange();
 }
 
 /**
@@ -216,9 +281,16 @@ function mkfn_selectInfoView(target) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  POP_TOTAL = $('#gnrl-popularity .total .value');
-  POP_AVGM = $('#gnrl-popularity .avgm .value');
-  POP_AVGW = $('#gnrl-popularity .avgw .value');
+  const k_popularity = $('#gnrl-popularity');
+  POP_ELEMS = {
+    total: k_popularity.find('.total p'),
+    past_week: k_popularity.find('.pastw .value'),
+    past_month: k_popularity.find('.pastm .value'),
+    past_year: k_popularity.find('.pasty .value'),
+    avg_week: k_popularity.find('.avgw .value'),
+    avg_month: k_popularity.find('.avgm .value'),
+    avg_year: k_popularity.find('.avgy .value'),
+  };
 
   USER_CARDS = $('#users .card-list');
 
@@ -255,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $(BUTTON_VIEWS[first]).show();
   }
 
-  updatePopularity();
+  setupPopularityView();
   populateUsers();
 
   wireUpCreateNewUser();
