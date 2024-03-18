@@ -13,6 +13,7 @@
     %meta(name='get-users'){ content: admin_all_users_url }
     %meta(name='update-user'){ content: admin_update_user_url }
     %meta(name='new-user'){ content: admin_new_user_url }
+    %meta(name='remove-user'){ content: admin_remove_user_url }
 
     %body
       = render 'layouts/nav'
@@ -86,4 +87,6 @@
 
       %button.save Save
       %button.pwreset Reset Password
+      %button.remove Remove Account
+      
 
