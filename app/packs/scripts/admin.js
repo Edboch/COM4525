@@ -1,0 +1,335 @@
+let BUTTON_VIEWS = {};
+
+let POP_ELEMS = {};
+let DATE_RANGES = {};
+
+let USER_CARDS;
+
+let IDX_OPEN_CARD = -1;
+
+const Q_CONTROL_BUTTON = '#control-panel > button';
+
+const GENERATED_PASSWORD_LENGTH = 8;
+
+// TODO Email format validation
+
+/**
+ * Checks the tickboxes of the roles in the passed in parent
+ * Returns a string with a character for each role ticked
+ */
+function getRoles(parent) {
+  let roles = '';
+  if (parent.find('[name="player"]').prop('checked'))
+    roles += 'p';
+  if (parent.find('[name="manager"]').prop('checked'))
+    roles += 'm';
+  if (parent.find('[name="site-admin"]').prop('checked'))
+    roles += 's';
+  return roles;
+}
+
+/**
+ * Wires up the functionality of the date range feature
+ */
+function setupDateRange() {
+  const popRange = $('#gnrl-pop-range');
+  let start = popRange.find('[name="start-date"]');
+  let end = popRange.find('[name="end-date"]');
+  let btnSend = popRange.find('button.send');
+  let output = popRange.find('.output');
+
+  start.on('change', function() {
+    let strValue = $(this).val();
+    let valDate = Date.parse(strValue);
+    let endDate = Date.parse(end.val());
+
+    end.attr('min', strValue);
+    if (valDate > endDate)
+      end.val(strValue);
+  });
+  end.on('change', function() {
+    let strValue = $(this).val();
+    let valDate = Date.parse(strValue);
+    let startDate = Date.parse(start.val());
+
+    start.attr('max', strValue);
+    if (valDate < startDate)
+      start.val(strValue);
+  });
+
+  btnSend.on('click', async function() {
+    let strStart = start.val();
+    let strEnd = end.val();
+
+    let quit = false;
+    if (strStart === '') {
+      console.error('Start Date is empty');
+      quit = true;
+    }
+    if (strEnd === '') {
+      console.error('End Date is empty');
+      quit = true;
+    }
+
+    if (quit) return;
+
+    let dateStart = Date.parse(strStart);
+    let dateEnd = Date.parse(strEnd);
+    if (dateStart > dateEnd) {
+      console.error('Start Date is later than End Date');
+      return;
+    }
+
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const response = await SERVER.send(
+      'pop-date-range',
+      { 'start': dateStart, 'end': dateEnd, 'time_zone': timeZone }
+    );
+    const json = await response.json();
+
+    output.html(json.total);
+  });
+}
+
+async function setupPopularityView() {
+  /**
+    * Pulls popularity data from the database and uses it to fill
+    * the appropriate fields to the refresh button
+    */
+  $('#gnrl-popularity button.refr').on('click', async function() {
+    const response = await SERVER.fetch('popularity');
+    const json = await response.json();
+
+    for (const [name, jq] of Object.entries(POP_ELEMS))
+      jq.html(json[name]);
+  });
+
+  setupDateRange();
+}
+
+/**
+ * Wires up the functionality of the create new user dialogue bo
+ */
+async function wireUpCreateNewUser() {
+  const domNewUser = $('#new-user');
+  let domPassword = domNewUser.find('[name="password"]');
+
+  // Generates a random string for the password
+  domNewUser.find('#new-user-regen-pw').on('click', function() {
+    let generated = '';
+    for (let i = 0; i < GENERATED_PASSWORD_LENGTH; i++) {
+      if (Math.random() < 0.5) {
+        let ascii = 97 + Math.floor(Math.random() * 26);
+        generated += String.fromCharCode(ascii);
+      }
+      else {
+        let number = Math.floor(Math.random() * 10);
+        generated += number.toString();
+      }
+    }
+
+    domPassword.val(generated);
+  });
+
+  let domName = domNewUser.find('[name="name"]');
+  let domEmail = domNewUser.find('[name="email"]');
+  let domPlayer = domNewUser.find('[name="player"]');
+  let domManager = domNewUser.find('[name="manager"]');
+  let domSiteAdmin = domNewUser.find('[name="site-admin"]');
+
+  domNewUser.find('#new-user-submit').on('click', async function() {
+    // Checks to see the name, email and password fields are not empty
+    if (domName.val() === '') {
+      console.error('NEW USER No name provided');
+      return;
+    }
+    if (domEmail.val() === '') {
+      console.error('NEW USER No email provided');
+      return;
+    }
+    if (domPassword.val() === '') {
+      console.error('NEW USER No password provided');
+      return;
+    }
+
+    // Check to see if any roles have been sent
+    let roles = getRoles(domNewUser);
+    if (roles === '') {
+      console.error('NEW USER No role set');
+      return;
+    }
+
+    const response = await SERVER.send('new-user', {
+      'name': domName.val(), 'email': domEmail.val(), 'password': domPassword.val(), 'roles': roles
+    });
+
+    populateUsers();
+    domName.val('');
+    domEmail.val('');
+    domPassword.val('');
+    domPlayer.prop('checked', false);
+    domManager.prop('checked', false);
+    domSiteAdmin.prop('checked', false);
+  });
+}
+
+/**
+ * Pulls the users from the server then uses them to populate the user table div
+ * Also wires uup the functionallity in the card
+ */
+async function populateUsers() {
+  const response = await SERVER.fetch('get-users');
+  const json = await response.json();
+
+  // Deletes all children
+  USER_CARDS.empty();
+
+  let userCard = $('template.user-card').contents()[1];
+  let idxCard = 0;
+
+  function addCard(user) {
+    let card = $(userCard).clone();
+    card.attr('id', 'user-' + user.id);
+
+    const index = idxCard;
+    card.on('click', function(evt) {
+      // When a closed card is clicked, close an other open card then
+      // open the clicked card
+      // When an open card is clicked close it
+      let target = $(evt.target);
+      if (IDX_OPEN_CARD == index) {
+        if (!(target.is(card) || target.is(card.find('.uc-enlarge'))))
+          return;
+
+        card.removeClass('open');
+        IDX_OPEN_CARD = -1;
+        return;
+      }
+
+      if (IDX_OPEN_CARD > -1)
+        USER_CARDS.children().eq(IDX_OPEN_CARD).removeClass('open');
+
+      card.addClass('open');
+      IDX_OPEN_CARD = index;
+    });
+
+    card.find('.email').text(user.email);
+    let inpName = card.find('[name="name"]');
+    inpName.val(user.name);
+    let inpEmail = card.find('[name="email"]');
+    inpEmail.val(user.email);
+
+    let roleList = card.find('.role-list span');
+    user.roles.forEach(function(role, idx) {
+      let tickbox = card.find('input:checkbox[name="' + role + '"]');
+
+      let text = roleList.text();
+      if (idx != 0)
+        text += " | ";
+      roleList.text(text + role);
+
+      if (tickbox) {
+        tickbox.prop('checked', true);
+      }
+    });
+
+    card.find('button.save').on('click', function() {
+      let name = inpName.val();
+      let email = inpEmail.val();
+      // TODO 'Are you sure' alert if a role change is detected
+      // If site admin is changed also ask for password confirmation
+      let roles = getRoles(card);
+      if (roles === '') {
+        console.error('EDIT USER No role set');
+        return;
+      }
+      SERVER.send('update-user', { 'id': user.id, 'name': name, 'email': email, 'roles': roles });
+    });
+
+    card.find('button.remove').on('click',function(){
+      let name = inpName.val();
+      let email = inpEmail.val();
+      SERVER.send('remove-user', { 'id': user.id, 'name': name, 'email': email });
+    })
+
+    USER_CARDS.append(card);
+    idxCard++;
+  }
+
+  // Players then managers then site admins
+  // This will be configurable
+  json.players.forEach(addCard);
+  json.managers.forEach(addCard);
+  json.site_admins.forEach(addCard);
+}
+
+function mkfn_selectInfoView(target) {
+  return function() {
+    for (let [id, domView] of Object.entries(BUTTON_VIEWS)) {
+      let button = $(Q_CONTROL_BUTTON + '#' + id);
+      let view = $(domView);
+      if (id === target) {
+        button.addClass('selected');
+        view.show();
+      }
+      else {
+        button.removeClass('selected');
+        view.hide();
+      }
+    }
+  };
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const k_popularity = $('#gnrl-popularity');
+  POP_ELEMS = {
+    total: k_popularity.find('.total p'),
+    past_week: k_popularity.find('.pastw .value'),
+    past_month: k_popularity.find('.pastm .value'),
+    past_year: k_popularity.find('.pasty .value'),
+    avg_week: k_popularity.find('.avgw .value'),
+    avg_month: k_popularity.find('.avgm .value'),
+    avg_year: k_popularity.find('.avgy .value'),
+  };
+
+  USER_CARDS = $('#users .card-list');
+
+  let buttons = $(Q_CONTROL_BUTTON).toArray();
+  let infoViews = $('#info-block > *').toArray();
+
+  function mkfn_findViewByID(id) {
+    return (view) => $(view).attr('id') === id;
+  }
+
+  let foundSelectedView = false;
+  buttons.forEach(function(btn) {
+    let jqBtn = $(btn);
+    let btnID = jqBtn.attr('id');
+
+    let view = infoViews.find(mkfn_findViewByID(jqBtn.attr('id')));
+    BUTTON_VIEWS[btnID] = view;
+
+    jqBtn.on('click', mkfn_selectInfoView(btnID));
+
+    if (!foundSelectedView && jqBtn.hasClass('selected')) {
+      foundSelectedView = true;
+      $(view).show();
+    }
+    else {
+      jqBtn.removeClass('selected');
+      $(view).hide();
+    }
+  });
+
+  if (!foundSelectedView) {
+    let first = Object.keys(BUTTON_VIEWS)[0];
+    $(Q_CONTROL_BUTTON + '#' + first).addClass('selected');
+    $(BUTTON_VIEWS[first]).show();
+  }
+
+  setupPopularityView();
+  populateUsers();
+
+  wireUpCreateNewUser();
+});
+

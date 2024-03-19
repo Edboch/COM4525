@@ -1,0 +1,132 @@
+main {
+  height: 85vh;
+
+  .container-fluid {
+    height: 100%;
+  }
+}
+
+#admin-panel {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 16em auto;
+  gap: 1em;
+
+  color: white;
+  background-color: rgb(20, 20, 20);
+}
+
+#control-panel {
+  background-color: rgb(102, 102, 102);
+
+  button {
+    margin-top: .6em;
+    width: 100%;
+    border: none;
+    background-color: rgb(60, 60, 60);
+    color: inherit;
+
+    &.selected {
+      background-color: rgb(150, 150, 150);
+      font-size: 1.3em;
+    }
+  }
+}
+
+#info-block {
+  overflow-y: scroll;
+
+  & > * {
+    padding-top: 1em;
+  }
+}
+
+// ##################################
+// General
+// ##################################
+
+#general {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#gnrl-popularity {
+  max-width: 60em;
+  width: 100%;
+
+  display: grid;
+  grid-template-rows: 4em 6em;
+  grid-template-columns: 4fr repeat(3, 3fr) 1fr;
+  grid-template-areas: "title aw am ay refr"
+                       "total pw pm py refr";
+
+  > div, .title, .total {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .title { grid-area: title; }
+  .total { grid-area: total; }
+
+  .title, .total {
+    p {
+      margin: 0;
+    }
+  }
+
+  .avgw { grid-area: aw; }
+  .avgm { grid-area: am; }
+  .avgy { grid-area: ay; }
+
+  .pastw { grid-area: pw; }
+  .pastm { grid-area: pm; }
+  .pasty { grid-area: py; }
+
+  .refresh { grid-area: refr; }
+}
+
+// ##################################
+// Users
+// ##################################
+
+.user-card {
+  margin: 0.4em;
+  background-color: white;
+  color: black;
+  padding: 0.2em .3em;
+
+  .uc-enlarge {
+    display: none;
+  }
+
+  &.open {
+    .uc-pill {
+      display: none;
+    }
+
+    .uc-enlarge {
+      display: block;
+    }
+  }
+}
+
+.uc-pill {
+  display: flex;
+  flex-flow: row nowrap;
+
+  .email {
+    font-size: 1.4em;
+    width: 28%;
+    overflow-x: hidden;
+    margin-right: 1em;
+  }
+
+  .role-list {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+  }
+}

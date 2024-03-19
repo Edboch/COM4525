@@ -23,6 +23,12 @@ RSpec/ExampleLength:
 Metrics/MethodLength:
   Enabled: false
 
+Metrics/AbcSize:
+  Max: 26
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never
+
 Rails/UnknownEnv:
   Environments:
     - production

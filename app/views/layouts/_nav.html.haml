@@ -1,0 +1,19 @@
+%header.navbar.navbar-expand-lg.bd-navbar.sticky-top.bg-body-tertiary
+  %nav.lnd-nav.navbar.navbar-expand-lg.bg-body-tertiary.container-xxl
+    .container-fluid
+      %a.navbar-brand{ href: root_path } PitchWize
+      %button.navbar-toggler{ 'aria-controls' => 'navbarNav', 'aria-expanded' => 'false', 'aria-label' => 'Toggle navigation', 'data-bs-target' => '#navbarNav', 'data-bs-toggle' => 'collapse', :type => 'button' }
+        %span.navbar-toggler-icon
+      #navbarNav.collapse.navbar-collapse
+        %ul.navbar-nav.ms-auto.ps-1.pt-1
+          %li.nav-item
+            %p Nav Item
+
+        - if user_signed_in?
+          - if current_user.decorate.site_admin?
+            %li.nav-item.list-unstyled.ps-1.pt-1
+              = link_to 'Admin', admin_page_path(current_user), class: 'btn btn-outline rounded-pill lnd-button'
+          %li.nav-item.list-unstyled.ps-1.pt-1
+            = link_to 'Logout', destroy_user_session_path, method: :delete, class: 'logout btn btn-outline rounded-pill lnd-button'
+          %li.nav-item.list-unstyled.ps-1.pt-1
+            = link_to 'My Profile', user_profile_path, class: 'btn btn-outline rounded-pill lnd-button'
