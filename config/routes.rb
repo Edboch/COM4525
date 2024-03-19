@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   resources :teams do
     resources :user_teams
+    resources :matches
+    get 'fixtures', to: 'matches#fixtures', as: :fixtures
   end
 
   resources :user_teams do
@@ -28,6 +30,8 @@ Rails.application.routes.draw do
 
   get 'player/invites', to: 'players#invites', as: :player_invites
 
+  get 'player/upcoming_matches', to: 'players#upcoming_matches', as: :player_upcoming_matches
+
   get 'dashboard', to: 'dashboard#index', as: :dashboard
 
   scope '/dashboard' do
@@ -36,11 +40,14 @@ Rails.application.routes.draw do
 
   scope '/metrics' do
     post '/popularity', to: 'admin#retrieve_popularity_metrics', as: :metrics_popularity
+    post '/range_popularity', to: 'admin#retrieve_popularity_range', as: :metrics_popularity_range
   end
 
   scope '/admin' do
     post '/all-users', to: 'admin#retrieve_users', as: :admin_all_users
     post '/update-user', to: 'admin#update_user', as: :admin_update_user
+    post '/new-user', to: 'admin#new_user', as: :admin_new_user
+    post '/remove-user', to: 'admin#remove_user', as: :admin_remove_user
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

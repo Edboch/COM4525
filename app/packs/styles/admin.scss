@@ -45,28 +45,47 @@ main {
 // General
 // ##################################
 
-#gnrl-popularity {
+#general {
   display: flex;
-  flex-direction: row;
-  gap: 4em;
+  flex-direction: column;
+  align-items: flex-start;
+}
 
-  .ltitle {
-    min-width: 4em;
-    font-size: 2.8em;
-  }
+#gnrl-popularity {
+  max-width: 60em;
+  width: 100%;
 
-  section {
+  display: grid;
+  grid-template-rows: 4em 6em;
+  grid-template-columns: 4fr repeat(3, 3fr) 1fr;
+  grid-template-areas: "title aw am ay refr"
+                       "total pw pm py refr";
+
+  > div, .title, .total {
     display: flex;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
-    gap: 1.4em;
-    font-size: 1.2em;
-    text-align: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 
-  .value {
-    font-size: 1.4em;
+  .title { grid-area: title; }
+  .total { grid-area: total; }
+
+  .title, .total {
+    p {
+      margin: 0;
+    }
   }
+
+  .avgw { grid-area: aw; }
+  .avgm { grid-area: am; }
+  .avgy { grid-area: ay; }
+
+  .pastw { grid-area: pw; }
+  .pastm { grid-area: pm; }
+  .pasty { grid-area: py; }
+
+  .refresh { grid-area: refr; }
 }
 
 // ##################################
