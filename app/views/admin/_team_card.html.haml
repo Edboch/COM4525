@@ -1,11 +1,11 @@
-.team-card{ id: "team-card-#{team[:id]}" }
+.team-card{ id: "team-card-#{team.id}" }
   .tc-pill
-    %h2.team-name= team[:name]
-    %h4.manager-name= team[:manager][:name]
+    %h2.team-name= team.name
+    %h4.manager-name= team.manager.name
 
   .tc-body
     %div
-      %input(name='manager-search'){ value: team[:manager][:name] }
+      %input(name='manager-search'){ value: team.manager.name }
       .search-dropdown
 
     %div
@@ -13,6 +13,6 @@
       .search-dropdown
 
     .tc-player-list
-      - team[:players].each do |player|
-        - locals = { team_id: team[:id], player: player }
+      - team.players.each do |player|
+        - locals = { team_id: team.id, player: player }
         = render partial: 'admin/team_player', locals: locals

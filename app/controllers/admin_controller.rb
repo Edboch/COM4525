@@ -2,6 +2,9 @@
 
 # Controller for the admin page
 class AdminController < ApplicationController
+  include FrontendHelper
+  include AdminHelper
+
   layout false
   before_action :check_access_rights
 
@@ -10,6 +13,7 @@ class AdminController < ApplicationController
 
   def index
     @teams = user_teams
+    @template_member = FE_Member.new id: '{1}', name: ''
     @js_managers = js_user_role 'Manager'
     @js_players = js_user_role 'Player'
   end
@@ -80,6 +84,10 @@ class AdminController < ApplicationController
     user.destroy
   end
 
+  # Updates the team manager of the corresponding team
+  #
+  # @param [Integer] team_id    The id of the team we want to change
+  # @param [Integer] manager_id The id of the new manager
   def update_team_manager
     return if params[:manager_id].nil? || params[:team_id].nil?
 
@@ -92,6 +100,10 @@ class AdminController < ApplicationController
     team.save
   end
 
+  # Adds a new player to the corresponding team
+  #
+  # @param [Integer] team_id   The id of the team
+  # @param [Integer] player_id The user id of the player
   def add_team_player
     return if params[:player_id].nil? || params[:team_id].nil?
 
@@ -102,6 +114,10 @@ class AdminController < ApplicationController
     UserTeam.create team_id: team_id, user_id: player_id
   end
 
+  # Removes a player from a team
+  #
+  # @param [Integer] team_id   The id of the team
+  # @param [Integer] player_id The user id of the player to remove
   def remove_team_player
     return if params[:player_id].nil? || params[:team_id].nil?
 
@@ -113,34 +129,6 @@ class AdminController < ApplicationController
   end
 
   private
-
-  def user_teams
-    Team.select(:id, :name, :location_name, :owner_id)
-        .includes(:users).map do |team|
-          manager = User.find_by(id: team.owner_id)
-          players = team.users.pluck(:id, :name)
-                        .map { |u| { id: u[0], name: u[1] } }
-
-          {
-            id: team.id, name: team.name,
-            location: { name: team.location_name },
-            manager: { id: manager&.id, name: manager&.name },
-            players: players
-          }
-        end
-  end
-
-  def js_user_role(role)
-    raw = User.includes(:roles)
-              .where(roles: { name: role })
-              .pluck(:id, :name, :email)
-              .map { |p| { id: p[0], name: p[1], email: p[2] } }
-
-    as_strings = raw.map do |p|
-      "{ id: #{p[:id]}, name: \"#{p[:name]}\", email: \"#{p[:email]}\" }"
-    end
-    "[ #{as_strings.join(', ')} ]"
-  end
 
   ############
   # ACTIONS
