@@ -93,6 +93,26 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_05_134403) do
     t.index ["review_id"], name: "index_like_reviews_on_review_id"
   end
 
+  create_table "managers", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_managers_on_user_id"
+  end
+
+  create_table "matches", force: :cascade do |t|
+    t.string "location", null: false
+    t.string "opposition", null: false
+    t.datetime "start_time", null: false
+    t.string "status", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "goals_for"
+    t.integer "goals_against"
+    t.bigint "team_id", default: 1, null: false
+    t.index ["team_id"], name: "index_matches_on_team_id"
+  end
+
   create_table "page_to_page_step_counts", force: :cascade do |t|
     t.bigint "landing_page_id_from", null: false
     t.bigint "landing_page_id_to", null: false

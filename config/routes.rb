@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   resources :teams do
     resources :user_teams
+    resources :matches
+    get 'fixtures', to: 'matches#fixtures', as: :fixtures
   end
 
   resources :user_teams do
@@ -27,6 +29,8 @@ Rails.application.routes.draw do
   delete 'teams/:team_id/players/:user_id', to: 'user_teams#destroy', as: 'remove_team_player'
 
   get 'player/invites', to: 'players#invites', as: :player_invites
+
+  get 'player/upcoming_matches', to: 'players#upcoming_matches', as: :player_upcoming_matches
 
   get 'dashboard', to: 'dashboard#index', as: :dashboard
 

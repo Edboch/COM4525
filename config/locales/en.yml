@@ -52,6 +52,10 @@ en:
     respond:
       accept: "Invite accepted."
       reject: "Invite rejected."
+  match:
+    create: "Match was successfully created."
+    update: "Match was successfully updated."
+    destroy: "Match was successfully deleted."
 
 
 
