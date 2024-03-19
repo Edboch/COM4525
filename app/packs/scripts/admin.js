@@ -152,6 +152,7 @@ function wireupTeamsView() {
     }
 
     let entry = tmpl_entry.clone();
+    entry.addClass(`res-${player.id}`);
     entry.html(`${player.name} ${player.email}`);
     entry.on('click', async function() {
       const teamID = getTeamID(teamCard);

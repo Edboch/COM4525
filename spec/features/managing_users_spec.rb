@@ -27,9 +27,9 @@ RSpec.describe 'Managing users' do
     before { visit '/' }
 
     specify 'then i can log into my account' do
-      create(:user)
-      fill_in 'Email', with: 'test@email.com'
-      fill_in 'Password', with: 'Password'
+      user = create(:user)
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: 'password'
       click_on 'Log in'
       expect(page).to have_content 'Signed in successfully.'
     end

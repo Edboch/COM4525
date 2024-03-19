@@ -137,7 +137,7 @@ class AdminController < ApplicationController
               .map { |p| { id: p[0], name: p[1], email: p[2] } }
 
     as_strings = raw.map do |p|
-      "{ id: #{p[:id]}, name: '#{p[:name]}', email: '#{p[:email]}' }"
+      "{ id: #{p[:id]}, name: \"#{p[:name]}\", email: \"#{p[:email]}\" }"
     end
     "[ #{as_strings.join(', ')} ]"
   end

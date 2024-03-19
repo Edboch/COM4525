@@ -28,6 +28,8 @@ UserRole.create user_id: manager.id, role_id: role_manager.id
 ##############
 ### Generated users
 
+# TODO: Maybe replace all of this by using Faker?
+
 email_usernames = [
   'test', 'john', 'username', 'what', 'okay', 'naice', 'grimbo',
   'jimothy', 'tominic', 'big.rich', 'whatever', 'expletive',
@@ -58,6 +60,8 @@ surnames = %w[
   Green Repuga
 ]
 
+name_suffixes = ['II', 'III', 'Jr.', 'Sr.', 'DC']
+
 # TODO: Improve this by making use of the insert_all method
 #       would probably be best to do once players and managers have dedicated tables
 rand(35..60).times do
@@ -65,6 +69,7 @@ rand(35..60).times do
   email += "@#{mail_servers.sample}.#{domain_names.sample}"
   pw = passwords.sample
   name = "#{firstnames.sample} #{surnames.sample}"
+  name += " #{name_suffixes.sample}" if rand > 0.8
 
   roll = rand 100
   user = User.create email: email, password: pw, name: name
