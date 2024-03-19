@@ -10,7 +10,7 @@ class PlayersController < ApplicationController
   end
 
   def upcoming_matches
-    teams = current_user.teams.where({user_teams: { accepted: true}})
+    teams = current_user.teams.where({ user_teams: { accepted: true } })
     @matches = Match.where(team: teams)
   end
 end

@@ -2,7 +2,7 @@
 
   .field 
     = f.label :start_time, 'Date and Time of Kick Off'
-    = f.datetime_select :start_time, id: :start_time, start_year: Date.today.year - 2, end_year: Date.today.year + 5
+    = f.datetime_select :start_time, id: :start_time, start_year: Time.zone.today.year - 2, end_year: Time.zone.today.year + 5
 
   .field
     = f.label :location

@@ -45,7 +45,6 @@ RSpec.describe 'Managing Matches' do
     end
 
     # test the future and past differences with editing a match
-
     specify 'then I am able to edit the goals of a past match' do
       within('tr', text: 'Past Opposition') do
         click_on 'Edit'

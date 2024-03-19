@@ -26,12 +26,6 @@ RSpec.describe 'Managing team details' do
       click_on 'Create Team'
       expect(page).to have_content 'Team was successfully created'
     end
-
-    # specify 'Then I cannot make team with no details' do
-    #   click_on 'Create a new team'
-    #   click_on 'Create Team'
-    #   expect(page).to have_content 'Please fill in the blanks'
-    # end
   end
 
   context 'when I have created a team' do
