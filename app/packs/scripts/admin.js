@@ -22,9 +22,15 @@ async function updatePopularity() {
   POP_AVGM.html(json['avgm']);
   POP_AVGW.html(json['avgw']);
 }
- /**
-  * Wires up
-  */
+
+/**
+ * Wires up the functionality of the user cards on the page
+ *
+ * Configures the cards so that they can open and close upon
+ * clicking on them.
+ * Adds functionality to the cards' save button so the data
+ * can be sent to the server.
+ */
 function wireupUserCards() {
   let idxCard = 0;
   USER_CARDS.children().each(function() {
