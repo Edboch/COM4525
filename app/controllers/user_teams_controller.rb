@@ -48,8 +48,8 @@ class UserTeamsController < ApplicationController
 
     if @user_team.save
       redirect_to dashboard_path, notice: I18n.t('userteam.create.success')
-    else
-      render :new, status: :unprocessable_entity
+    # else
+    #   render :new, status: :unprocessable_entity
     end
   end
 
