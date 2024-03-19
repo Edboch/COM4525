@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# Controller for Matches
+# controller for managing creating and editing a team's Matches
+# in the application
 class MatchesController < ApplicationController
   before_action :set_team, only: %i[create new show edit update fixtures]
   before_action :set_match, only: %i[show edit update destroy]
@@ -64,12 +65,11 @@ class MatchesController < ApplicationController
     @team = Team.find(params[:team_id])
   end
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_match
     @match = Match.find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
+  # only allow a list of trusted parameters through.
   def match_params
     params.require(:match).permit(:location, :start_time, :opposition, :goals_for, :goals_against)
   end

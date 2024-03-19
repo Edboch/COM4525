@@ -54,8 +54,6 @@ class UserTeamsController < ApplicationController
   end
 
   def handle_no_user
-    # @user_team = @team.user_teams.build
-    # @user_team.errors.add(:email, 'No user found with this email')
     render :new, status: :unprocessable_entity
   end
 

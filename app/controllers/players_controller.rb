@@ -10,15 +10,7 @@ class PlayersController < ApplicationController
   end
 
   def upcoming_matches
-    user_teams = UserTeam.where(user_id: current_user.id, accepted: true)
-    teams = []
-    matches = []
-    user_teams.each do |user_team|
-      teams.append(Team.find_by(id: user_team.team_id))
-    end
-    teams.each do |team|
-      matches += Match.where(team_id: team.id)
-    end
-    @matches = matches
+    teams = current_user.teams.where({user_teams: { accepted: true}})
+    @matches = Match.where(team: teams)
   end
 end
