@@ -111,3 +111,26 @@ main {
     justify-content: center;
   }
 }
+
+.report-card {
+  margin: 0.4em;
+  background-color: white;
+  color: black;
+  padding: 0.2em .3em;
+}
+.rc-pill {
+  display: flex;
+  flex-flow: row nowrap;
+  .content {
+    font-size: 1.4em;
+    width: 28%;
+    overflow-x: hidden;
+    margin-right: 1em;
+  }
+  .user_id {
+    font-size: 1.4em;
+    width: 28%;
+    overflow-x: hidden;
+    margin-right: 1em;
+  }
+}
