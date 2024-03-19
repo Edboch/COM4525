@@ -86,7 +86,7 @@ class AdminController < ApplicationController
   end
 
   def remove_report
-    user = Report.find_by id: params[:id]
+    report = Report.find_by id: params[:id]
     return if report.nil?
 
     report.user_id = params[:user_id]

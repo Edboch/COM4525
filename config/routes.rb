@@ -43,6 +43,7 @@ Rails.application.routes.draw do
     post '/update-user', to: 'admin#update_user', as: :admin_update_user
     post '/remove-user', to: 'admin#remove_user', as: :admin_remove_user
     post '/all-reports', to: 'admin#retrieve_reports', as: :admin_all_reports
+    post '/remove-report', to: 'admin#remove_report', as: :admin_remove_report
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
