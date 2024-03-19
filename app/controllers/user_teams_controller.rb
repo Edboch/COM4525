@@ -16,7 +16,11 @@ class UserTeamsController < ApplicationController
     user = User.find_by(email: user_team_params[:email])
 
     if user
-      create_user_team(user)
+      if UserTeam.find_by(user_id: user.id, team_id: @team.id)
+        handle_user_exist
+      else
+        create_user_team(user)
+      end
     else
       handle_no_user
     end
@@ -56,6 +60,12 @@ class UserTeamsController < ApplicationController
   def handle_no_user
     @user_team = @team.user_teams.build
     @user_team.errors.add(:email, 'No user found with this email')
+    render :new, status: :unprocessable_entity
+  end
+
+  def handle_user_exist
+    @user_team = @team.user_teams.build
+    @user_team.errors.add(:email, 'User already exists in the team')
     render :new, status: :unprocessable_entity
   end
 
