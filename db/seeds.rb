@@ -12,7 +12,7 @@ role_manager = Role.find_or_create_by! name: 'Manager'
 
 User.destroy_all
 SiteAdmin.destroy_all
-
+Report.destroy_all
 ############
 # Known Users
 # So we can log in is a specific role during development
@@ -24,6 +24,7 @@ UserRole.create user_id: player.id, role_id: role_player.id
 
 manager = User.create email: 'manager@grr.la', password: 'password', name: 'John Manager'
 UserRole.create user_id: manager.id, role_id: role_manager.id
+
 
 #############
 # Generated users
@@ -71,12 +72,14 @@ rand(35..60).times do
 
   if roll < 48
     UserRole.create user_id: user.id, role_id: role_player.id
+    Report.create user_id: user.id, content: 'see if work'
   elsif roll < 98
     UserRole.create user_id: user.id, role_id: role_manager.id
   else
     SiteAdmin.create user_id: user.id
   end
 end
+
 
 ############
 # TODO: Generate page visits

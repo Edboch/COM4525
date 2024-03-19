@@ -13,6 +13,8 @@
     %meta(name='get-users'){ content: admin_all_users_url }
     %meta(name='update-user'){ content: admin_update_user_url }
     %meta(name='remove-user'){ content: admin_remove_user_url }
+    %meta(name='get-reports'){ content: admin_all_reports_url }
+    
     
 
     %body
@@ -26,6 +28,7 @@
             -#       and then the JS will handle the rest
             %button#general General Stats
             %button#users.selected Users
+            %button#reports Reports
 
 
           %section#info-block
@@ -45,6 +48,9 @@
                     .value
 
             #users
+              .card-list
+            
+            #reports
               .card-list
 
 
@@ -69,5 +75,11 @@
       %button.save Save
       %button.pwreset Reset Password
       %button.remove Remove Account
+
+%template.report-card
+  .report-card
+    .content
+    .user_id
+    %button.remove Solved
       
 

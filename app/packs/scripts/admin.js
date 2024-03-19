@@ -5,8 +5,10 @@ let POP_AVGM;
 let POP_AVGW;
 
 let USER_CARDS;
+let REPORT_CARDS
 
 let IDX_OPEN_CARD = -1;
+let IDX_OPEN_REP_CARD = -1;
 
 const Q_CONTROL_BUTTON = '#control-panel > button';
 
@@ -96,6 +98,31 @@ async function populateUsers() {
   json.site_admins.forEach(addCard);
 }
 
+async function populateReports() {
+  const response = await SERVER.fetch('get-reports');
+  const json = await response.json();
+
+  let reportCard = $('template.report-card').contents()[1];
+  let idxCard = 0;
+  function addCard(report) {
+    let card = $(reportCard).clone();
+    card.attr('id', 'report-' + report.id);
+    card.addClass('open');
+    card.find('.content').text(report.content);
+    card.find('.user_id').text(report.user_id);
+    card.find('button.remove').on('click',function(){
+      SERVER.send('remove-report', { 'id': report.id, 'user_id': report.user_id, 'content': report.content });
+    })
+
+    REPORT_CARDS.append(card);
+    idxCard++;
+  }
+
+  // Players then managers then site admins
+  // This will be configurable
+  json.reports.forEach(addCard);
+}
+
 function mkfn_selectInfoView(target) {
   return function() {
     for (let [id, domView] of Object.entries(BUTTON_VIEWS)) {
@@ -119,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
   POP_AVGW = $('#gnrl-popularity .avgw .value');
 
   USER_CARDS = $('#users .card-list');
+  REPORT_CARDS = $('#reports .card-list');
 
   let buttons = $(Q_CONTROL_BUTTON).toArray();
   let infoViews = $('#info-block > *').toArray();
@@ -155,5 +183,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   updatePopularity();
   populateUsers();
+  populateReports();
 });
 

@@ -75,6 +75,24 @@ class AdminController < ApplicationController
     user.email = params[:email]
     user.destroy
   end
+
+  def retrieve_reports
+    reports = []
+    Report.find_each do |report|
+      reports.append({id: report.id, user_id: report.user_id, content: report.content})
+    end
+    response = { reports: reports }
+    render json: response
+  end
+
+  def remove_report
+    user = Report.find_by id: params[:id]
+    return if report.nil?
+
+    report.user_id = params[:user_id]
+    report.content = params[:content]
+    report.destroy
+  end
   private
 
   ############
@@ -87,3 +105,5 @@ class AdminController < ApplicationController
     # redirect_to root_url
   end
 end
+
+
