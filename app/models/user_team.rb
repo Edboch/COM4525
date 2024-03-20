@@ -24,4 +24,8 @@
 class UserTeam < ApplicationRecord
   belongs_to :user
   belongs_to :team
+
+  # As UserTeamRole is a join table, no need for dependent: :destroy
+  has_many :user_team_roles
+  has_many :roles, through: :user_team_roles, source: :team_role
 end

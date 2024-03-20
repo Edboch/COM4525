@@ -28,9 +28,6 @@ class User < ApplicationRecord
   has_many :user_teams, dependent: :destroy
   has_many :teams, through: :user_teams
 
-  has_many :user_roles, dependent: :destroy
-  has_many :roles, through: :user_roles
-
   has_one :site_admin, dependent: :destroy
 
   def manager?
