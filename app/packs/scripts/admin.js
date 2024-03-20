@@ -1,3 +1,5 @@
+const { map } = require("jquery");
+
 let BUTTON_VIEWS = {};
 
 let POP_TOTAL;
@@ -220,6 +222,9 @@ async function wireUpCreateNewTeam() {
   let domTeamName = domNewTeam.find('[name="team_name"]');
   let domLocationName = domNewTeam.find('[name="location_name"]');
   let domManagerEmail = domNewTeam.find('[name="manager_email"]');
+
+  let managers = $('.manager-list');
+
   domNewTeam.find('#new-team-submit').on('click', function() {
     if (domTeamName.val() === '') {
       console.error('NEW TEAM No team name provided');
@@ -236,7 +241,29 @@ async function wireUpCreateNewTeam() {
     SERVER.send('new-team', {
       'team_name': domTeamName.val(), 'location_name': domLocationName.val(), 'manager_email': domManagerEmail.val()
     });
+    
   });
+
+  const tmpl_entry = $($('template.search-entry').contents()[1]);
+
+  const createManagerEntry = function(jq_searchBox, manager) {
+    let entry = tmpl_entry.clone();
+    entry.html(`${manager.email}`);
+
+    entry.on('click', function() {
+      managers.find('input[name="manager_email"]').val(`${manager.email}`);
+    });
+
+    return entry;
+  }
+
+  UTIL.createSearchBox(
+    managers.find('input[name="manager_email"]'),
+    (jq) => jq.siblings('.search-dropdown'),
+    ALL_MANAGERS,
+    ['email'],
+    createManagerEntry
+  );
 }
 
 function mkfn_selectInfoView(target) {
