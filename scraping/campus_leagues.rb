@@ -1,6 +1,7 @@
 require 'httparty'
 require 'nokogiri'
 
+# scraper specific to campus leagues
 class CampusLeaguesScraper
   attr_accessor :league_url, :league
 
@@ -33,6 +34,7 @@ class CampusLeaguesScraper
     }
     # TODO: add this back in
     # @league = League.new(extract_teams_from_league)
+    @results = extract_results
   end
 
   def extract_league_url_suffix(url)
@@ -72,8 +74,8 @@ class CampusLeaguesScraper
 
   def extract_game(row)
     {
-      team_a: extract_team(row, '.team-a'),
-      team_b: extract_team(row, '.team-b'),
+      team_a: extract_team_from_fixture(row, '.team-a'),
+      team_b: extract_team_from_fixture(row, '.team-b'),
       score_a: extract_score_from_fixture(row, '.score', :first),
       score_b: extract_score_from_fixture(row, '.score', :last)
     }
@@ -101,7 +103,7 @@ class CampusLeaguesScraper
   end
 end
 
-# define team and league classes to hold data
+# holds data about a team
 class Team
   attr_accessor :name, :points, :wins, :draws, :losses, :goal_difference, :goals_for, :goals_against
 
@@ -123,6 +125,15 @@ class Team
   end
 end
 
+# holds fixture details
+class Fixture
+  attr_accessor :team_name, :opposition, :start_time, :goals_for, :goals_against
+  
+  def initialize(team_name:, opposition:, start_time:, goals_for: 0, goals_against: 0)
+  end
+end
+
+# holds details about a football league
 class League
   attr_accessor :teams
 
@@ -144,5 +155,6 @@ url = 'https://sportsheffield.sportpad.net/leagues/view/1497/86'
 
 cl_scraper = CampusLeaguesScraper.new(url)
 cl_scraper.extract_results
+cl_scraper.display_results
 
 # cl_scraper.league.display_table
