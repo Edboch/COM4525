@@ -108,7 +108,7 @@ async function setupPopularityView() {
 }
 
 /**
- * Wires up the functionality of the create new user dialogue bo
+ * Wires up the functionality of the create new user dialogue box
  */
 async function wireUpCreateNewUser() {
   const domNewUser = $('#new-user');
@@ -163,7 +163,8 @@ async function wireUpCreateNewUser() {
       'name': domName.val(), 'email': domEmail.val(), 'password': domPassword.val(), 'roles': roles
     });
 
-    populateUsers();
+    // TODO Update the page with the new user
+
     domName.val('');
     domEmail.val('');
     domPassword.val('');
@@ -174,24 +175,18 @@ async function wireUpCreateNewUser() {
 }
 
 /**
- * Pulls the users from the server then uses them to populate the user table div
- * Also wires uup the functionallity in the card
+ * Wires up the functionality of the user cards on the page
+ *
+ * Configures the cards so that they can open and close upon
+ * clicking on them.
+ * Adds functionality to the cards' save button so the data
+ * can be sent to the server.
  */
-async function populateUsers() {
-  const response = await SERVER.fetch('get-users');
-  const json = await response.json();
-
-  // Deletes all children
-  USER_CARDS.empty();
-
-  let userCard = $('template.user-card').contents()[1];
+function wireupUserCards() {
   let idxCard = 0;
-
-  function addCard(user) {
-    let card = $(userCard).clone();
-    card.attr('id', 'user-' + user.id);
-
-    const index = idxCard;
+  USER_CARDS.children().each(function() {
+    let card = $(this);
+    const index = idxCard; // Necessary due to closures
     card.on('click', function(evt) {
       // When a closed card is clicked, close an other open card then
       // open the clicked card
@@ -213,29 +208,17 @@ async function populateUsers() {
       IDX_OPEN_CARD = index;
     });
 
-    card.find('.email').text(user.email);
-    let inpName = card.find('[name="name"]');
-    inpName.val(user.name);
-    let inpEmail = card.find('[name="email"]');
-    inpEmail.val(user.email);
+    let id = card.attr('id').split('-')[2];
+    let inp_name = card.find('[name="name"]');
+    let inp_email = card.find('[name="email"]');
 
-    let roleList = card.find('.role-list span');
-    user.roles.forEach(function(role, idx) {
-      let tickbox = card.find('input:checkbox[name="' + role + '"]');
-
-      let text = roleList.text();
-      if (idx != 0)
-        text += " | ";
-      roleList.text(text + role);
-
-      if (tickbox) {
-        tickbox.prop('checked', true);
-      }
+    card.find('button.pwreset').on('click', function() {
+      // TODO: Reset password
     });
 
     card.find('button.save').on('click', function() {
-      let name = inpName.val();
-      let email = inpEmail.val();
+      let name = inp_name.val();
+      let email = inp_email.val();
       // TODO 'Are you sure' alert if a role change is detected
       // If site admin is changed also ask for password confirmation
       let roles = getRoles(card);
@@ -243,24 +226,17 @@ async function populateUsers() {
         console.error('EDIT USER No role set');
         return;
       }
-      SERVER.send('update-user', { 'id': user.id, 'name': name, 'email': email, 'roles': roles });
+      SERVER.send('update-user', { 'id': id, 'name': name, 'email': email, 'roles': roles });
     });
 
     card.find('button.remove').on('click',function(){
-      let name = inpName.val();
-      let email = inpEmail.val();
-      SERVER.send('remove-user', { 'id': user.id, 'name': name, 'email': email });
+      let name = inp_name.val();
+      let email = inp_email.val();
+      SERVER.send('remove-user', { 'id': id, 'name': name, 'email': email });
     })
 
-    USER_CARDS.append(card);
     idxCard++;
-  }
-
-  // Players then managers then site admins
-  // This will be configurable
-  json.players.forEach(addCard);
-  json.managers.forEach(addCard);
-  json.site_admins.forEach(addCard);
+  });
 }
 
 function mkfn_selectInfoView(target) {
@@ -327,8 +303,8 @@ document.addEventListener('DOMContentLoaded', function() {
     $(BUTTON_VIEWS[first]).show();
   }
 
+  wireupUserCards();
   setupPopularityView();
-  populateUsers();
 
   wireUpCreateNewUser();
 });

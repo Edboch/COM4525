@@ -29,13 +29,13 @@ RSpec.describe 'Admin Edit Users', :js do
 
   context 'when editing existing users' do
     let!(:user_card) do
-      uc = find "#user-#{player.id}.user-card"
+      uc = find "#user-card-#{player.id}"
       uc.click
       uc
     end
 
     specify 'The user cards are being loaded onto the page' do
-      expect(page).to have_css("#user-#{player.id}.user-card", visible: :visible)
+      expect(page).to have_css("#user-card-#{player.id}", visible: :visible)
     end
 
     specify 'A user\'s name can be changed' do
@@ -44,7 +44,7 @@ RSpec.describe 'Admin Edit Users', :js do
         find(:css, 'button.save').click
       end
 
-      sleep 0.2
+      sleep 0.4
       expect(player.reload.name).to eq 'Dominic'
     end
 

@@ -1,125 +1,78 @@
--# Use <template> for automatically hidden HTML that can be cloned and used with JS
-!!!
-%html{ lang: 'en-GB' }
-  %head
-    = render 'layouts/tags'
+#admin-panel
+  %aside#control-panel
+    -# TODO: An option for the admin to select their default view
+    -#       Would work by giving the selected class to the appropriate button
+    -#       and then the JS will handle the rest
+    %button#general General Stats
+    %button#users.selected Users
 
-    %title Admin - Pitch Wize
+  %section#info-block
 
-    = stylesheet_pack_tag 'admin_styles', media: 'all'
-    = javascript_pack_tag 'admin_script'
+    #general
+      #gnrl-popularity
+        %h2.title
+          %p Site Visits
+        %h3.total
+          %p= @visit_metrics[:total]
+        .pastw
+          %span.label Past Week
+          %span.value= @visit_metrics[:past_week]
+        .pastm
+          %span.label Past Month
+          %span.value= @visit_metrics[:past_month]
+        .pasty
+          %span.label Past Year
+          %span.value= @visit_metrics[:past_year]
+        .avgw
+          %span.label Weekly Average
+          %span.value= @visit_metrics[:avg_week]
+        .avgm
+          %span.label Monthly Average
+          %span.value= @visit_metrics[:avg_month]
+        .avgy
+          %span.label Yearly Average
+          %span.value= @visit_metrics[:avg_year]
 
-    %meta(name='popularity'){ content: metrics_popularity_url }
-    %meta(name='pop-date-range'){ content: metrics_popularity_range_url }
+        %button.refr
+          %span Refresh
 
-    %meta(name='get-users'){ content: admin_all_users_url }
-    %meta(name='update-user'){ content: admin_update_user_url }
-    %meta(name='new-user'){ content: admin_new_user_url }
-    %meta(name='remove-user'){ content: admin_remove_user_url }
+      #gnrl-pop-range
+        - min_date = @earliest.strftime('%Y-%m-%d')
+        - max_date = Time.current.strftime('%Y-%m-%d')
+        %label(for='start-date') Start
+        %input(type='date' name='start-date'){ min: min_date, max: max_date }
 
-    %body
-      = render 'layouts/nav'
+        %label(for='end-date') Start
+        %input(type='date' name='end-date'){ min: min_date, max: max_date }
 
-      %main
-        #admin-panel
-          %aside#control-panel
-            -# TODO: An option for the admin to select their default view
-            -#       Would work by giving the selected class to the appropriate button
-            -#       and then the JS will handle the rest
-            %button#general.selected General Stats
-            %button#users Users
+        %button.send Send
 
+        .output
 
-          %section#info-block
+    #users
+      #new-user
+        #new-user-title New User
+        #new-user-foldout
+          %label(for='name') Name
+          %input(name='name')
+          %label(for='email') Email
+          %input(name='email' type='email')
+          %input(name='password' readonly='readonly')
+          %button#new-user-regen-pw Regenerate
 
-            #general
-              #gnrl-popularity
-                %h2.title
-                  %p Site Visits
-                %h3.total
-                  %p= @visit_metrics[:total]
-                .pastw
-                  %span.label Past Week
-                  %span.value= @visit_metrics[:past_week]
-                .pastm
-                  %span.label Past Month
-                  %span.value= @visit_metrics[:past_month]
-                .pasty
-                  %span.label Past Year
-                  %span.value= @visit_metrics[:past_year]
-                .avgw
-                  %span.label Weekly Average
-                  %span.value= @visit_metrics[:avg_week]
-                .avgm
-                  %span.label Monthly Average
-                  %span.value= @visit_metrics[:avg_month]
-                .avgy
-                  %span.label Yearly Average
-                  %span.value= @visit_metrics[:avg_year]
+          %label(for='player') Is Player?
+          %input(type='checkbox' name='player')
+          %label(for='manager') Is Manager?
+          %input(type='checkbox' name='manager')
+          %label(for='site-admin') Is Site Admin?
+          %input(type='checkbox' name='site-admin')
 
-                %button.refr
-                  %span Refresh
+          %button#new-user-submit Submit
 
-              #gnrl-pop-range
-                - min_date = @earliest.strftime('%Y-%m-%d')
-                - max_date = Time.current.strftime('%Y-%m-%d')
-                %label(for='start-date') Start
-                %input(type='date' name='start-date'){ min: min_date, max: max_date }
-
-                %label(for='end-date') Start
-                %input(type='date' name='end-date'){ min: min_date, max: max_date }
-
-                %button.send Send
-
-                .output
-
-            -# TODO: Rather than wait for JS to populate this, we populate it in haml
-            -#       using a partial then place that partial in the template below
-            -# TODO: Rather than using pure JS, use Rails JS remote elements to update the users
-            -#       https://git.shefcompsci.org.uk/com4525-2023-24/materials/javascript-in-rails/-/blob/main/README.md
-            #users
-              #new-user
-                #new-user-title New User
-                #new-user-foldout
-                  %label(for='name') Name
-                  %input(name='name')
-                  %label(for='email') Email
-                  %input(name='email' type='email')
-                  %input(name='password' readonly='readonly')
-                  %button#new-user-regen-pw Regenerate
-
-                  %label(for='player') Is Player?
-                  %input(type='checkbox' name='player')
-                  %label(for='manager') Is Manager?
-                  %input(type='checkbox' name='manager')
-                  %label(for='site-admin') Is Site Admin?
-                  %input(type='checkbox' name='site-admin')
-
-                  %button#new-user-submit Submit
-
-              .card-list
+      .card-list
+        - @users.each do |user|
+          = render partial: 'admin/user_card', locals: { user: user }
 
 
 %template.user-card
-  .user-card
-    .uc-pill
-      .email
-      .role-list
-        %span
-
-    .uc-enlarge
-      %input(name='name')
-      %input(name='email')
-
-      %input(type='checkbox' name='player')
-      %label(for='player') Player
-      %input(type='checkbox' name='manager')
-      %label(for='manager') Manager
-      %input(type='checkbox' name='site-admin')
-      %label(for='site-admin') Site Admin
-
-      %button.save Save
-      %button.pwreset Reset Password
-      %button.remove Remove Account
-      
-
+  = render partial: 'admin/user_card', locals: { user: { id: 0, name: '', email: '', roles: [] } }

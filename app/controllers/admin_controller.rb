@@ -3,13 +3,15 @@
 # Controller for the admin page
 class AdminController < ApplicationController
   include MetricsHelper
-  layout false
+
+  layout 'admin'
   before_action :check_access_rights
 
   ####################
   # GET
 
   def index
+    @users = user_data
     @visit_metrics = popularity_data
     @earliest = PageVisitGrouping.where(category: 'earliest').first&.period_start || 1.day.ago
   end
@@ -37,36 +39,7 @@ class AdminController < ApplicationController
   end
 
   def retrieve_users
-    players = []
-    managers = []
-    site_admins = []
-
-    # TODO: Look into using CanCanCan abilities to resolve this
-    User.select(:id, :name, :email).decorate.each do |user|
-      data = { id: user.id, name: user.name, email: user.email, roles: [] }
-      array_flag = 0
-
-      data[:roles].append('player') if user.player?
-      if user.manager?
-        data[:roles].append 'manager'
-        array_flag = 1
-      end
-      if user.site_admin?
-        data[:roles].append 'site-admin'
-        array_flag = 2
-      end
-
-      case array_flag
-      when 2
-        site_admins.append data
-      when 1
-        managers.append data
-      else
-        players.append data
-      end
-    end
-
-    response = { players: players, managers: managers, site_admins: site_admins }
+    response = user_data
     render json: response
   end
 
@@ -80,8 +53,8 @@ class AdminController < ApplicationController
     user.name = params[:name]
     user.email = params[:email]
     user.update_roles params[:roles]
-    result = user.save
 
+    result = user.save
     render json: { success: result }
   end
 
@@ -96,14 +69,25 @@ class AdminController < ApplicationController
 
   def remove_user
     user = User.find_by id: params[:id]
-    return if user.nil?
-
-    user.name = params[:name]
-    user.email = params[:email]
-    user.destroy
+    user&.destroy
   end
 
   private
+
+  def user_data
+    # Rather than returning separate arrays of the different types, we'll
+    # do the sorting in the SQL query, which will be configurable by url params
+    # TODO: Implement sorting options
+    #       The intended default sorting is intended to be Player > Manager > Admin
+    User.select(:id, :name, :email).includes(:roles)
+        .sort_by { |u| u.roles.pluck(:name).sort.reverse }
+        .map do |user|
+          {
+            id: user.id, name: user.name, email: user.email,
+            roles: user.roles.pluck(:name).sort.reverse
+          }
+        end
+  end
 
   def popularity_data
     {
