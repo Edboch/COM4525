@@ -2,6 +2,7 @@
 
 require 'factory_bot_rails'
 
+UserTeamRole.first.destroy
 Team.destroy_all
 
 User.destroy_all
@@ -13,7 +14,7 @@ SiteAdmin.destroy_all
 sa_user = User.create email: 'site-admin@grr.la', password: 'password', name: 'Dominic Admin'
 SiteAdmin.create user_id: sa_user.id
 
-player = User.create email: 'player@grr.la', password: 'password', name: 'Player Messi'
+User.create email: 'player@grr.la', password: 'password', name: 'Player Messi'
 
 manager = User.create email: 'manager@grr.la', password: 'password', name: 'John Manager'
 
@@ -29,8 +30,8 @@ end
 ##############
 ## Generate Teams
 
-tr_manager = TeamRole.create name: 'Manager', type: :managerial
-tr_player = TeamRole.create name: 'Player'
+tr_manager = FactoryBot.create :team_role, :manager
+tr_player = FactoryBot.create :team_role, :player
 
 num_users = User.count
 num_teams = ((num_users.to_f * 0.8) / rand(8..12)).floor.to_i

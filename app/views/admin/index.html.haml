@@ -1,6 +1,5 @@
 :javascript
-  let ALL_MANAGERS = #{@js_managers};
-  let ALL_PLAYERS = #{@js_players};
+  let ALL_USERS = #{@js_users};
 
 #admin-panel
   %aside#control-panel
@@ -83,7 +82,7 @@
 
 
 %template.user-card
-  = render partial: 'admin/user_card', locals: { user: { id: 0, name: '', email: '', roles: [] } }
+  = render partial: 'admin/user_card', locals: { user: @template_user }
 
 %template.search-entry
   .search-entry

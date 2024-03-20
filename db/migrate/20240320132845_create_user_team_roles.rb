@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateUserTeamRoles < ActiveRecord::Migration[7.1]
   def change
     create_join_table(:user_teams, :team_roles,

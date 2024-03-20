@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: user_team_roles
@@ -12,6 +14,6 @@
 #
 require 'rails_helper'
 
-RSpec.describe UserTeamRole, type: :model do
+RSpec.describe UserTeamRole do
   pending "add some examples to (or delete) #{__FILE__}"
 end

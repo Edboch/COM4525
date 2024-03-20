@@ -333,7 +333,7 @@ function wireupTeamsView() {
   UTIL.createSearchBox(
     teams.find('input[name="manager-search"]'),
     (jq) => jq.siblings('.search-dropdown'),
-    ALL_MANAGERS,
+    ALL_USERS,
     ['name', 'email'],
     createManagerEntry
   );
@@ -341,7 +341,7 @@ function wireupTeamsView() {
   UTIL.createSearchBox(
     teams.find('input[name="player-search"]'),
     (jq) => jq.siblings('.search-dropdown'),
-    ALL_PLAYERS,
+    ALL_USERS,
     ['name', 'email'],
     createPlayerEntry
   );

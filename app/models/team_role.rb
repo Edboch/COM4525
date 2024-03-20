@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: team_roles
@@ -7,9 +9,9 @@
 #  type :integer
 #
 class TeamRole < ApplicationRecord
-  enum :type, [ :managerial, :staff, :regular ]
+  enum :type, %i[managerial staff regular]
 
   # As UserTeamRole is a join table, no need for dependent: :destroy
-  has_many :user_team_roles
+  has_many :user_team_roles, dependent: :destroy
   has_many :user_teams, through: :user_team_roles
 end

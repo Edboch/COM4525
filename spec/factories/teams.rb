@@ -16,7 +16,7 @@ FactoryBot.define do
     location_name { Faker::Address.city }
     name do
       name = Faker::Creature::Animal.name.pluralize.capitalize
-     if rand > 0.3
+      if rand > 0.3
         "#{location_name} #{name}"
       else
         name

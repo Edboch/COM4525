@@ -13,14 +13,17 @@ class AdminController < ApplicationController
   # GET
 
   def index
-    @users = user_data
+    # TODO: Implement sorting defaults, saved in the SiteAdmin table
+    @users = get_fe_users User.all
     @visit_metrics = popularity_data
-    @earliest = PageVisitGrouping.where(category: 'earliest').first&.period_start || 1.day.ago
+    @earliest = PageVisitGrouping.where(category: 'earliest')
+                                 .first&.period_start || 1.day.ago
 
     @teams = user_teams
+    @js_users = @users.to_json
+
+    @template_user = FE_User.new id: 0, name: '', email: '', is_admin: false
     @template_member = FE_Member.new id: '{1}', name: ''
-    @js_managers = js_user_role 'Manager'
-    @js_players = js_user_role 'Player'
   end
 
   ############
@@ -46,7 +49,8 @@ class AdminController < ApplicationController
   end
 
   def retrieve_users
-    response = user_data
+    # TODO: Implement sorting options
+    response = get_fe_users User.all
     render json: response
   end
 
@@ -124,21 +128,6 @@ class AdminController < ApplicationController
   end
 
   private
-
-  def user_data
-    # Rather than returning separate arrays of the different types, we'll
-    # do the sorting in the SQL query, which will be configurable by url params
-    # TODO: Implement sorting options
-    #       The intended default sorting is intended to be Player > Manager > Admin
-    User.select(:id, :name, :email).includes(:roles)
-        .sort_by { |u| u.roles.pluck(:name).sort.reverse }
-        .map do |user|
-          {
-            id: user.id, name: user.name, email: user.email,
-            roles: user.roles.pluck(:name).sort.reverse
-          }
-        end
-  end
 
   ############
   # ACTIONS
