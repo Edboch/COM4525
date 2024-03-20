@@ -96,6 +96,13 @@ async function populateUsers() {
   json.site_admins.forEach(addCard);
 }
 
+/**
+ * Wires up the functionality of the teams view
+ *
+ * Enabling the pills to fold in and out
+ * Wiring up the search bars with a live dropdown feature, as well as
+ * defining the entry generation functions
+ */
 function wireupTeamsView() {
   let teams = $('.teams-list');
   UTIL.wireupPillFoldout(

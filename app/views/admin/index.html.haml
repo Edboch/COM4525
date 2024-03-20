@@ -104,5 +104,5 @@
     -# %span.email
 
 %template.tc-player
-  - locals = { team_id: '{0}', player: { id: '{1}', name: '' } }
+  - locals = { team_id: '{0}', player: @template_member }
   = render partial: 'admin/team_player', locals: locals
