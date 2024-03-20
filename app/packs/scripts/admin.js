@@ -208,6 +208,29 @@ function wireupTeamsView() {
   });
 }
 
+async function wireUpCreateNewTeam() {
+  const domNewTeam = $('#new-team');
+  let domTeamName = domNewTeam.find('[name="team_name"]');
+  let domLocationName = domNewTeam.find('[name="location_name"]');
+  let domManagerEmail = domNewTeam.find('[name="manager_email"]');
+  domNewTeam.find('#new-team-submit').on('click', function() {
+    if (domTeamName.val() === '') {
+      console.error('NEW TEAM No team name provided');
+      return;
+    }
+    if (domLocationName.val() === '') {
+      console.error('NEW TEAM No location name provided');
+      return;
+    }
+    if (domManagerEmail.val() === '') {
+      console.error("NEW TEAM Manager's email not provided");
+      return;
+    }
+    SERVER.send('new-team', {
+      'team_name': domTeamName.val(), 'location_name': domLocationName.val(), 'manager_email': domManagerEmail.val()
+    });
+  });
+}
 
 function mkfn_selectInfoView(target) {
   return function() {
@@ -269,5 +292,6 @@ document.addEventListener('DOMContentLoaded', function() {
   updatePopularity();
   populateUsers();
   wireupTeamsView();
+  wireUpCreateNewTeam();
 });
 

@@ -92,6 +92,14 @@ class AdminController < ApplicationController
     team.save
   end
 
+  def new_team
+    user = User.find_by email: params[:manager_email]
+    return if user.nil?
+
+    team = Team.create location_name: params[:location_name], name: params[:team_name], owner_id: user.id
+    team.save
+  end
+
   def add_team_player
     return if params[:player_id].nil? || params[:team_id].nil?
 
