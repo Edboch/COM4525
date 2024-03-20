@@ -8,4 +8,9 @@ class PlayersController < ApplicationController
     # send the current players invites to the view
     @invites = UserTeam.where(user_id: current_user.id, accepted: false)
   end
+
+  def upcoming_matches
+    teams = current_user.teams.where({ user_teams: { accepted: true } })
+    @matches = Match.where(team: teams)
+  end
 end
