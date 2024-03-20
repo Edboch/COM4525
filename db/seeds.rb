@@ -29,7 +29,7 @@ end
 ##############
 ## Generate Teams
 
-tr_manager = TeamRole.create name: 'Manager'
+tr_manager = TeamRole.create name: 'Manager', type: :managerial
 tr_player = TeamRole.create name: 'Player'
 
 num_users = User.count

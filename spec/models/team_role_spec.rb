@@ -4,6 +4,7 @@
 #
 #  id   :bigint           not null, primary key
 #  name :string           not null
+#  type :integer
 #
 require 'rails_helper'
 

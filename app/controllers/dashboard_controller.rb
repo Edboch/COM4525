@@ -9,9 +9,7 @@ class DashboardController < ApplicationController
   before_action :fill_visitor
 
   def index
-    return unless current_user.manager?
-
-    @teams = Team.where(owner_id: current_user.id)
+    @teams = (current_user.owned_teams + current_user.teams).uniq
   end
 
   private

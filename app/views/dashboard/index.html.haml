@@ -1,15 +1,16 @@
-- if current_user.manager?
-  %h1 Manage Your Team
-  =link_to 'Create a new team', create_team_path
-  - for team in @teams
+%h1 Manage Your Team
+=link_to 'Create a new team', create_team_path
+
+- @teams.each do |team|
+  - roles = team.user_teams.where(user: current_user).roles
+
+  - if roles.where(type: :managerial).count > 0
     %h2= "Team name: #{team.name}"
-    =link_to 'View team', team_path(team)
+    = link_to 'View Team', team_path(team)
 
-
-
-- if current_user.player?
-  %h1 Player
-  = link_to 'View invites', player_invites_path
-  %h1 Upcoming Fixtures
-  = link_to 'View your next matches', player_upcoming_matches_path 
+  - if roles.where(type: :regular).count > 0
+    %h1 Player
+    = link_to 'View invites', player_invites_path
+    %h1 Upcoming Fixtures
+    = link_to 'View your next matches', player_upcoming_matches_path 
 
