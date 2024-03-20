@@ -2,6 +2,8 @@
 
 # Controller for the admin page
 class AdminController < ApplicationController
+  include FrontendHelper
+  include AdminHelper
   include MetricsHelper
 
   layout 'admin'
@@ -14,6 +16,11 @@ class AdminController < ApplicationController
     @users = user_data
     @visit_metrics = popularity_data
     @earliest = PageVisitGrouping.where(category: 'earliest').first&.period_start || 1.day.ago
+
+    @teams = user_teams
+    @template_member = FE_Member.new id: '{1}', name: ''
+    @js_managers = js_user_role 'Manager'
+    @js_players = js_user_role 'Player'
   end
 
   ############
@@ -72,6 +79,50 @@ class AdminController < ApplicationController
     user&.destroy
   end
 
+  # Updates the team manager of the corresponding team
+  #
+  # @param [Integer] team_id    The id of the team we want to change
+  # @param [Integer] manager_id The id of the new manager
+  def update_team_manager
+    return if params[:manager_id].nil? || params[:team_id].nil?
+
+    manager_id = Integer params[:manager_id], exception: false
+    team_id = Integer params[:team_id], exception: false
+    return if manager_id.nil? || team_id.nil?
+
+    team = Team.find_by(id: team_id)
+    team.owner_id = manager_id
+    team.save
+  end
+
+  # Adds a new player to the corresponding team
+  #
+  # @param [Integer] team_id   The id of the team
+  # @param [Integer] player_id The user id of the player
+  def add_team_player
+    return if params[:player_id].nil? || params[:team_id].nil?
+
+    player_id = Integer params[:player_id], exception: false
+    team_id = Integer params[:team_id], exception: false
+    return if player_id.nil? || team_id.nil?
+
+    UserTeam.create team_id: team_id, user_id: player_id
+  end
+
+  # Removes a player from a team
+  #
+  # @param [Integer] team_id   The id of the team
+  # @param [Integer] player_id The user id of the player to remove
+  def remove_team_player
+    return if params[:player_id].nil? || params[:team_id].nil?
+
+    player_id = Integer params[:player_id], exception: false
+    team_id = Integer params[:team_id], exception: false
+    return if player_id.nil? || team_id.nil?
+
+    UserTeam.destroy_by team_id: team_id, user_id: player_id
+  end
+
   private
 
   def user_data
@@ -87,18 +138,6 @@ class AdminController < ApplicationController
             roles: user.roles.pluck(:name).sort.reverse
           }
         end
-  end
-
-  def popularity_data
-    {
-      total: PageVisit.count,
-      avg_week: PageVisitGrouping.where(category: 'avg week').first&.count,
-      avg_month: PageVisitGrouping.where(category: 'avg month').first&.count,
-      avg_year: PageVisitGrouping.where(category: 'avg year').first&.count,
-      past_week: PageVisitGrouping.where(category: 'past week').first&.count,
-      past_month: PageVisitGrouping.where(category: 'past month').first&.count,
-      past_year: PageVisitGrouping.where(category: 'past year').first&.count
-    }
   end
 
   ############

@@ -1,3 +1,7 @@
+:javascript
+  let ALL_MANAGERS = #{@js_managers};
+  let ALL_PLAYERS = #{@js_players};
+
 #admin-panel
   %aside#control-panel
     -# TODO: An option for the admin to select their default view
@@ -5,9 +9,9 @@
     -#       and then the JS will handle the rest
     %button#general General Stats
     %button#users.selected Users
+    %button#teams.selected Teams
 
   %section#info-block
-
     #general
       #gnrl-popularity
         %h2.title
@@ -41,7 +45,6 @@
         - max_date = Time.current.strftime('%Y-%m-%d')
         %label(for='start-date') Start
         %input(type='date' name='start-date'){ min: min_date, max: max_date }
-
         %label(for='end-date') Start
         %input(type='date' name='end-date'){ min: min_date, max: max_date }
 
@@ -73,6 +76,20 @@
         - @users.each do |user|
           = render partial: 'admin/user_card', locals: { user: user }
 
+    #teams
+      .teams-list
+        - @teams.each do |team|
+          = render partial: 'admin/team_card', locals: { team: team }
+
 
 %template.user-card
   = render partial: 'admin/user_card', locals: { user: { id: 0, name: '', email: '', roles: [] } }
+
+%template.search-entry
+  .search-entry
+    -# %span.name
+    -# %span.email
+
+%template.tc-player
+  - locals = { team_id: '{0}', player: @template_member }
+  = render partial: 'admin/team_player', locals: locals

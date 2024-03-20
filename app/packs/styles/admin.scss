@@ -130,3 +130,77 @@ main {
     justify-content: center;
   }
 }
+
+// ##################################
+// Teams
+// ##################################
+
+.team-card {
+  margin: .4em;
+  padding: .2em .3em;
+
+  background-color: white;
+  color: black;
+
+  &.open {
+    .tc-pill {
+      display: none;
+    }
+
+    .tc-body {
+      display: block;
+    }
+  }
+}
+
+.tc-pill {
+  padding-left: 1.6em;
+}
+
+.tc-body {
+  display: none;
+  position: relative;
+
+  margin-left: 2vw;
+  padding: .4em 0;
+
+  width: fit-content;
+}
+
+.tc-player {
+  margin-top: .2em;
+  padding-left: .4em;
+}
+
+.tcp-name {
+  margin-left: .4em;
+}
+
+.search-dropdown {
+  position: absolute;
+  left: -.9em;
+
+  width: max-content;
+
+  padding: .2em .5em .3em;
+
+  background-color: #E4E4E4;
+
+  display: flex;
+  flex-flow: column nowrap;
+
+  &:empty {
+    padding: 0;
+  }
+}
+
+.search-entry {
+  width: 100%;
+  margin-top: .1em;
+  padding: .1em .4em;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #9AABAA;
+  }
+}

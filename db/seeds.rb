@@ -27,8 +27,10 @@ UserRole.create user_id: player.id, role_id: role_player.id
 manager = User.create email: 'manager@grr.la', password: 'password', name: 'John Manager'
 UserRole.create user_id: manager.id, role_id: role_manager.id
 
-#############
-# Generated users
+##############
+### Generated users
+
+# TODO: Maybe replace all of this by using Faker?
 
 email_usernames = [
   'test', 'john', 'username', 'what', 'okay', 'naice', 'grimbo',
@@ -60,6 +62,8 @@ surnames = %w[
   Green Repuga
 ]
 
+name_suffixes = ['II', 'III', 'Jr.', 'Sr.', 'DC']
+
 # TODO: Improve this by making use of the insert_all method
 #       would probably be best to do once players and managers have dedicated tables
 rand(35..60).times do
@@ -67,6 +71,7 @@ rand(35..60).times do
   email += "@#{mail_servers.sample}.#{domain_names.sample}"
   pw = passwords.sample
   name = "#{firstnames.sample} #{surnames.sample}"
+  name += " #{name_suffixes.sample}" if rand > 0.8
 
   roll = rand 100
   user = User.create email: email, password: pw, name: name
@@ -78,6 +83,64 @@ rand(35..60).times do
   if roll < 1
     UserRole.create user_id: user.id, role_id: role_site_admin.id
     SiteAdmin.create user_id: user.id
+  end
+end
+
+q_ur_players = UserRole.where(role_id: role_player.id)
+q_ur_managers = UserRole.where(role_id: role_manager.id)
+
+##############
+## Generate Teams
+
+Team.destroy_all
+UserTeam.destroy_all
+
+team_locations = [
+  'Crookesmore', 'The Diamond', 'Rotherham',
+  'Sheffield City', 'Meadowhall'
+]
+
+team_name_suffixes = %w[
+  Badgers Crooks Bears Marsupials Ligers Sloths
+  Dragons Snakes Dholes Cockatrices Rodents
+]
+
+num_players = q_ur_players.count
+num_managers = q_ur_managers.count
+
+num_teams = (num_players / rand(8..12)).to_i
+num_teams.times do
+  loc = team_locations.sample
+  team_name = if rand > 0.44
+                "#{loc} #{team_name_suffixes.sample}"
+              else
+                team_name_suffixes.sample
+              end
+
+  team_manager = q_ur_managers.offset(rand(num_managers)).first.user
+
+  Team.create(
+    name: team_name,
+    location_name: loc,
+    owner_id: team_manager.id
+  )
+end
+
+player_ids = q_ur_players.pluck :user_id
+
+max_per_team = (num_players / (num_teams + 1)).clamp(1, 16)
+min_per_team = [max_per_team / 2, 1].max
+Team.find_each do |team|
+  num_players = rand(min_per_team..max_per_team)
+
+  num_players.times do
+    player_id = player_ids.delete_at rand(player_ids.size)
+
+    UserTeam.create(
+      team_id: team.id,
+      user_id: player_id,
+      accepted: rand > 0.3
+    )
   end
 end
 

@@ -5,10 +5,13 @@ require 'rails_helper'
 RSpec.describe 'Managing team details' do
   let!(:manager1) { create(:user, :manager) }
   let!(:role_manager) { Role.find_or_create_by! name: 'Manager' }
+  let!(:team) { create(:team) }
 
   before do
     UserRole.create user_id: manager1.id, role_id: role_manager.id
-    create(:team)
+    team.owner_id = manager1.id
+    team.save
+
     visit '/'
     login_as(manager1, scope: :user)
     visit dashboard_path
@@ -31,7 +34,7 @@ RSpec.describe 'Managing team details' do
   context 'when I have created a team' do
     specify 'then I can see the team on the dashboard' do
       click_on 'View team'
-      expect(page).to have_content 'TeamName'
+      expect(page).to have_content team.name
     end
 
     specify 'Then I can edit the team details' do

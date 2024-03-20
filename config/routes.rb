@@ -48,6 +48,14 @@ Rails.application.routes.draw do
     post '/update-user', to: 'admin#update_user', as: :admin_update_user
     post '/new-user', to: 'admin#new_user', as: :admin_new_user
     post '/remove-user', to: 'admin#remove_user', as: :admin_remove_user
+
+    post('/update-manager',
+         to: 'admin#update_team_manager',
+         as: :admin_update_team_manager)
+    post '/add-player', to: 'admin#add_team_player', as: :admin_add_team_player
+    post('/remove-player',
+         to: 'admin#remove_team_player',
+         as: :admin_remove_team_player)
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

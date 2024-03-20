@@ -13,8 +13,10 @@
 #
 FactoryBot.define do
   factory :team do
-    name { 'TeamName' }
-    location_name { 'TeamCity' }
-    owner_id { 1 } # matches the manager factorybot in /factories/user.rb
+    name { Faker::Creature::Animal.name }
+    location_name { Faker::Address.city }
+    # Wanted to set this to be nil, but it seems like it would
+    # would be more hassle than it's worth
+    owner_id { 0 }
   end
 end
