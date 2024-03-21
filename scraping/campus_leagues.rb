@@ -3,7 +3,7 @@ require 'nokogiri'
 
 # scraper specific to campus leagues
 class CampusLeaguesScraper
-  attr_accessor :league_url, :league
+  attr_accessor :league_url, :league, :results
 
   KEY_MAPPING = {
     'Team' => :name,
@@ -19,7 +19,7 @@ class CampusLeaguesScraper
 
   URL_PREFIX = 'https://sportsheffield.sportpad.net/leagues'.freeze
 
-  def initialize(input_url)
+  def initialize(input_url, team_name)
     @url_suffix = extract_league_url_suffix(input_url)
     @key_mapping = {
       'Team' => :name,
@@ -32,9 +32,10 @@ class CampusLeaguesScraper
       'GD' => :goal_difference,
       'Pts' => :points
     }
+    @team_name = team_name
     # TODO: add this back in
     # @league = League.new(extract_teams_from_league)
-    @results = extract_results
+    @results = results_to_fixtures(extract_results)
   end
 
   def extract_league_url_suffix(url)
@@ -96,6 +97,11 @@ class CampusLeaguesScraper
     html.css('tr[id]').map { |row| extract_game(row) }
   end
 
+  def results_to_fixtures(results)
+    results.select { |result| result[:team_a] == @team_name || result[:team_b] == @team_name }
+           .map { |result| TeamFixture.new(@team_name, result) }
+  end
+
   def display_results
     @results.each do |game|
       puts game
@@ -127,7 +133,7 @@ end
 
 # holds fixture details
 class TeamFixture
-  attr_accessor :team_name, :opposition, :start_time, :goals_for, :goals_against
+  attr_accessor :opposition, :start_time, :goals_for, :goals_against
 
   def initialize(team_name, match_hash)
     @team_name = team_name
@@ -142,6 +148,10 @@ class TeamFixture
     # TODO: Add the code to scrape start_time
     # @start_time = start_time
   end
+
+  def to_s
+    "#{@team_name} (#{@goals_for}) vs. #{@opposition} (#{@goals_against})"
+  end
 end
 
 # holds details about a football league
@@ -154,7 +164,7 @@ class League
 
   # need to fix this - doesn't rank correctly
   def display_table
-    sorted_teams = @teams.sort_by { |team| [-team.points, -team.goal_difference, -team.goals_for, -team.goals_against] }
+    sorted_teams = @teams.sort_by { |team| [team.points, team.goal_difference, team.goals_for, -team.goals_against] }
     sorted_teams.each_with_index do |team, index|
       puts "#{index + 1}. #{team}"
     end
@@ -164,9 +174,10 @@ end
 url = 'https://sportsheffield.sportpad.net/leagues/view/1497/86'
 # url = 'https://sportsheffield.sportpad.net/leagues/view/1471/86'
 
-cl_scraper = CampusLeaguesScraper.new(url)
-cl_scraper.extract_results
-cl_scraper.display_results
-# cl_scraper.league.display_table
+team_name = 'CompSoc Greens'
+cl_scraper = CampusLeaguesScraper.new(url, team_name)
 
+cl_scraper.results.each do |result|
+  puts result
+end
 # cl_scraper.league.display_table
