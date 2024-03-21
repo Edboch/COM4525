@@ -61,7 +61,7 @@ class CampusLeaguesScraper
     table.css('tr')[1..].each do |row|
       row_data = row.css('td').map { |cell| cell.text.strip }
       row_hash = headers.zip(row_data).to_h { |header, value| [@key_mapping[header], value] }
-      teams << Team.new(**row_hash)
+      teams << Team.new(row_hash)
     end
     teams
   end
@@ -98,6 +98,7 @@ class CampusLeaguesScraper
 
   def display_results
     @results.each do |game|
+      puts game
       puts "#{game[:team_a]} #{game[:score_a]} vs #{game[:score_b]} #{game[:team_b]}"
     end
   end
@@ -107,17 +108,16 @@ end
 class Team
   attr_accessor :name, :points, :wins, :draws, :losses, :goal_difference, :goals_for, :goals_against
 
-  def initialize(name:, played: 0, points: 0, wins: 0, draws: 0, losses: 0, goal_difference: 0, goals_for: 0,
-                 goals_against: 0)
-    @name = name
-    @played = played
-    @points = points
-    @wins = wins
-    @draws = draws
-    @losses = losses
-    @goal_difference = goal_difference
-    @goals_for = goals_for
-    @goals_against = goals_against
+  def initialize(team_data)
+    @name = team_data[:name]
+    @played = team_data[:played]
+    @points = team_data[:points]
+    @wins = team_data[:wins]
+    @draws = team_data[:draws]
+    @losses = team_data[:losses]
+    @goal_difference = team_data[:goal_difference]
+    @goals_for = team_data[:goals_for]
+    @goals_against = team_data[:goals_against]
   end
 
   def to_s
@@ -126,10 +126,21 @@ class Team
 end
 
 # holds fixture details
-class Fixture
+class TeamFixture
   attr_accessor :team_name, :opposition, :start_time, :goals_for, :goals_against
-  
-  def initialize(team_name:, opposition:, start_time:, goals_for: 0, goals_against: 0)
+
+  def initialize(team_name, match_hash)
+    @team_name = team_name
+    team_key = match_hash.key(@team_name)
+    opposition_key = team_key == :team_a ? :team_b : :team_a
+    score_key_for = team_key == :team_a ? :score_a : :score_b
+    score_key_against = opposition_key == :team_a ? :score_a : :score_b
+
+    @opposition = match_hash[opposition_key]
+    @goals_for = match_hash[score_key_for]
+    @goals_against = match_hash[score_key_against]
+    # TODO: Add the code to scrape start_time
+    # @start_time = start_time
   end
 end
 
@@ -156,5 +167,6 @@ url = 'https://sportsheffield.sportpad.net/leagues/view/1497/86'
 cl_scraper = CampusLeaguesScraper.new(url)
 cl_scraper.extract_results
 cl_scraper.display_results
+# cl_scraper.league.display_table
 
 # cl_scraper.league.display_table
