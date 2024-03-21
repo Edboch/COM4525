@@ -63,7 +63,13 @@ class AdminController < ApplicationController
 
     user.name = params[:name]
     user.email = params[:email]
-    user.update_roles params[:roles]
+    is_admin = params[:site_admin].nil? || params[:site_admin].to_b
+
+    if is_admin && user.site_admin.nil?
+      user.site_admin = SiteAdmin.new
+    elsif !(is_admin && user.site_admin.nil?)
+      user.site_admin = nil
+    end
 
     result = user.save
     render json: { success: result }
@@ -71,9 +77,14 @@ class AdminController < ApplicationController
 
   def new_user
     # TODO: Send email with current password telling the user to update it
+    if params[:name].nil? || params[:email].nil? || params[:password].nil?
+      render status: :unprocessable_entity, json: { message: 'Required parametres not passed in' }
+      return
+    end
+    is_admin = params[:site_admin].nil? || String.new(params[:site_admin]).to_b
 
     user = User.create name: params[:name], email: params[:email], password: params[:password]
-    user.decorate.update_roles params[:roles]
+    user.site_admin = SiteAdmin.new if is_admin
 
     render json: { success: true }
   end

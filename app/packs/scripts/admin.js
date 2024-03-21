@@ -19,10 +19,6 @@ const GENERATED_PASSWORD_LENGTH = 8;
  */
 function getRoles(parent) {
   let roles = '';
-  if (parent.find('[name="player"]').prop('checked'))
-    roles += 'p';
-  if (parent.find('[name="manager"]').prop('checked'))
-    roles += 'm';
   if (parent.find('[name="site-admin"]').prop('checked'))
     roles += 's';
   return roles;
@@ -112,7 +108,7 @@ async function setupPopularityView() {
  */
 async function wireUpCreateNewUser() {
   const domNewUser = $('#new-user');
-  let domPassword = domNewUser.find('[name="password"]');
+  let inp_password = domNewUser.find('[name="password"]');
 
   // Generates a random string for the password
   domNewUser.find('#new-user-regen-pw').on('click', function() {
@@ -128,49 +124,39 @@ async function wireUpCreateNewUser() {
       }
     }
 
-    domPassword.val(generated);
+    inp_password.val(generated);
   });
 
-  let domName = domNewUser.find('[name="name"]');
-  let domEmail = domNewUser.find('[name="email"]');
-  let domPlayer = domNewUser.find('[name="player"]');
-  let domManager = domNewUser.find('[name="manager"]');
-  let domSiteAdmin = domNewUser.find('[name="site-admin"]');
+  let inp_name = domNewUser.find('[name="name"]');
+  let inp_email = domNewUser.find('[name="email"]');
+  let inp_admin = domNewUser.find('[name="site-admin"]');
 
   domNewUser.find('#new-user-submit').on('click', async function() {
     // Checks to see the name, email and password fields are not empty
-    if (domName.val() === '') {
+    if (inp_name.val() === '') {
       console.error('NEW USER No name provided');
       return;
     }
-    if (domEmail.val() === '') {
+    if (inp_email.val() === '') {
       console.error('NEW USER No email provided');
       return;
     }
-    if (domPassword.val() === '') {
+    if (inp_password.val() === '') {
       console.error('NEW USER No password provided');
       return;
     }
 
-    // Check to see if any roles have been sent
-    let roles = getRoles(domNewUser);
-    if (roles === '') {
-      console.error('NEW USER No role set');
-      return;
-    }
-
     const response = await SERVER.send('new-user', {
-      'name': domName.val(), 'email': domEmail.val(), 'password': domPassword.val(), 'roles': roles
+      name: inp_name.val(), email: inp_email.val(),
+      password: inp_password.val(), site_admin: inp_admin.prop('checked')
     });
 
     // TODO Update the page with the new user
 
-    domName.val('');
-    domEmail.val('');
-    domPassword.val('');
-    domPlayer.prop('checked', false);
-    domManager.prop('checked', false);
-    domSiteAdmin.prop('checked', false);
+    inp_name.val('');
+    inp_email.val('');
+    inp_password.val('');
+    inp_admin.prop('checked', false);
   });
 }
 
@@ -211,6 +197,7 @@ function wireupUserCards() {
     let id = card.attr('id').split('-')[2];
     let inp_name = card.find('[name="name"]');
     let inp_email = card.find('[name="email"]');
+    let inp_admin = card.find('[name="site-admin"]');
 
     card.find('button.pwreset').on('click', function() {
       // TODO: Reset password
@@ -221,12 +208,8 @@ function wireupUserCards() {
       let email = inp_email.val();
       // TODO 'Are you sure' alert if a role change is detected
       // If site admin is changed also ask for password confirmation
-      let roles = getRoles(card);
-      if (roles === '') {
-        console.error('EDIT USER No role set');
-        return;
-      }
-      SERVER.send('update-user', { 'id': id, 'name': name, 'email': email, 'roles': roles });
+      let admin = inp_admin.prop('checked');
+      SERVER.send('update-user', { id: id, name: name, email: email, site_admin: admin });
     });
 
     card.find('button.remove').on('click',function(){

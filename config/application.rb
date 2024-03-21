@@ -50,5 +50,7 @@ module Project
                              helper_specs: false,
                              controller_specs: false
     end
+
+    config.autoload_paths += Dir[Rails.root.join('app/lib/*.rb').to_s].each { |l| require l }
   end
 end
