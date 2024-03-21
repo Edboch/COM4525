@@ -31,8 +31,6 @@ FactoryBot.define do
 
     trait :site_admin do
       after :create do |user|
-        site_admin_role = Role.find_or_create_by! name: 'Site Admin'
-        user.roles << site_admin_role
         SiteAdmin.create user_id: user.id
       end
     end

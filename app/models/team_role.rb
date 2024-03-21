@@ -11,7 +11,5 @@
 class TeamRole < ApplicationRecord
   enum :type, %i[managerial staff regular]
 
-  # As UserTeamRole is a join table, no need for dependent: :destroy
-  has_many :user_team_roles, dependent: :destroy
-  has_many :user_teams, through: :user_team_roles
+  has_and_belongs_to_many :user_teams, join_table: 'user_team_roles'
 end

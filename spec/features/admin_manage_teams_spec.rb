@@ -2,10 +2,6 @@
 
 require 'rails_helper'
 
-# TODO: Figure out why the search feature picks when it wants to work
-#       Tests involving the use of the search feature seem to pick
-#       when they want to work
-
 RSpec.describe 'Admin Manage Teams', :js do
   let!(:site_admin) { create(:user, :site_admin) }
   let!(:team_count) { 2 }

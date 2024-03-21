@@ -2,7 +2,6 @@
 
 require 'factory_bot_rails'
 
-UserTeamRole.first.destroy
 Team.destroy_all
 
 User.destroy_all
