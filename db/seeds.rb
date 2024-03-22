@@ -34,7 +34,7 @@ tr_player = FactoryBot.create :team_role, :player
 
 num_users = User.count
 num_teams = ((num_users.to_f * 0.8) / rand(8..12)).floor.to_i
-teams = FactoryBot.create_list :team, num_teams, :random_manager
+teams = FactoryBot.create_list :team, num_teams
 
 max_per_team = (num_users / (num_teams + 1)).clamp(1, 16)
 min_per_team = [max_per_team / 2, 1].max

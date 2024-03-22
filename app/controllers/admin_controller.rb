@@ -14,13 +14,14 @@ class AdminController < ApplicationController
 
   def index
     # TODO: Implement sorting defaults, saved in the SiteAdmin table
-    @users = get_fe_users User.all
+    @users = User.all
     @visit_metrics = popularity_data
     @earliest = PageVisitGrouping.where(category: 'earliest')
                                  .first&.period_start || 1.day.ago
 
-    @teams = user_teams
+    @teams = Team.all
     @js_users = @users.to_json
+    @js_roles = TeamRole.all.to_json
 
     @template_user = FE_User.new id: 0, name: '', email: '', is_admin: false
     @template_member = FE_Member.new id: '{1}', name: ''

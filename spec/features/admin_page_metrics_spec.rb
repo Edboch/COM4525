@@ -8,11 +8,7 @@ Rails.application.load_tasks
 RSpec.describe 'Admin View Page Metrics' do
   # rubocop:disable RSpec/BeforeAfterAll
   before :all do
-    100.times do |_i|
-      v_start = rand(2.years.ago..1.minute.ago)
-      v_end = rand(v_start..([1.minute.ago, v_start + rand(6).minutes].min))
-      PageVisit.create visit_start: v_start, visit_end: v_end
-    end
+    create_list :page_visit, 100
 
     Rake::Task['page_visits:collate_visits'].invoke
 
@@ -26,8 +22,7 @@ RSpec.describe 'Admin View Page Metrics' do
   # rubocop:enable RSpec/BeforeAfterAll
 
   before do
-    sa = User.create email: 'the@eggman.com', password: 'password', name: 'Ivo Robotnik'
-    SiteAdmin.create user_id: sa.id
+    sa = create :user, :site_admin
 
     visit '/'
     fill_in 'user[email]', with: sa.email

@@ -21,10 +21,12 @@ window.UTIL = (function($) {
    *       Object for the pill element and boolean on whether on not it is
    *       open
    */
-  mod.wireupPillFoldout = function(jq_list, q_pill, q_pill_body,
+  mod.wireupPillFoldout = function(jq_list, q_pill, q_blockElems,
                                    fn_onFoldChange = function() {}) {
     jq_list.find(q_pill).each(function() {
       const card = $(this);
+      card.find(q_blockElems).on('click', evt => evt.stopPropagation());
+
       const cardID = card.attr('id');
 
       card.on('click', function(evt) {
@@ -39,8 +41,8 @@ window.UTIL = (function($) {
         // that clicking on a button or input field doesn't close the
         // card
         if (isOpen) {
-          if (!(target.is(card) || target.is(card.find(q_pill_body))))
-            return;
+          // if (!(target.is(card) || target.is(card.find(q_pill_body))))
+          //   return;
 
           card.removeClass('open');
           fn_onFoldChange(card, false);
@@ -60,6 +62,8 @@ window.UTIL = (function($) {
       });
     });
   };
+
+  // TODO fn_createEntry should return the container of the live search input field
 
   /**
    * Wires up a live search box that populates a results box based on a query

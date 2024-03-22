@@ -3,23 +3,27 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin Manage Teams', :js do
-  let!(:site_admin) { create(:user, :site_admin) }
+  let!(:site_admin) { create :user, :site_admin }
   let!(:team_count) { 2 }
+
+  let!(:users) { create_list :user, 20 }
+  let!(:teams) { create_list :team, team_count }
 
   # TODO: Figure out how to prevent suite specific automatic DB cleanup
   before do
-    players = create_list(:user, 10, :player)
-    managers = create_list(:user, 3, :manager)
-    teams = create_list(:team, team_count)
+    tr_player = create :team_role, :manager
+    tr_manager = create :team_role, :player
 
     teams.each do |team|
-      m = managers.sample
-      team.owner_id = m.id
-      team.save
+      owner = team.owner
+      manager = rand > 0.6 ? users.sample : owner
+      ut = team.user_teams.create user: manager
+      ut.roles << tr_manager
 
       num_players = rand 2..5
-      players.sample(num_players).each do |player|
-        UserTeam.create(team_id: team.id, user_id: player.id, accepted: true)
+      users.sample(num_players).each do |user|
+        ut = team.user_teams.create user: user
+        ut.roles << tr_player
       end
     end
 

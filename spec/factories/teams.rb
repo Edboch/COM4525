@@ -13,24 +13,23 @@
 #
 FactoryBot.define do
   factory :team do
+    transient do
+      owner do
+        num_users = User.count
+        User.offset(rand(num_users)).first
+      end
+    end
+
     location_name { Faker::Address.city }
     name do
       name = Faker::Creature::Animal.name.pluralize.capitalize
       if rand > 0.3
         "#{location_name} #{name}"
       else
-        name
+        "The #{name}"
       end
     end
-    # Wanted to set this to be nil, but it seems like it would
-    # would be more hassle than it's worth
-    owner_id { 0 }
 
-    trait :random_manager do
-      owner_id do
-        num_users = User.count
-        User.offset(rand(num_users)).first.id
-      end
-    end
+    owner_id { owner.id }
   end
 end

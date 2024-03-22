@@ -1,18 +1,65 @@
+-# Admin Team Card
+-# HAML for a team card in the admin page
+-#
+-# @param [ActiveRecord] team - The team to be rendered
+
 .team-card{ id: "team-card-#{team.id}" }
   .tc-pill
     %h2.team-name= team.name
-    %h4.manager-name= team.manager.name
+    %h4.owner-name= "Owner: #{team.owner.name}"
 
   .tc-body
-    %div
-      %input(name='manager-search'){ value: team.manager.name }
-      .search-dropdown
+    .tc-owner
+      %h4= team.owner.name
+      = render(partial: 'snippets/live_search',
+               locals: { name: 'owner', field_label: 'New Owner',
+                         placeholder: 'Owner Name or Email',
+                         search_options: 'ALL_USERS', 
+                         search_fields: [ 'name', 'email' ],
+                         other_data: { team_id: team.id } })
 
-    %div
-      %input(name='player-search')
-      .search-dropdown
+    .tc-new-member
+      %h5 New Member
+      %form
+        = render(partial: 'snippets/live_search',
+                 locals: { name: 'member', placeholder: 'Member Name or Email',
+                           search_options: 'ALL_USERS',
+                           search_fields: [ 'name', 'email' ] })
 
-    .tc-player-list
-      - team.players.each do |player|
-        - locals = { team_id: team.id, player: player }
-        = render partial: 'admin/team_player', locals: locals
+        .roles-context
+          = render(partial: 'snippets/live_search',
+                   locals: { name: 'nm-team-role', field_label: 'Team Role',
+                             search_options: 'ALL_TEAM_ROLES', 
+                             search_fields: [ 'name' ] })
+          .role-list
+
+        %button.add Add
+
+    .tc-member-list
+      - team.user_teams.each do |member|
+        .tc-member{ id: "user-team-#{member.id}" }
+          .tcm-pill
+            %button.tcm-delete Delete
+            %h5.tcm-name
+              %span= member.user.name
+            .tcm-roles
+              %span= member.roles.pluck(:name).join ' | '
+
+          .tcm-body
+            .head
+              %button.tcm-delete Delete
+              %h5.tcm-name
+                %span= member.user.name
+
+            = render(partial: 'snippets/live_search',
+                     locals: { name: "tm-team-role", placeholder: 'New Role',
+                               search_options: 'ALL_TEAM_ROLES',
+                               search_fields: [ 'name' ],
+                               other_data: { user_team_id: member.id } })
+
+            .tcm-roles
+              - member.roles.decorate.each do |role|
+                %span.tcm-team-role
+                  %button.tr-remove{ data: { user_team_id: member.id } } Remove
+                  %span= role.name
+                  %span= role.type_name

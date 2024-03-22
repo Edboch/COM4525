@@ -232,10 +232,15 @@ function wireupUserCards() {
 function wireupTeamsView() {
   let teams = $('.teams-list');
   UTIL.wireupPillFoldout(
-    teams, '.team-card', '.tc-body',
-    function(jq_pill) {
-     jq_pill.find('.search-dropdown').empty();
-    });
+    teams, '.team-card', 'input, button, .live-search, .tc-member',
+    jq_pill => jq_pill.find('.live-search-dropdown').empty()
+  );
+
+  UTIL.wireupPillFoldout(
+    $('.tc-member-list'), '.tc-member', 'input, button, .live-search',
+    jq_pill => jq_pill.find('.live-search-dropdown').empty()
+  );
+
 
   const getTeamID = function(teamCard) {
     const id = teamCard.attr('id');

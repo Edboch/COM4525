@@ -6,7 +6,7 @@
     %input(name='name'){ value: user.name }
     %input(name='email'){ value: user.email }
 
-    %input(type='checkbox' name='site-admin'){ checked: user.is_admin }
+    %input(type='checkbox' name='site-admin'){ checked: !user.site_admin.nil? }
     %label(for='site-admin') Site Admin
 
     %button.save Save
