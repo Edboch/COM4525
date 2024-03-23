@@ -362,27 +362,36 @@ function wireupTeamsView() {
       entry.on('click', async function() {
         let newRoleIDs = roleIDs.slice(0);
         newRoleIDs.push(role.id);
-        const response = await SERVER.send('update-team-member-roles', { role_ids: newRoleIDs });
 
-        // TODO Guard against failure response
+        const url = container.domData('url');
+        const response = await SERVER.sendUrl(url, { role_ids: newRoleIDs });
+        const json = await response.json();
+        if (!json.success) {
+          console.error(json.error);
+          return;
+        }
+
         // TODO Update DOM
 
-        let searchBox = container.find('input');
-        searchBox.val('');
+        container.find('input').val('');
       });
 
       return entry;
     });
 
   $('button.tr-remove').on('click', async function() {
-    let userTeamID = $(this).domData('user-team-id');
-
     let memberCard = $(this).parents('.tc-member');
     let roleIDs = memberCard.domData('role-ids');
     let roleID = $(this).domData('role-id');
     roleIDs.remove(roleID);
 
-    const response = await SERVER.send('update-team-member-roles', { role_ids: roleIDs });
+    const url = $(this).domData('url');
+    const response = await SERVER.sendUrl(url, { role_ids: roleIDs });
+    const json = await response.json();
+    if (!json.success) {
+      console.error(json.error);
+      return;
+    }
 
     // TODO Result check + HTML Clean up
   });

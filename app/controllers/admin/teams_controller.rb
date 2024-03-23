@@ -61,5 +61,23 @@ class Admin::TeamsController < ApplicationController
   end
 
   def update_member_roles
+    to_update = UserTeam.find_by id: params[:user_team_id]
+    if to_update.nil?
+      json = {
+        success: false,
+        message: "Unknown Member/User Team ID #{params[:user_team_id]}"
+      }
+      render json: json
+      return
+    end
+
+    roles = TeamRole.where id: params[:role_ids].split(',')
+    if roles.size == 0
+      render json: { success: false, message: "Unknown Role IDs #{params[:role_ids]}" }
+      return
+    end
+
+    to_update.roles = roles
+    render json: { success: true }
   end
 end

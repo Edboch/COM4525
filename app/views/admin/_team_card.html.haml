@@ -3,6 +3,11 @@
 -#
 -# @param [ActiveRecord] team - The team to be rendered
 
+-# TODO: Update this to only allow you to change the owner, name and location
+-#       and then list the members and their roles
+-#       Move the new member, member deletion and member role editing to the
+-#       admin/teams page
+
 .team-card{ id: "team-card-#{team.id}", data: { id: team.id } }
   .tc-pill
     %h2.team-name= team.name
@@ -60,12 +65,12 @@
               %h5.tcm-name
                 %span= member.user.name
 
-            - update_roles_url = admin_user_team_update_role_url current_user.id, member.id
+            - update_roles_url = admin_user_team_update_roles_url current_user.id, member.id
             = render(partial: 'snippets/live_search',
                      locals: { name: "tm-team-role", placeholder: 'New Role',
                                search_data_var: 'team_roles',
                                search_fields: [ 'name' ],
-                               other_data: { action: update_roles_url } })
+                               other_data: { url: update_roles_url } })
 
             .tcm-roles
               - member.roles.decorate.each do |role|
