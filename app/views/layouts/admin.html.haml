@@ -20,14 +20,6 @@
     %meta(name='add-player'){ content: admin_add_team_player_url }
     %meta(name='remove-player'){ content: admin_remove_team_player_url }
 
-    -# unless @js_managers.nil?
-    -# :javascript
-    -#   let ALL_MANAGERS = #{@js_managers};
-
-    -#- unless @js_players.nil?
-    -#  :javascript
-    -#    let ALL_PLAYERS = #{@js_players};
-
     %body
       = render 'layouts/nav'
 

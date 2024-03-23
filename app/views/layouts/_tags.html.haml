@@ -10,9 +10,6 @@
 = csrf_meta_tags
 = csp_meta_tag
 
--# jQuery CDN as the import tag does not seem to work
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-
 - unless @page_visit.nil?
   %meta(name='visit-id'){ content: @page_visit.id }
   %meta(name='visitor-track'){ content: visitor_tracker_url }

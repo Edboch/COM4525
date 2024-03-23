@@ -6,14 +6,14 @@
 -#                        prepended to the name of input field
 -# @param [String] field_label - Optional value of the label for the search box
 -# @param [String] placeholder - Optional placeholder value for the input field
--# @param [String] search_options - The name of a JSON Array of JSON objects to search, this array must
+-# @param [String] search_data_var - The name of a JSON Array of JSON objects to search, this array must
 -#                                  be declared else where on the page/in a JS file
 -# @param [Array<String>] search_fields - The params in a search_options object to be searched
 -# @param [Hash] other_data - Optional hash of HTML data attributes to be added
 
 - ls_name = "live-search-#{name}"
 - attr_data = defined?(other_data) ? other_data : Hash.new
-- attr_data[:search_options] = search_options
+- attr_data[:search_data_var] = search_data_var
 - attr_data[:search_fields] = search_fields
 
 .live-search{ class: ls_name, data: attr_data }

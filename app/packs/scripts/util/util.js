@@ -21,6 +21,7 @@ window.UTIL = (function($) {
    *       Object for the pill element and boolean on whether on not it is
    *       open
    */
+  // TODO Update Docs
   mod.wireupPillFoldout = function(jq_list, q_pill, q_blockElems,
                                    fn_onFoldChange = function() {}) {
     jq_list.find(q_pill).each(function() {
@@ -63,7 +64,6 @@ window.UTIL = (function($) {
     });
   };
 
-  // TODO fn_createEntry should return the container of the live search input field
 
   /**
    * Wires up a live search box that populates a results box based on a query
@@ -76,55 +76,105 @@ window.UTIL = (function($) {
    *       An array of objects to be searched
    * @param {Array<string>} searchableKeys -
    *       The keys to be searched in resultsOptions
-   * @param {function(jQ, Object<string, string>): jQ} fn_createEntry
-   *       Creates an entry from the result given, also passes in the related
-   *       search bo
+   * @param {function(jQ, Object): jQ} fn_createEntry
+   *       Creates an entry from the result given
+   *    @param {jQ} - The container of the live search
+   *    @param {Object} - The object to create an entry for
    */
-  mod.createSearchBox = function(jq_inpSearch, fn_getResultsBox,
-                                 resultsOptions, searchableKeys, fn_createEntry) {
-    jq_inpSearch.on('input', function() {
-      const thisInput = $(this);
-      const resultsBox = fn_getResultsBox(thisInput);
-      resultsBox.empty();
 
-      const query = thisInput.val().toLowerCase();
-      if (query === '')
+  // TODO: New Documentation
+  mod.wireupLiveSearch = function(liveSearchName, fn_createEntry,
+                                  maxOptionsWhenEmpty = 10) {
+    const allContainers = $(`.live-search-${liveSearchName}`);
+    const searchFields = allContainers.domData('search-fields');
+    let varName = allContainers.domData('search-data-var');
+    const searchOptions = LIVE_SEARCH[varName];
+
+    const emptyOptionsCount = Math.min(maxOptionsWhenEmpty, searchOptions.length);
+
+    $(`input[name='live-search-${liveSearchName}']`)
+      .on('input', function() {
+      const search = $(this);
+      const container = search.parent();
+      const results = container.find('.live-search-dropdown');
+      results.empty();
+
+      const makeEntry = function (option) {
+        let entry = fn_createEntry(container, option);
+        results.append(entry);
+      };
+
+      const query = search.val().toLowerCase();
+      if (query === '') {
+        for (let i = 0; i < emptyOptionsCount; i++)
+          makeEntry(searchOptions[i]);
         return;
+      }
 
       const regex = new RegExp(query);
-      let matches = resultsOptions.filter(function (option) {
-        for (let key of searchableKeys) {
-          let result = regex.exec(option[key].toLowerCase());
-          if (result != null)
-            return true;
+      let matches = searchOptions.flatMap(function (option) {
+        for (let field of searchFields) {
+          let result = regex.exec(option[field].toLowerCase());
+          if (result == null) continue;
+
+          let newObj = structuredClone(option);
+          newObj.resultField = field;
+          return [ newObj ];
         }
 
-        return false;
+        return [];
       });
 
       if (matches.length == 0)
         return;
 
-      matches.forEach(function (option) {
-        let entry = fn_createEntry(thisInput, option);
-        resultsBox.append(entry);
-      });
+      matches.forEach(makeEntry);
     });
+  };
+
+  // TODO Documentation
+  mod.createLiveSearchEntry = function(container, option, defaultOnClick = true) {
+    const searchFields = container.domData('search-fields');
+
+    let string = '';
+    if (searchFields.length == 1) {
+      let field = searchFields[0];
+      string = option[field];
+    }
+    else {
+      let strOtherFields =
+        searchFields
+          .flatMap(
+            (field) => field === option.resultField ? [] : [ option[field] ])
+          .join(', ');
+
+
+      string =
+        option.resultField
+        ? `${option[option.resultField]} | ${strOtherFields}`
+        : strOtherFields;
+    }
+
+    let entryHTML = string;
+    let entry = $('<div class="live-search-entry"></div>');
+    entry.html(entryHTML);
+
+    if (defaultOnClick)
+      entry.on('click', function() {
+        let input = container.find('input');
+        input.val(
+          option.resultField
+          ? option[option.resultField]
+          : $(this).text()
+        );
+
+        container.domData(option);
+      });
+
+    entry.on('click', () => container.find('.live-search-dropdown').empty());
+
+    return entry;
   };
 
   return mod;
 }(window.$));
-
-/**
- * Source: https://www.tutorialstonight.com/javascript-string-format
- *
- * Formats a string. The placeholders take the form of `{X}` where
- * `X` is any positive integer.
- */
-String.prototype.format = function() {
-  let args = arguments;
-  return this.replace(/{([0-9]+)}/g,
-                      (match, index) =>
-                        index >= args.length ? match : args[index]
-  );
-};

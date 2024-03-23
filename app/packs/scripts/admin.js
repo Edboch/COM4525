@@ -232,7 +232,7 @@ function wireupUserCards() {
 function wireupTeamsView() {
   let teams = $('.teams-list');
   UTIL.wireupPillFoldout(
-    teams, '.team-card', 'input, button, .live-search, .tc-member',
+    teams, '.team-card', 'input, button, .live-search, .tc-new-member .role-list, .tc-member',
     jq_pill => jq_pill.find('.live-search-dropdown').empty()
   );
 
@@ -241,108 +241,139 @@ function wireupTeamsView() {
     jq_pill => jq_pill.find('.live-search-dropdown').empty()
   );
 
-
-  const getTeamID = function(teamCard) {
-    const id = teamCard.attr('id');
-    const teamID = id.split('-')[2];
-    return parseInt(teamID, 10);
-  };
-
-  const mkfn_onPlayerDelete = function(teamID, playerID, playerEntry) {
-    return async function() {
-      let body = { team_id: teamID, player_id: playerID };
-      const response = await SERVER.send('remove-player', body);
-      if (!response.ok) {
-        console.error("Failed to remove player");
+  UTIL.wireupLiveSearch(
+    'owner',
+    function(container, user) {
+      let currentOwnerID = parseInt(container.domData('owner-id'));
+      if (option.id == currentOwnerID)
         return;
-      }
 
-      playerEntry.remove();
-    };
-  }
+      let entry = UTIL.createLiveSearchEntry(container, user, false);
+      entry.on('click', async function() {
+        let teamID = container.domData('team-id');
+        let body = { team_id: teamID, user_id: user.id }
 
-  const tmpl_entry = $($('template.search-entry').contents()[1]);
-  const tmpl_player = $($('template.tc-player').contents()[1]);
+        // TODO Make a route
+        const response = await SERVER.send('update-owner', body);
 
-  const createManagerEntry = function(jq_searchBox, manager) {
-    let entry = tmpl_entry.clone();
-    entry.html(`${manager.name} ${manager.email}`);
-
-    entry.on('click', function() {
-      const teamCard = jq_searchBox.parents('.team-card');
-      const teamID = getTeamID(teamCard);
-
-      SERVER.send('update-manager', { manager_id: manager.id, team_id: teamID });
+        // TODO Update owner fields
+      });
+      return entry;
     });
 
-    return entry;
-  }
 
-  const createPlayerEntry = function(jq_searchBox, player) {
-    let teamCard = jq_searchBox.parents('.team-card');
-    let players = teamCard.find('.tc-player').toArray();
-    for (let p of players) {
-      let id = $(p).attr('id');
-      const regex = /t[0-9]+-p([0-9]+)/;
-      const playerID = regex.exec(id)[1];
-      if (parseInt(playerID, 10) == player.id)
+  UTIL.wireupLiveSearch(
+    'team-new-member',
+    function(container, user) {
+      let currentMembers = container.domData('member-ids');
+      if (currentMembers.includes(user.id))
         return;
+
+      return UTIL.createLiveSearchEntry(container, user);
+  });
+
+  UTIL.wireupLiveSearch(
+    'nm-team-role',
+    function(container, role) {
+      let selectedRoles = container.domData('roles');
+      if (selectedRoles.includes(role.id))
+        return;
+
+      let entry = UTIL.createLiveSearchEntry(container, role, false);
+      entry.on('click', function() {
+        const roles = container.domData('roles');
+        let newRoles = roles.slice(0);
+        newRoles.push(role.id);
+        container.domData('roles', newRoles);
+
+        let roleList = container.siblings('.role-list');
+        let roleEntry = $('<span></span>');
+        roleEntry.text(role.name);
+        roleEntry.on('click', function() {
+          let roles = container.domData('roles');
+          // const index = roles.indexOf(role.id);
+          // roles.splice(index, 1);
+          roles.remove(role.id);
+          container.domData('roles', roles);
+          $(this).remove();
+        });
+
+        roleList.append(roleEntry);
+        container.find('input').val('');
+      });
+
+      return entry;
+    });
+
+  $('.tc-new-member form').on('submit', async function(e) {
+    e.preventDefault();
+    let parentCard = $(this).parents('.team-card');
+
+    let dom_user = $(this).find('.live-search-team-new-member');//.data();
+    let dom_roles = $(this).find('.live-search-nm-team-role');//.data();
+
+    let teamID = parentCard.domData('id');
+    let userID = dom_user.domData('id');
+    let roleIDs = dom_roles.domData('roles');
+
+    if (userID === undefined) {
+      console.error('ADD MEMBER No user assigned');
+      return;
     }
 
-    let entry = tmpl_entry.clone();
-    entry.addClass(`res-${player.id}`);
-    entry.html(`${player.name} ${player.email}`);
-    entry.on('click', async function() {
-      const teamID = getTeamID(teamCard);
+    let body = { team_id: teamID, user_id: userID, role_ids: roleIDs };
+    // TODO Make a route
+    const response = await SERVER.send('add-member', body);
 
-      let body = { player_id: player.id, team_id: teamID };
-      const response = await SERVER.send('add-player', body);
-      if (!response.ok) {
-        console.error("Failed to add player");
+    // TODO Clean up
+  });
+
+  $('button.tcm-delete').on('click', async function() {
+    let memberCard = $(this).parents('.tc-member');
+    let userTeamID = memberCard.domData('id');
+
+    // TODO Some kind of are you sure dialogue
+    // TODO Make route
+    const response = SERVER.send('remove-member', { user_team_id: userTeamID });
+
+    memberCard.remove();
+  });
+
+  UTIL.wireupLiveSearch(
+    'tm-team-role',
+    function(container, role) {
+      let memberCard = container.parents('.tc-member');
+      let roleIDs = memberCard.domData('role-ids');
+      if (roleIDs.includes(role.id))
         return;
-      }
 
-      let playerEntry = tmpl_player.clone();
-      let idFormat = playerEntry.attr('id');
-      let id = idFormat.format(teamID, player.id);
-      playerEntry.attr('id', id);
+      let entry = UTIL.createLiveSearchEntry(container, role, false);
+      entry.on('click', async function() {
+        let newRoleIDs = roleIDs.slice(0);
+        newRoleIDs.push(role.id);
+        const response = await SERVER.send('update-team-member-roles', { role_ids: newRoleIDs });
 
-      playerEntry.find('.tcp-name').text(player.name);
-      playerEntry.find('button.delete')
-                 .on('click',
-                     mkfn_onPlayerDelete(teamID, player.id, playerEntry));
+        // TODO Guard against failure response
+        // TODO Update DOM
 
-      teamCard.find('.tc-player-list').append(playerEntry);
+        let searchBox = container.find('input');
+        searchBox.val('');
+      });
+
+      return entry;
     });
 
-    return entry;
-  };
+  $('button.tr-remove').on('click', async function() {
+    let userTeamID = $(this).domData('user-team-id');
 
-  UTIL.createSearchBox(
-    teams.find('input[name="manager-search"]'),
-    (jq) => jq.siblings('.search-dropdown'),
-    ALL_USERS,
-    ['name', 'email'],
-    createManagerEntry
-  );
+    let memberCard = $(this).parents('.tc-member');
+    let roleIDs = memberCard.domData('role-ids');
+    let roleID = $(this).domData('role-id');
+    roleIDs.remove(roleID);
 
-  UTIL.createSearchBox(
-    teams.find('input[name="player-search"]'),
-    (jq) => jq.siblings('.search-dropdown'),
-    ALL_USERS,
-    ['name', 'email'],
-    createPlayerEntry
-  );
+    const response = await SERVER.send('update-team-member-roles', { role_ids: roleIDs });
 
-  teams.find('.tc-player').each(function () {
-    const regex = /t([0-9]+)-p([0-9]+)/;
-    const id = $(this).attr('id');
-    const match = regex.exec(id);
-
-    const playerEntry = $(this);
-    playerEntry.find('button.delete')
-               .on('click',
-                   mkfn_onPlayerDelete(match[1], match[2], playerEntry));
+    // TODO Result check + HTML Clean up
   });
 }
 

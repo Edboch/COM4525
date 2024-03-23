@@ -3,6 +3,7 @@
 require 'factory_bot_rails'
 
 Team.destroy_all
+TeamRoles.destroy_all
 
 User.destroy_all
 SiteAdmin.destroy_all
