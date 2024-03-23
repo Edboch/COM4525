@@ -9,6 +9,8 @@
     %h4.owner-name= "Owner: #{team.owner.name}"
 
   .tc-body
+    %h2= team.name
+
     .tc-owner
       %h4= team.owner.name
       = render(partial: 'snippets/live_search',
@@ -16,18 +18,19 @@
                          placeholder: 'Owner Name or Email',
                          search_data_var: 'users',
                          search_fields: [ 'name', 'email' ],
-                         other_data: { team_id: team.id, owner_id: team.owner.id } })
+                         other_data: { action: admin_team_set_owner_url(current_user.id, team.id),
+                                       owner_id: team.owner.id } })
 
     .tc-new-member
       %h5 New Member
-      %form
+      %form{ action: admin_team_add_member_url(current_user.id, team.id) }
         - user_ids = team.user_teams.pluck :user_id
         = render(partial: 'snippets/live_search',
                  locals: { name: 'team-new-member',
                            placeholder: 'Member Name or Email',
                            search_data_var: 'users',
                            search_fields: [ 'name', 'email' ],
-                           other_data: { member_ids: user_ids }})
+                           other_data: { member_ids: user_ids } })
 
         .roles-context
           = render(partial: 'snippets/live_search',
@@ -41,9 +44,11 @@
     .tc-member-list
       - team.user_teams.each do |member|
         - role_ids = member.roles.pluck :id
+        - delete_url = admin_user_team_remove_url current_user.id, member.id
+
         .tc-member{ id: "user-team-#{member.id}", data: { id: member.id, role_ids: role_ids } }
           .tcm-pill
-            %button.tcm-delete Delete
+            %button.tcm-delete{ data: { url: delete_url } } Delete
             %h5.tcm-name
               %span= member.user.name
             .tcm-roles
@@ -51,18 +56,21 @@
 
           .tcm-body
             .head
-              %button.tcm-delete Delete
+              %button.tcm-delete{ data: { url: delete_url } } Delete
               %h5.tcm-name
                 %span= member.user.name
 
+            - update_roles_url = admin_user_team_update_role_url current_user.id, member.id
             = render(partial: 'snippets/live_search',
                      locals: { name: "tm-team-role", placeholder: 'New Role',
                                search_data_var: 'team_roles',
-                               search_fields: [ 'name' ] })
+                               search_fields: [ 'name' ],
+                               other_data: { action: update_roles_url } })
 
             .tcm-roles
               - member.roles.decorate.each do |role|
                 %span.tcm-team-role
-                  %button.tr-remove{ data: { user_team_id: member.id, role_id: role.id } } Remove
+                  %button.tr-remove{ data: { url: update_roles_url, role_id: role.id } }
+                    Remove
                   %span= role.name
                   %span= role.type_name

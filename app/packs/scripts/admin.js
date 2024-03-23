@@ -245,16 +245,20 @@ function wireupTeamsView() {
     'owner',
     function(container, user) {
       let currentOwnerID = parseInt(container.domData('owner-id'));
-      if (option.id == currentOwnerID)
+      if (user.id == currentOwnerID)
         return;
 
+      const url = container.domData('action');
       let entry = UTIL.createLiveSearchEntry(container, user, false);
       entry.on('click', async function() {
-        let teamID = container.domData('team-id');
-        let body = { team_id: teamID, user_id: user.id }
+        let body = { user_id: user.id }
 
-        // TODO Make a route
-        const response = await SERVER.send('update-owner', body);
+        const response = await SERVER.sendUrl(url, body);
+        const json = await response.json();
+        if (!json.success) {
+          console.error(json.message);
+          return;
+        }
 
         // TODO Update owner fields
       });
@@ -291,8 +295,6 @@ function wireupTeamsView() {
         roleEntry.text(role.name);
         roleEntry.on('click', function() {
           let roles = container.domData('roles');
-          // const index = roles.indexOf(role.id);
-          // roles.splice(index, 1);
           roles.remove(role.id);
           container.domData('roles', roles);
           $(this).remove();
@@ -312,7 +314,6 @@ function wireupTeamsView() {
     let dom_user = $(this).find('.live-search-team-new-member');//.data();
     let dom_roles = $(this).find('.live-search-nm-team-role');//.data();
 
-    let teamID = parentCard.domData('id');
     let userID = dom_user.domData('id');
     let roleIDs = dom_roles.domData('roles');
 
@@ -321,9 +322,13 @@ function wireupTeamsView() {
       return;
     }
 
-    let body = { team_id: teamID, user_id: userID, role_ids: roleIDs };
-    // TODO Make a route
-    const response = await SERVER.send('add-member', body);
+    let body = { user_id: userID, role_ids: roleIDs };
+    const response = await SERVER.sendUrl($(this).attr('action'), body);
+    const json = await response.json();
+    if (!json.success) {
+      console.error(json.message);
+      return;
+    }
 
     // TODO Clean up
   });
@@ -331,10 +336,16 @@ function wireupTeamsView() {
   $('button.tcm-delete').on('click', async function() {
     let memberCard = $(this).parents('.tc-member');
     let userTeamID = memberCard.domData('id');
+    let url = $(this).domData('url');
 
     // TODO Some kind of are you sure dialogue
     // TODO Make route
-    const response = SERVER.send('remove-member', { user_team_id: userTeamID });
+    const response = await SERVER.sendUrl(url, { user_team_id: userTeamID });
+    const json = await response.json();
+    if (!json.success) {
+      console.error(json.message);
+      return;
+    }
 
     memberCard.remove();
   });

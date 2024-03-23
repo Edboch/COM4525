@@ -34,10 +34,6 @@ Rails.application.routes.draw do
 
   get 'dashboard', to: 'dashboard#index', as: :dashboard
 
-  scope '/dashboard' do
-    get '/:id/site-admin', to: 'admin#index', as: :admin_page
-  end
-
   scope '/metrics' do
     post '/popularity', to: 'admin#retrieve_popularity_metrics', as: :metrics_popularity
     post '/range_popularity', to: 'admin#retrieve_popularity_range', as: :metrics_popularity_range
@@ -56,6 +52,19 @@ Rails.application.routes.draw do
     post('/remove-player',
          to: 'admin#remove_team_player',
          as: :admin_remove_team_player)
+  end
+
+  resources :admin, only: :index do
+    resources :teams, only: :index, module: 'admin'
+    resources :teams, only: [] do
+      post 'set-owner', to: 'admin/teams#set_owner'
+      post 'add-member', to: 'admin/teams#add_member'
+    end
+
+    resources :user_teams, only: [] do
+      post 'remove', to: 'admin/teams#remove_member'
+      post 'update-roles', to: 'admin/teams#update_member_roles'
+    end
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
