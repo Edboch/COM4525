@@ -10,7 +10,7 @@ RSpec.describe 'Admin View Page Metrics' do
   before :all do
     create_list :page_visit, 100
 
-    Rake::Task['page_visits:collate_visits'].invoke
+    Rake::Task['page_visits:collate'].invoke
 
     sleep 2
   end
@@ -48,7 +48,7 @@ RSpec.describe 'Admin View Page Metrics' do
     expect(find(:css, '#gnrl-popularity .pasty')).to have_content pyear.to_s
   end
 
-  specify 'The result from a date range is correct', :js do
+  specify 'The result from a date range is correct', js: true do
     from = (1.year.ago - 3.months).beginning_of_day
     til = (from + 6.months).beginning_of_day
     total = PageVisitGrouping.where(category: 'day').where(period_start: (from..til)).pluck(:count).sum

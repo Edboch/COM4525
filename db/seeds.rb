@@ -3,7 +3,7 @@
 require 'factory_bot_rails'
 
 Team.destroy_all
-TeamRoles.destroy_all
+TeamRole.destroy_all
 
 User.destroy_all
 SiteAdmin.destroy_all
@@ -59,6 +59,8 @@ end
 ############
 ## Generate Page Visits
 
+PageVisit.destroy_all
+
 date_start = 3.years.ago
 
 rand(1200..1500).times do |_i|
@@ -71,4 +73,4 @@ rand(1200..1500).times do |_i|
   end
 end
 
-Rake::Task['page_visits:collate_visits'].invoke
+Rake::Task['page_visits:collate'].invoke

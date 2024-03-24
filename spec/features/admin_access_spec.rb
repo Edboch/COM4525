@@ -14,7 +14,7 @@ RSpec.describe 'Admin Access' do
   end
 
   specify 'A site visitor cannot access the site admin page' do
-    visit admin_page_path(admin)
+    visit admin_index_url
     expect(page).to have_content 'You are not authorized to access this page.'
   end
 
@@ -26,11 +26,11 @@ RSpec.describe 'Admin Access' do
     end
 
     specify 'The admin button does not show up' do
-      expect(page).not_to have_link(href: admin_page_path(regular))
+      expect(page).not_to have_link href: admin_index_url
     end
 
     specify 'I cannot access the admin page via url' do
-      visit admin_page_path(regular)
+      visit admin_index_url
       expect(page).to have_content 'You are not authorized to access this page.'
     end
   end
@@ -43,11 +43,11 @@ RSpec.describe 'Admin Access' do
     end
 
     specify 'The admin button does show up' do
-      expect(page).to have_link(href: admin_page_path(admin))
+      expect(page).to have_link href: admin_index_path(admin)
     end
 
     specify 'I can access the admin page via url' do
-      visit admin_page_path(regular)
+      visit admin_index_url
       expect(page).not_to have_content 'You are not authorized to access this page.'
     end
 
