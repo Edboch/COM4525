@@ -19,7 +19,6 @@ RSpec.describe 'Admin Edit Users', :js do
 
   context 'when editing existing users' do
     let!(:user_card) do
-      find(:css,"#user-card-#{regular.id}").set 'Dominic'
       uc = find "#user-card-#{regular.id}"
       uc.click
       uc
@@ -30,18 +29,11 @@ RSpec.describe 'Admin Edit Users', :js do
     end
 
     specify 'A user\'s name can be changed' do
+      # save_and_open_page
       within user_card do
-        # save_and_open_page
-        puts user_card[:id]
-        puts user_card.visible?
-        puts user_card.text
-        # save_and_open_page
         find(:css, 'input[name="name"]').set 'Dominic'
-        # find(:css, 'input[name="name"]')
         find(:css, 'button.save').click
       end
-      # find(:field, "name").set 'Dominic'
-      # find(:css, "##{user_card[:id]} button").click
 
       sleep 0.2
       expect(regular.reload.name).to eq 'Dominic'
@@ -95,8 +87,6 @@ RSpec.describe 'Admin Edit Users', :js do
         sleep 0.1
 
         user = User.find_by email: email
-        puts user
-        puts user.site_admin
         expect(!user.nil? && user.site_admin.nil?).to be true
       end
 

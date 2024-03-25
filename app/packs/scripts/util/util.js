@@ -88,6 +88,9 @@ window.UTIL = (function($) {
     const allContainers = $(`.live-search-${liveSearchName}`);
     const searchFields = allContainers.domData('search-fields');
     let varName = allContainers.domData('search-data-var');
+    if (varName === undefined)
+      return;
+
     const searchOptions = LIVE_SEARCH[varName];
 
     const emptyOptionsCount = Math.min(maxOptionsWhenEmpty, searchOptions.length);
