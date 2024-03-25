@@ -22,7 +22,7 @@
                locals: { name: 'owner', field_label: 'New Owner',
                          placeholder: 'Owner Name or Email',
                          search_data_var: 'users',
-                         search_fields: [ 'name', 'email' ],
+                         search_fields: %w[name email],
                          other_data: { action: admin_team_set_owner_url(current_user.id, team.id),
                                        owner_id: team.owner.id } })
 
@@ -34,14 +34,14 @@
                  locals: { name: 'team-new-member',
                            placeholder: 'Member Name or Email',
                            search_data_var: 'users',
-                           search_fields: [ 'name', 'email' ],
+                           search_fields: %w[name email],
                            other_data: { member_ids: user_ids } })
 
         .roles-context
           = render(partial: 'snippets/live_search',
                    locals: { name: 'nm-team-role', field_label: 'Team Role',
                              search_data_var: 'team_roles',
-                             search_fields: [ 'name' ], other_data: { roles: [] } })
+                             search_fields: ['name'], other_data: { roles: [] } })
           .role-list
 
         %button.add Add
@@ -67,9 +67,9 @@
 
             - update_roles_url = admin_user_team_update_roles_url current_user.id, member.id
             = render(partial: 'snippets/live_search',
-                     locals: { name: "tm-team-role", placeholder: 'New Role',
+                     locals: { name: 'tm-team-role', placeholder: 'New Role',
                                search_data_var: 'team_roles',
-                               search_fields: [ 'name' ],
+                               search_fields: ['name'],
                                other_data: { url: update_roles_url } })
 
             .tcm-roles

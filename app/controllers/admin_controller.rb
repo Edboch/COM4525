@@ -56,38 +56,13 @@ class AdminController < ApplicationController
   end
 
   def update_user
-    user = User.find_by(id: params[:id]).decorate
-    if user.nil?
-      render json: { success: false, message: "Could not find user by ID #{params[:id]}" }
-      return
-    end
-
-    user.name = params[:name]
-    user.email = params[:email]
-    is_admin = params[:site_admin].nil? || params[:site_admin].to_b
-
-    if is_admin && user.site_admin.nil?
-      user.site_admin = SiteAdmin.new
-    elsif !(is_admin && user.site_admin.nil?)
-      user.site_admin = nil
-    end
-
-    result = user.save
-    render json: { success: result }
+    result = Admin::UpdateUserService.call params[:id], params[:name], params[:email], params[:is_admin]
+    render json: result.to_json
   end
 
   def new_user
-    # TODO: Send email with current password telling the user to update it
-    if params[:name].nil? || params[:email].nil? || params[:password].nil?
-      render status: :unprocessable_entity, json: { message: 'Required parametres not passed in' }
-      return
-    end
-    is_admin = params[:site_admin].nil? || String.new(params[:site_admin]).to_b
-
-    user = User.create name: params[:name], email: params[:email], password: params[:password]
-    user.site_admin = SiteAdmin.new if is_admin
-
-    render json: { success: true }
+    result = Admin::NewUserService.call params[:name], params[:email], params[:password], params[:site_admin]
+    render json: result.to_json
   end
 
   def remove_user

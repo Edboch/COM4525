@@ -52,5 +52,6 @@ module Project
     end
 
     config.autoload_paths += Dir[Rails.root.join('app/lib/*.rb').to_s].each { |l| require l }
+    config.autoload_paths += Dir[Rails.root.join('app/services/*.rb').to_s].each { |l| require l }
   end
 end

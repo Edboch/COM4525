@@ -3,14 +3,14 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin Manage Teams', :js do
-  let!(:site_admin) { create :user, :site_admin }
+  let!(:site_admin) { create(:user, :site_admin) }
   let!(:team_count) { 2 }
 
-  let!(:users) { create_list :user, 20 }
-  let!(:teams) { create_list :team, team_count }
+  let!(:users) { create_list(:user, 20) }
+  let!(:teams) { create_list(:team, team_count) }
 
-  let!(:tr_player) { create :team_role, :manager }
-  let!(:tr_manager) { create :team_role, :player }
+  let!(:tr_player) { create(:team_role, :manager) }
+  let!(:tr_manager) { create(:team_role, :player) }
 
   # TODO: Figure out how to prevent suite specific automatic DB cleanup
   before do
@@ -118,7 +118,7 @@ RSpec.describe 'Admin Manage Teams', :js do
       expect(user_team).to be_nil
     end
 
-    context 'When adding members' do
+    context 'when adding members' do
       let!(:team_card) { random_card }
       let!(:team_id) { team_card['data-id'] }
       let!(:new_member) do

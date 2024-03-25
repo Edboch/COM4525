@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin Edit Users', :js do
-  let!(:admin) { create :user, :site_admin }
-  let!(:regular) { create :user }
+  let!(:admin) { create(:user, :site_admin) }
+  let!(:regular) { create(:user) }
 
   before do
     regular
@@ -99,7 +99,7 @@ RSpec.describe 'Admin Edit Users', :js do
         sleep 0.1
 
         user = User.find_by email: email
-        expect(! (user.nil? || user.site_admin.nil?)).to be true
+        expect(!(user.nil? || user.site_admin.nil?)).to be true
       end
     end
 

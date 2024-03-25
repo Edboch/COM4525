@@ -12,7 +12,7 @@
 -# @param [Hash] other_data - Optional hash of HTML data attributes to be added
 
 - ls_name = "live-search-#{name}"
-- attr_data = defined?(other_data) ? other_data : Hash.new
+- attr_data = defined?(other_data) ? other_data : {}
 - attr_data[:search_data_var] = search_data_var
 - attr_data[:search_fields] = search_fields
 

@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin Access' do
-  let!(:regular) { create :user }
-  let!(:admin) { create :user, :site_admin }
+  let!(:regular) { create(:user) }
+  let!(:admin) { create(:user, :site_admin) }
 
   before do
     regular
@@ -26,7 +26,7 @@ RSpec.describe 'Admin Access' do
     end
 
     specify 'The admin button does not show up' do
-      expect(page).not_to have_link href: admin_index_url
+      expect(page).to have_no_link href: admin_index_url
     end
 
     specify 'I cannot access the admin page via url' do
@@ -48,7 +48,7 @@ RSpec.describe 'Admin Access' do
 
     specify 'I can access the admin page via url' do
       visit admin_index_url
-      expect(page).not_to have_content 'You are not authorized to access this page.'
+      expect(page).to have_no_content 'You are not authorized to access this page.'
     end
 
     specify 'I can access the admin page via the admin button' do

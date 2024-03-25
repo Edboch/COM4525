@@ -14,5 +14,7 @@ class TeamRole < ApplicationRecord
   # Disable STI
   self.inheritance_column = :_type_disabled
 
+  # rubocop:disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :user_teams, join_table: 'user_team_roles'
+  # rubocop:enable Rails/HasAndBelongsToMany
 end

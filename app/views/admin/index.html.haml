@@ -41,7 +41,7 @@
 
       #gnrl-pop-range
         - min_date = @earliest.strftime '%Y-%m-%d'
-        - start_date = [ @earliest, 1.day.ago ].max.strftime '%Y-%m-%d'
+        - start_date = [@earliest, 1.day.ago].max.strftime '%Y-%m-%d'
         - max_date = Time.current.strftime '%Y-%m-%d'
         %label(for='start-date') Start
         %input(type='date' name='start-date'){ min: min_date, max: max_date, value: start_date }

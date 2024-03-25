@@ -28,7 +28,7 @@ class User < ApplicationRecord
   has_many :user_teams, dependent: :destroy
   has_many :teams, through: :user_teams
 
-  has_many :owned_teams, class_name: :Team, foreign_key: :owner_id do
+  has_many :owned_teams, class_name: :Team, foreign_key: :owner_id, dependent: :destroy, inverse_of: :owner do
     def destroy(team)
       # TODO
     end
