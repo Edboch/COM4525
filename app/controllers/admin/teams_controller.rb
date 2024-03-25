@@ -36,10 +36,6 @@ class Admin::TeamsController < ApplicationController
     end
 
     roles = TeamRole.where id: params[:role_ids].split(',')
-    if roles.size == 0
-      render json: { success: false, message: "Unknown Role IDs #{params[:role_ids]}" }
-      return
-    end
 
     UserTeam.create team: team, user: user, roles: roles
     render json: { success: true }

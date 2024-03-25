@@ -250,6 +250,7 @@ function wireupTeamsView() {
 
       const url = container.domData('action');
       let entry = UTIL.createLiveSearchEntry(container, user, false);
+      entry.attr('data-owner-id', user.id);
       entry.on('click', async function() {
         let body = { user_id: user.id }
 
@@ -273,7 +274,9 @@ function wireupTeamsView() {
       if (currentMembers.includes(user.id))
         return;
 
-      return UTIL.createLiveSearchEntry(container, user);
+      let entry = UTIL.createLiveSearchEntry(container, user);
+      entry.domData('user-id', user.id);
+      return entry;
   });
 
   UTIL.wireupLiveSearch(

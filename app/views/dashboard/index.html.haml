@@ -2,7 +2,7 @@
 =link_to 'Create a new team', create_team_path
 
 - @teams.each do |team|
-  - roles = team.user_teams.where(user: current_user).roles
+  - roles = team.user_teams.find_by(user: current_user).roles
 
   - if roles.where(type: :managerial).count.positive?
     %h2= "Team name: #{team.name}"

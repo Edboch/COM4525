@@ -9,7 +9,8 @@ class DashboardController < ApplicationController
   before_action :fill_visitor
 
   def index
-    @teams = (current_user.owned_teams + current_user.teams).uniq
+    @owned_teams = current_user.owned_teams
+    @teams = current_user.teams
   end
 
   private
