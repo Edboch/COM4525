@@ -14,16 +14,15 @@ class UserTeamsController < ApplicationController
   def create
     @team = Team.find(params[:team_id])
     user = User.find_by(email: user_team_params[:email])
-    
     return handle_no_user unless user
-    
+
     if UserTeam.find_by(user_id: user.id, team_id: @team.id)
       handle_user_exist
     else
       create_user_team(user)
     end
   end
-  
+
   # takes both a team id player id as a parameter
   def destroy
     user_team = UserTeam.find_by(team_id: params[:team_id], user_id: params[:user_id])
@@ -48,11 +47,11 @@ class UserTeamsController < ApplicationController
   def create_user_team(user)
     @user_team = @team.user_teams.build(user_id: user.id)
 
-    if @user_team.save
-      redirect_to dashboard_path, notice: I18n.t('userteam.create.success')
+    return unless @user_team.save
+
+    redirect_to dashboard_path, notice: I18n.t('userteam.create.success')
     # else
     #   render :new, status: :unprocessable_entity
-    end
   end
 
   def handle_no_user
