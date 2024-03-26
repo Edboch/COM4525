@@ -14,18 +14,16 @@ class UserTeamsController < ApplicationController
   def create
     @team = Team.find(params[:team_id])
     user = User.find_by(email: user_team_params[:email])
-
-    if user
-      if UserTeam.find_by(user_id: user.id, team_id: @team.id)
-        handle_user_exist
-      else
-        create_user_team(user)
-      end
+    
+    return handle_no_user unless user
+    
+    if UserTeam.find_by(user_id: user.id, team_id: @team.id)
+      handle_user_exist
     else
-      handle_no_user
+      create_user_team(user)
     end
   end
-
+  
   # takes both a team id player id as a parameter
   def destroy
     user_team = UserTeam.find_by(team_id: params[:team_id], user_id: params[:user_id])
@@ -58,6 +56,8 @@ class UserTeamsController < ApplicationController
   end
 
   def handle_no_user
+    @user_team = @team.user_teams.build
+    @user_team.errors.add(:email, 'No user found with this email')
     render :new, status: :unprocessable_entity
   end
 
