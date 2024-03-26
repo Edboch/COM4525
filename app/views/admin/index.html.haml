@@ -1,60 +1,80 @@
--# Use <template> for automatically hidden HTML that can be cloned and used with JS
-!!!
-%html{ lang: 'en-GB' }
-  %head
-    = render 'layouts/tags'
+:javascript
+  let ALL_MANAGERS = #{@js_managers};
+  let ALL_PLAYERS = #{@js_players};
 
-    %title Admin - Pitch Wize
+#admin-panel
+  %aside#control-panel
+    -# TODO: An option for the admin to select their default view
+    -#       Would work by giving the selected class to the appropriate button
+    -#       and then the JS will handle the rest
+    %button#general General Stats
+    %button#users.selected Users
+    %button#teams.selected Teams
 
-    :javascript
-      let ALL_MANAGERS = #{@js_managers};
-      let ALL_PLAYERS = #{@js_players};
+  %section#info-block
+    #general
+      #gnrl-popularity
+        %h2.title
+          %p Site Visits
+        %h3.total
+          %p= @visit_metrics[:total]
+        .pastw
+          %span.label Past Week
+          %span.value= @visit_metrics[:past_week]
+        .pastm
+          %span.label Past Month
+          %span.value= @visit_metrics[:past_month]
+        .pasty
+          %span.label Past Year
+          %span.value= @visit_metrics[:past_year]
+        .avgw
+          %span.label Weekly Average
+          %span.value= @visit_metrics[:avg_week]
+        .avgm
+          %span.label Monthly Average
+          %span.value= @visit_metrics[:avg_month]
+        .avgy
+          %span.label Yearly Average
+          %span.value= @visit_metrics[:avg_year]
 
+        %button.refr
+          %span Refresh
 
-    = stylesheet_pack_tag 'admin_styles', media: 'all'
-    = javascript_pack_tag 'admin_script'
+      #gnrl-pop-range
+        - min_date = @earliest.strftime('%Y-%m-%d')
+        - max_date = Time.current.strftime('%Y-%m-%d')
+        %label(for='start-date') Start
+        %input(type='date' name='start-date'){ min: min_date, max: max_date }
+        %label(for='end-date') Start
+        %input(type='date' name='end-date'){ min: min_date, max: max_date }
 
-    %meta(name='popularity'){ content: metrics_popularity_url }
-    %meta(name='get-users'){ content: admin_all_users_url }
-    %meta(name='update-user'){ content: admin_update_user_url }
-    %meta(name='remove-user'){ content: admin_remove_user_url }
-    %meta(name='update-manager'){ content: admin_update_team_manager_url }
-    %meta(name='new-team'){ content: admin_new_team_url }
-    %meta(name='add-player'){ content: admin_add_team_player_url }
-    %meta(name='remove-player'){ content: admin_remove_team_player_url }
+        %button.send Send
 
-    %body
-      = render 'layouts/nav'
+        .output
 
-      %main
-        #admin-panel
-          %aside#control-panel
-            -# TODO: An option for the admin to select their default view
-            -#       Would work by giving the selected class to the appropriate button
-            -#       and then the JS will handle the rest
-            %button#general General Stats
-            %button#users Users
-            %button#teams.selected Teams
+    #users
+      #new-user
+        #new-user-title New User
+        #new-user-foldout
+          %label(for='name') Name
+          %input(name='name')
+          %label(for='email') Email
+          %input(name='email' type='email')
+          %input(name='password' readonly='readonly')
+          %button#new-user-regen-pw Regenerate
 
+          %label(for='player') Is Player?
+          %input(type='checkbox' name='player')
+          %label(for='manager') Is Manager?
+          %input(type='checkbox' name='manager')
+          %label(for='site-admin') Is Site Admin?
+          %input(type='checkbox' name='site-admin')
 
-          %section#info-block
+          %button#new-user-submit Submit
 
-            #general
-              #gnrl-popularity
-                .ltitle Site Visits
-                %section
-                  .total
-                    .label Total
-                    .value 10000
-                  .avgm
-                    .label Average / Month
-                    .value
-                  .avgw
-                    .label Average / Week
-                    .value
-
-            #users
-              .card-list
+      .card-list
+        - @users.each do |user|
+          = render partial: 'admin/user_card', locals: { user: user }
 
             #teams
               #new-team
@@ -78,27 +98,8 @@
 
 
 %template.user-card
-  .user-card
-    .uc-pill
-      .email
-      .role-list
-        %span
+  = render partial: 'admin/user_card', locals: { user: { id: 0, name: '', email: '', roles: [] } }
 
-    .uc-enlarge
-      %input(name='name')
-      %input(name='email')
-
-      %input(type='checkbox' name='player')
-      %label(for='player') Player
-      %input(type='checkbox' name='manager')
-      %label(for='manager') Manager
-      %input(type='checkbox' name='site-admin')
-      %label(for='site-admin') Site Admin
-
-      %button.save Save
-      %button.pwreset Reset Password
-      %button.remove Remove Account
-      
 %template.search-entry
   .search-entry
     -# %span.name

@@ -9,6 +9,7 @@
 #   Character.create(name: "Luke", movie: movies.first)
 role_player = Role.find_or_create_by! name: 'Player'
 role_manager = Role.find_or_create_by! name: 'Manager'
+role_site_admin = Role.find_or_create_by! name: 'Site Admin'
 
 User.destroy_all
 SiteAdmin.destroy_all
@@ -18,6 +19,7 @@ SiteAdmin.destroy_all
 # So we can log in is a specific role during development
 sa_user = User.create email: 'site-admin@grr.la', password: 'password', name: 'Dominic Admin'
 SiteAdmin.create user_id: sa_user.id
+UserRole.create user_id: sa_user.id, role_id: role_site_admin.id
 
 player = User.create email: 'player@grr.la', password: 'password', name: 'Player Messi'
 UserRole.create user_id: player.id, role_id: role_player.id
@@ -74,11 +76,12 @@ rand(35..60).times do
   roll = rand 100
   user = User.create email: email, password: pw, name: name
 
-  if roll < 48
-    UserRole.create user_id: user.id, role_id: role_player.id
-  elsif roll < 98
-    UserRole.create user_id: user.id, role_id: role_manager.id
-  else
+  UserRole.create user_id: user.id, role_id: role_player.id if roll < 53
+  UserRole.create user_id: user.id, role_id: role_manager.id if roll > 45
+
+  roll = rand 28
+  if roll < 1
+    UserRole.create user_id: user.id, role_id: role_site_admin.id
     SiteAdmin.create user_id: user.id
   end
 end
@@ -142,4 +145,17 @@ Team.find_each do |team|
 end
 
 ############
-# TODO: Generate page visits
+
+date_start = 3.years.ago
+
+rand(1200..1500).times do |_i|
+  next_visit_time = rand(date_start..20.minutes.ago)
+  rand(1..20).times do |_j|
+    v_start = next_visit_time
+    v_end = v_start + rand(0..5).minutes + rand(1..59).seconds
+    PageVisit.create visit_start: v_start, visit_end: v_end
+    break if v_end > Time.current
+  end
+end
+
+Rake::Task['page_visits:collate_visits'].invoke

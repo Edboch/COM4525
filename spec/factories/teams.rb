@@ -15,6 +15,8 @@ FactoryBot.define do
   factory :team do
     name { Faker::Creature::Animal.name }
     location_name { Faker::Address.city }
-    owner_id { 1 }
+    # Wanted to set this to be nil, but it seems like it would
+    # would be more hassle than it's worth
+    owner_id { 0 }
   end
 end

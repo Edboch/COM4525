@@ -1,0 +1,35 @@
+!!!
+%html{ lang: 'en-GB' }
+  %head
+    = render 'layouts/tags'
+
+    %title Admin - Pitch Wize
+
+    = stylesheet_pack_tag 'admin_styles', media: 'all'
+    = javascript_pack_tag 'admin_script'
+
+    %meta(name='popularity'){ content: metrics_popularity_url }
+    %meta(name='pop-date-range'){ content: metrics_popularity_range_url }
+
+    %meta(name='get-users'){ content: admin_all_users_url }
+    %meta(name='update-user'){ content: admin_update_user_url }
+    %meta(name='new-user'){ content: admin_new_user_url }
+    %meta(name='remove-user'){ content: admin_remove_user_url }
+
+    %meta(name='update-manager'){ content: admin_update_team_manager_url }
+    %meta(name='add-player'){ content: admin_add_team_player_url }
+    %meta(name='remove-player'){ content: admin_remove_team_player_url }
+
+    -# unless @js_managers.nil?
+    -# :javascript
+    -#   let ALL_MANAGERS = #{@js_managers};
+
+    -#- unless @js_players.nil?
+    -#  :javascript
+    -#    let ALL_PLAYERS = #{@js_players};
+
+    %body
+      = render 'layouts/nav'
+
+      %main
+        = yield
