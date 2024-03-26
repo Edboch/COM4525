@@ -76,25 +76,25 @@
         - @users.each do |user|
           = render partial: 'admin/user_card', locals: { user: user }
 
-            #teams
-              #new-team
-                #new-team-title New Team
-                #new-team-foldout
-                  .manager-list
-                    %label(for='teamname') Team Name
-                    %input(name='team_name')
-                    %label(for='location_name') Location Name
-                    %input(name='location_name') 
-                    %label(for='manager_email') Manager's Email
-                    %input(type='email' name='manager_email')
-                    .search-dropdown.position-static.text-dark
+    #teams
+      #new-team
+        #new-team-title New Team
+        #new-team-foldout
+          .manager-list
+            %label(for='teamname') Team Name
+            %input(name='team_name')
+            %label(for='location_name') Location Name
+            %input(name='location_name') 
+            %label(for='manager_email') Manager's Email
+            %input(type='email' name='manager_email')
+            .search-dropdown.position-static.text-dark
 
 
-                  %button#new-team-submit Submit
+          %button#new-team-submit Submit
 
-              .teams-list
-                - @teams.each do |team|
-                  = render partial: 'admin/team_card', locals: { team: team }
+      .teams-list
+        - @teams.each do |team|
+          = render partial: 'admin/team_card', locals: { team: team }
 
 
 %template.user-card
