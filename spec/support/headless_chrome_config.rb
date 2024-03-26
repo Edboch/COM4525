@@ -32,7 +32,7 @@ Capybara.javascript_driver = :headless_chrome
 
 RSpec.configure do |config|
   config.after :each, :js do
-    warn page.driver.browser.logs.get(:browser)
+    warn page.driver.browser.logs.get(:browser) if defined? page.driver.browser.logs
   end
 end
 
