@@ -1,16 +1,18 @@
-%h1 Manage Your Team
-=link_to 'Create a new team', create_team_path
+// teams for which the user owns
+- @owned_teams.each do |team|
+  %h3= "Manage #{team.name}"
+  = link_to 'View Team', team_path(team)
 
+// other teams for which the user is involved 
 - @teams.each do |team|
-  - roles = team.user_teams.find_by(user: current_user).roles
+  %h3= team.name.to_s
+  = link_to 'View Team', team_path(team)
 
-  - if roles.where(type: :managerial).count.positive?
-    %h2= "Team name: #{team.name}"
-    = link_to 'View Team', team_path(team)
+%h2 Your invites
+= link_to 'View invites', player_invites_path
+%h2 Upcoming Fixtures
+= link_to 'View your next matches', player_upcoming_matches_path 
 
-  - if roles.where(type: :regular).count.positive?
-    %h1 Player
-    = link_to 'View invites', player_invites_path
-    %h1 Upcoming Fixtures
-    = link_to 'View your next matches', player_upcoming_matches_path 
+%h2 Create a team
+=link_to 'Create a new team', create_team_path
 

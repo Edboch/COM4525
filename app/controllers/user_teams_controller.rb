@@ -32,6 +32,11 @@ class UserTeamsController < ApplicationController
 
   def accept
     @user_team.update(accepted: true)
+
+    team_role = TeamRole.find_or_create_by(name: 'regular', type: :regular)
+
+    @user_team.roles << team_role unless @user_team.roles.include?(team_role)
+
     redirect_to dashboard_path, notice: I18n.t('userteam.respond.accept')
   end
 

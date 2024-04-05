@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  devise_for :users
   resources :teams
 
   resources :teams do
@@ -15,8 +16,6 @@ Rails.application.routes.draw do
       delete 'reject'
     end
   end
-
-  devise_for :users
 
   get 'profile', to: 'user#show', as: :user_profile
   get 'profile/edit', to: 'user#edit', as: :edit_user_profile

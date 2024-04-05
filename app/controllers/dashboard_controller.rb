@@ -10,7 +10,7 @@ class DashboardController < ApplicationController
 
   def index
     @owned_teams = current_user.owned_teams
-    @teams = current_user.teams
+    @teams = current_user.teams.joins(:user_teams).where(user_teams: { accepted: true })
   end
 
   private

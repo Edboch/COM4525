@@ -9,7 +9,7 @@
 #  type :integer
 #
 class TeamRole < ApplicationRecord
-  enum :type, { regular: 0, staff: 1, managerial: 2 }
+  enum :type, { regular: 0, staff: 1 }
 
   # Disable STI
   self.inheritance_column = :_type_disabled
