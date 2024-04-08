@@ -75,6 +75,7 @@ class AdminController < ApplicationController
     user.email = params[:email]
     user.destroy
   end
+
   private
 
   ############

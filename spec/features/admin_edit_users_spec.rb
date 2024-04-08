@@ -56,12 +56,12 @@ RSpec.describe 'Admin Edit Users', :js do
     sleep 0.2
     expect(player.reload.email).to eq email
   end
-  
+
   specify 'A user can be deleted from the admin page' do
-    pending("Still trying to fixded an error where \
-             'expect().to raise error' is not working as expected")
-    # Error message: ActiveRecord::RecordNotFound: 
-                            # Couldn't find User with [WHERE "users"."id" = $1]
+    pending('Still trying to fixded an error where
+             "expect().to raise error" is not working as expected')
+    # Error message: ActiveRecord::RecordNotFound:
+    # Couldn't find User with [WHERE "users"."id" = $1]
     # user_email = nil
     # first_user_id = nil
     # email = nil
