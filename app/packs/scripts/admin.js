@@ -104,7 +104,7 @@ async function populateUnsolvedReports() {
   const response = await SERVER.fetch('get-unsolved-reports');
   const json = await response.json();
 
-  let reportCard = $('template.report-card').contents()[1];
+  let reportCard = $('template.unsolved-report-card').contents()[1];
   let idxCard = 0;
   function addCard(report) {
     let card = $(reportCard).clone();
@@ -129,7 +129,7 @@ async function populateSolvedReports() {
   const response = await SERVER.fetch('get-solved-reports');
   const json = await response.json();
 
-  let reportCard = $('template.report-card').contents()[1];
+  let reportCard = $('template.solved-report-card').contents()[1];
   let idxCard = 0;
   function addCard(report) {
     let card = $(reportCard).clone();
@@ -137,9 +137,11 @@ async function populateSolvedReports() {
     card.addClass('open');
     card.find('.content').text(report.content);
     card.find('.user_id').text(report.user_id);
+    /*
     card.find('button.remove').on('click',function(){
       SERVER.send('remove-report', { 'id': report.id, 'user_id': report.user_id, 'content': report.content });
     })
+    */
 
     SOLVED_REPORT_CARDS.append(card);
     idxCard++;

@@ -112,12 +112,20 @@ main {
   }
 }
 
-.report-card {
+.unsolved-report-card {
   margin: 0.4em;
   background-color: white;
   color: black;
   padding: 0.2em .3em;
 }
+
+.solved-report-card {
+  margin: 0.4em;
+  background-color: white;
+  color: black;
+  padding: 0.2em .3em;
+}
+
 .rc-pill {
   display: flex;
   flex-flow: row nowrap;
