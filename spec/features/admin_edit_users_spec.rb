@@ -58,26 +58,26 @@ RSpec.describe 'Admin Edit Users', :js do
   end
   
   specify 'A user can be deleted from the admin page' do
-    pending("Still trying to fixded an error where 
-            'expect().to raise error' is not working as expected")
+    pending("Still trying to fixded an error where \
+             'expect().to raise error' is not working as expected")
     # Error message: ActiveRecord::RecordNotFound: 
-                            #Couldn't find User with [WHERE "users"."id" = $1]
-    #user_email = nil
-    #first_user_id = nil
-    #email = nil
-    #user_card = find("user-#{player.id}.user-card")
+                            # Couldn't find User with [WHERE "users"."id" = $1]
+    # user_email = nil
+    # first_user_id = nil
+    # email = nil
+    # user_card = find("user-#{player.id}.user-card")
     user_card = find('.user-card')
     user_card.click
     within user_card do
-      #user_email = player.email
-      #first_user_id = find(:css, '[name="User id"]')
-      #print(user_email)
+      # user_email = player.email
+      # first_user_id = find(:css, '[name="User id"]')
+      # print(user_email)
       find(:css, 'button.remove').click
-      #user_email = find(:css, '[name="email"]')
+      # user_email = find(:css, '[name="email"]')
     end
     sleep 0.2
     expect(player.reload).to be_nil
-    #expect(player.reload.email).not_to eql(user_email)
-    #expect{player.reload}.to raise_error
+    # expect(player.reload.email).not_to eql(user_email)
+    # expect{player.reload}.to raise_error
   end
 end
