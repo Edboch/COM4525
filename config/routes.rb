@@ -45,7 +45,7 @@ Rails.application.routes.draw do
     post '/unsolved-reports', to: 'admin#retrieve_unsolved_reports', as: :admin_unsolved_reports
     post '/solved-reports', to: 'admin#retrieve_solved_reports', as: :admin_solved_reports
 
-    post '/remove-report', to: 'admin#remove_report', as: :admin_remove_report
+    post '/set-report-to-solved', to: 'admin#set_report_to_solved', as: :admin_set_report_to_solved
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

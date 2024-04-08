@@ -94,13 +94,22 @@ class AdminController < ApplicationController
     render json: response
   end
 
-  def remove_report
+  # def remove_report
+  # report = Report.find_by id: params[:id]
+  # return if report.nil?
+
+  # report.user_id = params[:user_id]
+  # report.content = params[:content]
+  # report.destroy
+  # end
+
+  def set_report_to_solved
     report = Report.find_by id: params[:id]
     return if report.nil?
 
-    report.user_id = params[:user_id]
-    report.content = params[:content]
-    report.destroy
+    report.solved = true
+    result = report.save
+    render json: { success: result }
   end
 
   private

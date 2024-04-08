@@ -112,8 +112,8 @@ async function populateUnsolvedReports() {
     card.addClass('open');
     card.find('.content').text(report.content);
     card.find('.user_id').text(report.user_id);
-    card.find('button.remove').on('click',function(){
-      SERVER.send('remove-report', { 'id': report.id, 'user_id': report.user_id, 'content': report.content });
+    card.find('button.set_report_to_solved').on('click',function(){
+      SERVER.send('set-report-to-solved', { 'id': report.id, 'user_id': report.user_id, 'content': report.content, 'solved': true });
     })
 
     UNSOLVED_REPORT_CARDS.append(card);
