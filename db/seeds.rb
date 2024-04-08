@@ -25,7 +25,6 @@ UserRole.create user_id: player.id, role_id: role_player.id
 manager = User.create email: 'manager@grr.la', password: 'password', name: 'John Manager'
 UserRole.create user_id: manager.id, role_id: role_manager.id
 
-
 #############
 # Generated users
 
@@ -79,7 +78,6 @@ rand(35..60).times do
     SiteAdmin.create user_id: user.id
   end
 end
-
 
 ############
 # TODO: Generate page visits

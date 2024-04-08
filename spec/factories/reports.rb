@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: reports
@@ -10,7 +12,7 @@
 #
 FactoryBot.define do
   factory :report do
-    user_id { "" }
-    content { "MyText" }
+    user_id { '' }
+    content { 'MyText' }
   end
 end

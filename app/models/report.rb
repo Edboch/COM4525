@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: reports
@@ -9,5 +11,5 @@
 #  user_id    :bigint
 #
 class Report < ApplicationRecord
-    belongs_to :user
+  belongs_to :user
 end

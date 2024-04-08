@@ -79,7 +79,7 @@ class AdminController < ApplicationController
   def retrieve_reports
     reports = []
     Report.find_each do |report|
-      reports.append({id: report.id, user_id: report.user_id, content: report.content})
+      reports.append({ id: report.id, user_id: report.user_id, content: report.content })
     end
     response = { reports: reports }
     render json: response
@@ -93,6 +93,7 @@ class AdminController < ApplicationController
     report.content = params[:content]
     report.destroy
   end
+
   private
 
   ############
@@ -105,5 +106,3 @@ class AdminController < ApplicationController
     # redirect_to root_url
   end
 end
-
-
