@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'rspec/expectations'
+
 RSpec.describe 'Admin Edit Users', :js do
   let!(:site_admin) do
     sa = User.create email: 'grand@authority.com', password: 'password', name: 'Eye of Sauron'
