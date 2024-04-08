@@ -69,9 +69,12 @@ rand(35..60).times do
   roll = rand 100
   user = User.create email: email, password: pw, name: name
 
-  if roll < 48
+  if roll < 28
     UserRole.create user_id: user.id, role_id: role_player.id
-    Report.create user_id: user.id, content: 'see if work'
+    Report.create user_id: user.id, content: 'see if work', solved: false
+  elsif roll < 48
+    UserRole.create user_id: user.id, role_id: role_player.id
+    Report.create user_id: user.id, content: 'see if work', solved: true
   elsif roll < 98
     UserRole.create user_id: user.id, role_id: role_manager.id
   else

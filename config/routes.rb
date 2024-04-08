@@ -42,7 +42,9 @@ Rails.application.routes.draw do
     post '/all-users', to: 'admin#retrieve_users', as: :admin_all_users
     post '/update-user', to: 'admin#update_user', as: :admin_update_user
     post '/remove-user', to: 'admin#remove_user', as: :admin_remove_user
-    post '/all-reports', to: 'admin#retrieve_reports', as: :admin_all_reports
+    post '/unsolved-reports', to: 'admin#retrieve_unsolved_reports', as: :admin_unsolved_reports
+    post '/solved-reports', to: 'admin#retrieve_solved_reports', as: :admin_solved_reports
+
     post '/remove-report', to: 'admin#remove_report', as: :admin_remove_report
   end
 

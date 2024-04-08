@@ -76,10 +76,19 @@ class AdminController < ApplicationController
     user.destroy
   end
 
-  def retrieve_reports
+  def retrieve_unsolved_reports
     reports = []
     Report.find_each do |report|
-      reports.append({ id: report.id, user_id: report.user_id, content: report.content })
+      reports.append({ id: report.id, user_id: report.user_id, content: report.content }) if report.solved == false
+    end
+    response = { reports: reports }
+    render json: response
+  end
+
+  def retrieve_solved_reports
+    reports = []
+    Report.find_each do |report|
+      reports.append({ id: report.id, user_id: report.user_id, content: report.content }) if report.solved == true
     end
     response = { reports: reports }
     render json: response

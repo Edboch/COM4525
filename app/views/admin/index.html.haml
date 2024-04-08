@@ -13,7 +13,8 @@
     %meta(name='get-users'){ content: admin_all_users_url }
     %meta(name='update-user'){ content: admin_update_user_url }
     %meta(name='remove-user'){ content: admin_remove_user_url }
-    %meta(name='get-reports'){ content: admin_all_reports_url }
+    %meta(name='get-unsolved-reports'){ content: admin_unsolved_reports_url }
+    %meta(name='get-solved-reports'){ content: admin_solved_reports_url }
     %meta(name='remove-report'){ content: admin_remove_report_url }
     
     
@@ -29,7 +30,8 @@
             -#       and then the JS will handle the rest
             %button#general General Stats
             %button#users.selected Users
-            %button#reports Reports
+            %button#unsolved_reports Unsolved Reports
+            %button#solved_reports Solved Reports
 
 
           %section#info-block
@@ -51,7 +53,10 @@
             #users
               .card-list
             
-            #reports
+            #unsolved_reports
+              .card-list
+
+            #solved_reports
               .card-list
 
 
