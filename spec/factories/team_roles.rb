@@ -12,7 +12,7 @@ FactoryBot.define do
   factory :team_role do
     trait :manager do
       name { 'Manager' }
-      type { :managerial }
+      type { :staff }
     end
 
     trait :player do

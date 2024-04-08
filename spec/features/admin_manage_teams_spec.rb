@@ -111,7 +111,7 @@ RSpec.describe 'Admin Manage Teams', :js do
         click_on 'Delete'
       end
 
-      sleep 0.1
+      sleep 0.2
 
       team_id = team_card['data-id']
       user_team = UserTeam.find_by user_id: member_id, team_id: team_id
