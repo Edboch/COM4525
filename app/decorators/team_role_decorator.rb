@@ -5,9 +5,8 @@ class TeamRoleDecorator < ApplicationDecorator
   delegate_all
 
   def type_name
-    return 'Regular' if regular?
     return 'Staff' if staff?
 
-    'Managerial' if managerial?
+    'Regular'
   end
 end
