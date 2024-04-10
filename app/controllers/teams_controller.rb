@@ -47,8 +47,8 @@ class TeamsController < ApplicationController
   end
 
   def players
-    # fetch all userteams with this team id
-    user_teams = UserTeam.where(team_id: @team.id)
+    # fetch all userteams with this team id and accepted invite
+    user_teams = UserTeam.where(team_id: @team.id, accepted: true)
 
     # fetch all players with userteams user id
     players = []

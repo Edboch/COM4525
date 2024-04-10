@@ -22,7 +22,7 @@
     "shakapacker": "7.2.2",
     "style-loader": "^3.3.1",
     "terser-webpack-plugin": "5",
-    "webpack": "5",
+    "webpack": "^5.90.3",
     "webpack-assets-manifest": "5",
     "webpack-cli": "4",
     "webpack-dev-server": "^4.9.3",
@@ -33,6 +33,11 @@
     "presets": [
       "./node_modules/shakapacker/package/babel/preset.js"
     ]
+  },
+  "overrides": {
+    "webpack-dev-server": {
+      "express": "latest"
+    }
   },
   "browserslist": [
     "defaults"
