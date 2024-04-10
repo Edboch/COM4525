@@ -14,9 +14,11 @@
 class Team < ApplicationRecord
   validates :location_name, presence: true
   validates :name, presence: true
-  validates :owner_id, presence: true
 
   has_many :user_teams, dependent: :destroy
   has_many :users, through: :user_teams
+
   has_many :matches, dependent: :destroy
+
+  belongs_to :owner, class_name: :User, inverse_of: :owned_teams
 end

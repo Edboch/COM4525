@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ "$SKIP_CHECKS" = "1" ]; then
+  exit 0
+fi
+
 abort=false
 
 dir=$(mktemp -d)

@@ -1,6 +1,5 @@
 :javascript
-  let ALL_MANAGERS = #{@js_managers};
-  let ALL_PLAYERS = #{@js_players};
+  let LIVE_SEARCH = { 'users': #{@js_users}, 'team_roles': #{@js_roles} };
 
 #admin-panel
   %aside#control-panel
@@ -8,7 +7,7 @@
     -#       Would work by giving the selected class to the appropriate button
     -#       and then the JS will handle the rest
     %button#general General Stats
-    %button#users.selected Users
+    %button#users Users
     %button#teams.selected Teams
 
   %section#info-block
@@ -41,12 +40,13 @@
           %span Refresh
 
       #gnrl-pop-range
-        - min_date = @earliest.strftime('%Y-%m-%d')
-        - max_date = Time.current.strftime('%Y-%m-%d')
+        - min_date = @earliest.strftime '%Y-%m-%d'
+        - start_date = [@earliest, 1.day.ago].max.strftime '%Y-%m-%d'
+        - max_date = Time.current.strftime '%Y-%m-%d'
         %label(for='start-date') Start
-        %input(type='date' name='start-date'){ min: min_date, max: max_date }
-        %label(for='end-date') Start
-        %input(type='date' name='end-date'){ min: min_date, max: max_date }
+        %input(type='date' name='start-date'){ min: min_date, max: max_date, value: start_date }
+        %label(for='end-date') End
+        %input(type='date' name='end-date'){ min: min_date, max: max_date, value: max_date }
 
         %button.send Send
 
@@ -63,10 +63,6 @@
           %input(name='password' readonly='readonly')
           %button#new-user-regen-pw Regenerate
 
-          %label(for='player') Is Player?
-          %input(type='checkbox' name='player')
-          %label(for='manager') Is Manager?
-          %input(type='checkbox' name='manager')
           %label(for='site-admin') Is Site Admin?
           %input(type='checkbox' name='site-admin')
 
@@ -83,13 +79,7 @@
 
 
 %template.user-card
-  = render partial: 'admin/user_card', locals: { user: { id: 0, name: '', email: '', roles: [] } }
+  = render partial: 'admin/user_card', locals: { user: User.new }
 
 %template.search-entry
   .search-entry
-    -# %span.name
-    -# %span.email
-
-%template.tc-player
-  - locals = { team_id: '{0}', player: @template_member }
-  = render partial: 'admin/team_player', locals: locals
