@@ -21,21 +21,10 @@ class CampusLeaguesScraper
 
   def initialize(input_url, team_name)
     @url_suffix = extract_league_url_suffix(input_url)
-    @key_mapping = {
-      'Team' => :name,
-      'P' => :played,
-      'W' => :wins,
-      'D' => :draws,
-      'L' => :losses,
-      'GF' => :goals_for,
-      'GA' => :goals_against,
-      'GD' => :goal_difference,
-      'Pts' => :points
-    }
     @team_name = team_name
-    # TODO: add this back in
     @league = League.new(extract_teams_from_league)
-    @results = results_to_fixtures(extract_results)
+    @fixtures = create_fixtures(extract_fixtures('fixtures'))
+    @results = create_fixtures(extract_fixtures('results'))
   end
 
   def extract_league_url_suffix(url)
@@ -61,16 +50,10 @@ class CampusLeaguesScraper
     headers = table.css('tr').first.css('th').map { |header| header.text.strip }
     table.css('tr')[1..].each do |row|
       row_data = row.css('td').map { |cell| cell.text.strip }
-      row_hash = headers.zip(row_data).to_h { |header, value| [@key_mapping[header], value] }
+      row_hash = headers.zip(row_data).to_h { |header, value| [KEY_MAPPING[header], value] }
       teams << Team.new(row_hash)
     end
     teams
-  end
-
-  def extract_fixtures
-    url = build_url('fixtures')
-    html = get_raw_html(url)
-    puts html
   end
 
   def extract_game(row, game_date)
@@ -94,10 +77,9 @@ class CampusLeaguesScraper
     position == :first ? scores.first : scores.last
   end
 
-  def extract_results
-    url = build_url('results')
+  def extract_fixtures(fixture_type)
+    url = build_url(fixture_type)
     html = get_raw_html(url)
-
     current_date = nil
     results = []
 
@@ -112,9 +94,15 @@ class CampusLeaguesScraper
     results
   end
 
-  def results_to_fixtures(results)
-    results.select { |result| result[:team_a] == @team_name || result[:team_b] == @team_name }
-           .map { |result| TeamFixture.new(@team_name, result) }
+  def create_fixtures(fixtures)
+    fixtures.select { |fixture| fixture[:team_a] == @team_name || fixture[:team_b] == @team_name }
+            .map { |fixture| TeamFixture.new(@team_name, fixture) }
+  end
+
+  def display_fixtures
+    @fixtures.each do |fixture|
+      puts fixture
+    end
   end
 
   def display_results
@@ -190,7 +178,19 @@ end
 url = 'https://sportsheffield.sportpad.net/leagues/view/1471/86'
 
 team_name = 'CompSoc Greens'
+
 cl_scraper = CampusLeaguesScraper.new(url, team_name)
 
+puts 'Fixtures'
+puts '----------------'
+cl_scraper.display_fixtures
+puts ''
+
+puts 'Results'
+puts '----------------'
 cl_scraper.display_results
+puts ''
+
+puts 'Table'
+puts '----------------'
 cl_scraper.league.display_table
