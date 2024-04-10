@@ -34,3 +34,6 @@ Rails/UnknownEnv:
     - production
     - development
     - test
+
+FactoryBot/ExcessiveCreateList:
+  Enabled: false

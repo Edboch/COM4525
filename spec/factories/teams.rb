@@ -13,10 +13,23 @@
 #
 FactoryBot.define do
   factory :team do
-    name { Faker::Creature::Animal.name }
+    transient do
+      owner do
+        num_users = User.count
+        User.offset(rand(num_users)).first
+      end
+    end
+
     location_name { Faker::Address.city }
-    # Wanted to set this to be nil, but it seems like it would
-    # would be more hassle than it's worth
-    owner_id { 0 }
+    name do
+      name = Faker::Creature::Animal.name.pluralize.capitalize
+      if rand > 0.3
+        "#{location_name} #{name}"
+      else
+        "The #{name}"
+      end
+    end
+
+    owner_id { owner.id }
   end
 end

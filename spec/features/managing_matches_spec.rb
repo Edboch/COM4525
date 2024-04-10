@@ -5,25 +5,21 @@ require 'rails_helper'
 # Testing for Match CRUD functionality
 # (including fixture display)
 RSpec.describe 'Managing Matches' do
-  let!(:manager1) { create(:user, :manager) }
-  let!(:role_manager) { Role.find_or_create_by! name: 'Manager' }
+  let!(:manager1) { create(:user) }
 
   let!(:team) { create(:team) }
 
   # navigate to appropriate page
   before do
-    UserRole.create user_id: manager1.id, role_id: role_manager.id
-
-    t = team
-    t.owner_id = manager1.id
-    t.save
+    team.owner_id = manager1.id
+    team.save
     create(:match, team: team, opposition: 'Past Opposition', start_time: 1.day.ago)
     create(:match, team: team, opposition: 'Future Opposition', start_time: 1.day.from_now)
 
     visit '/'
     login_as(manager1, scope: :user)
     visit dashboard_path
-    click_on 'View team'
+    click_on 'View Team'
   end
 
   # Creating match testing

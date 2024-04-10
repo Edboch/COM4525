@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  devise_for :users
   resources :teams
 
   resources :teams do
@@ -15,8 +16,6 @@ Rails.application.routes.draw do
       delete 'reject'
     end
   end
-
-  devise_for :users
 
   get 'profile', to: 'user#show', as: :user_profile
   get 'profile/edit', to: 'user#edit', as: :edit_user_profile
@@ -33,10 +32,6 @@ Rails.application.routes.draw do
   get 'player/upcoming_matches', to: 'players#upcoming_matches', as: :player_upcoming_matches
 
   get 'dashboard', to: 'dashboard#index', as: :dashboard
-
-  scope '/dashboard' do
-    get '/:id/site-admin', to: 'admin#index', as: :admin_page
-  end
 
   scope '/metrics' do
     post '/popularity', to: 'admin#retrieve_popularity_metrics', as: :metrics_popularity
@@ -57,6 +52,19 @@ Rails.application.routes.draw do
     post('/remove-player',
          to: 'admin#remove_team_player',
          as: :admin_remove_team_player)
+  end
+
+  resources :admin, only: :index do
+    resources :teams, only: :index, module: 'admin'
+    resources :teams, only: [] do
+      post 'set-owner', to: 'admin/teams#set_owner'
+      post 'add-member', to: 'admin/teams#add_member'
+    end
+
+    resources :user_teams, only: [] do
+      post 'remove', to: 'admin/teams#remove_member'
+      post 'update-roles', to: 'admin/teams#update_member_roles'
+    end
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

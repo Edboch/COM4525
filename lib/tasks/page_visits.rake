@@ -2,7 +2,7 @@
 
 namespace :page_visits do
   desc 'Collate the number of visits over standard time periods'
-  task collate_visits: :environment do
+  task collate: :environment do
     PageVisitGrouping.destroy_all
 
     visits_in = { year: 0, month: 0, week: 0 }
@@ -42,7 +42,6 @@ namespace :page_visits do
     PageVisitGrouping.create category: 'past week', count: visits_in[:week]
     PageVisitGrouping.create category: 'past month', count: visits_in[:month]
     PageVisitGrouping.create category: 'past year', count: visits_in[:year]
-
     num_weeks = ((now - earliest.beginning_of_week) / 1.week).to_i
 
     total = PageVisit.count

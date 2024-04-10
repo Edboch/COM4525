@@ -9,9 +9,8 @@ class DashboardController < ApplicationController
   before_action :fill_visitor
 
   def index
-    return unless current_user.manager?
-
-    @teams = Team.where(owner_id: current_user.id)
+    @owned_teams = current_user.owned_teams
+    @teams = current_user.teams.joins(:user_teams).where(user_teams: { accepted: true })
   end
 
   private
