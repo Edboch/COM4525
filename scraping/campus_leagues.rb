@@ -34,7 +34,7 @@ class CampusLeaguesScraper
     }
     @team_name = team_name
     # TODO: add this back in
-    # @league = League.new(extract_teams_from_league)
+    @league = League.new(extract_teams_from_league)
     @results = results_to_fixtures(extract_results)
   end
 
@@ -73,12 +73,15 @@ class CampusLeaguesScraper
     puts html
   end
 
-  def extract_game(row)
+  def extract_game(row, game_date)
+    kickoff_time = Time.parse(row.css('.new-row')[1].text.strip)
+    kickoff_date = DateTime.new(game_date.year, game_date.month, game_date.day, kickoff_time.hour, kickoff_time.min)
     {
       team_a: extract_team_from_fixture(row, '.team-a'),
       team_b: extract_team_from_fixture(row, '.team-b'),
       score_a: extract_score_from_fixture(row, '.score', :first),
-      score_b: extract_score_from_fixture(row, '.score', :last)
+      score_b: extract_score_from_fixture(row, '.score', :last),
+      kickoff: kickoff_date
     }
   end
 
@@ -94,7 +97,19 @@ class CampusLeaguesScraper
   def extract_results
     url = build_url('results')
     html = get_raw_html(url)
-    html.css('tr[id]').map { |row| extract_game(row) }
+
+    current_date = nil
+    results = []
+
+    html.css('tr').each do |row|
+      if row['class']&.include?('inner-header')
+        current_date = Date.parse(row.text.strip)
+      elsif row['id']
+        results << extract_game(row, current_date)
+      end
+    end
+
+    results
   end
 
   def results_to_fixtures(results)
@@ -103,9 +118,8 @@ class CampusLeaguesScraper
   end
 
   def display_results
-    @results.each do |game|
-      puts game
-      puts "#{game[:team_a]} #{game[:score_a]} vs #{game[:score_b]} #{game[:team_b]}"
+    @results.each do |result|
+      puts result
     end
   end
 end
@@ -116,14 +130,14 @@ class Team
 
   def initialize(team_data)
     @name = team_data[:name]
-    @played = team_data[:played]
-    @points = team_data[:points]
-    @wins = team_data[:wins]
-    @draws = team_data[:draws]
-    @losses = team_data[:losses]
-    @goal_difference = team_data[:goal_difference]
-    @goals_for = team_data[:goals_for]
-    @goals_against = team_data[:goals_against]
+    @played = team_data[:played].to_i
+    @points = team_data[:points].to_i
+    @wins = team_data[:wins].to_i
+    @draws = team_data[:draws].to_i
+    @losses = team_data[:losses].to_i
+    @goal_difference = team_data[:goal_difference].to_i
+    @goals_for = team_data[:goals_for].to_i
+    @goals_against = team_data[:goals_against].to_i
   end
 
   def to_s
@@ -133,11 +147,14 @@ end
 
 # holds fixture details
 class TeamFixture
-  attr_accessor :opposition, :start_time, :goals_for, :goals_against
+  attr_accessor :opposition, :start_time, :goals_for, :goals_against, :kickoff
 
   def initialize(team_name, match_hash)
     @team_name = team_name
     team_key = match_hash.key(@team_name)
+
+    raise "Team name #{@team_name} not found in match hash." if team_key.nil?
+
     opposition_key = team_key == :team_a ? :team_b : :team_a
     score_key_for = team_key == :team_a ? :score_a : :score_b
     score_key_against = opposition_key == :team_a ? :score_a : :score_b
@@ -145,12 +162,11 @@ class TeamFixture
     @opposition = match_hash[opposition_key]
     @goals_for = match_hash[score_key_for]
     @goals_against = match_hash[score_key_against]
-    # TODO: Add the code to scrape start_time
-    # @start_time = start_time
+    @kickoff = match_hash[:kickoff]
   end
 
   def to_s
-    "#{@team_name} (#{@goals_for}) vs. #{@opposition} (#{@goals_against})"
+    "#{@team_name} (#{@goals_for}) vs. #{@opposition} (#{@goals_against}) @ #{@kickoff}"
   end
 end
 
@@ -162,22 +178,19 @@ class League
     @teams = teams
   end
 
-  # need to fix this - doesn't rank correctly
   def display_table
-    sorted_teams = @teams.sort_by { |team| [team.points, team.goal_difference, team.goals_for, -team.goals_against] }
+    sorted_teams = @teams.sort_by { |team| [-team.points, -team.goal_difference, -team.goals_for, team.goals_against] }
     sorted_teams.each_with_index do |team, index|
       puts "#{index + 1}. #{team}"
     end
   end
 end
 
-url = 'https://sportsheffield.sportpad.net/leagues/view/1497/86'
-# url = 'https://sportsheffield.sportpad.net/leagues/view/1471/86'
+# url = 'https://sportsheffield.sportpad.net/leagues/view/1497/86'
+url = 'https://sportsheffield.sportpad.net/leagues/view/1471/86'
 
 team_name = 'CompSoc Greens'
 cl_scraper = CampusLeaguesScraper.new(url, team_name)
 
-cl_scraper.results.each do |result|
-  puts result
-end
-# cl_scraper.league.display_table
+cl_scraper.display_results
+cl_scraper.league.display_table
