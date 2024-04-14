@@ -59,18 +59,16 @@ end
 ############
 ## Generate Page Visits
 
-PageVisit.destroy_all
+SiteVisit.destroy_all
 
 date_start = 3.years.ago
 
-rand(1200..1500).times do |_i|
-  next_visit_time = rand(date_start..20.minutes.ago)
-  rand(1..20).times do |_j|
-    v_start = next_visit_time
-    v_end = v_start + rand(0..5).minutes + rand(1..59).seconds
-    PageVisit.create visit_start: v_start, visit_end: v_end
-    break if v_end > Time.current
-  end
+rand(600..800).times do
+  v_start = rand(date_start...2.hours.ago)
+  limit = v_start + 1.hour + 59.minutes + 50.seconds
+  v_end = rand(v_start...limit)
+
+  SiteVisit.create visit_start: v_start, visit_end: v_end
 end
 
-Rake::Task['page_visits:collate'].invoke
+Rake::Task['site_visits:collate'].invoke

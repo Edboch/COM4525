@@ -16,7 +16,7 @@ class AdminController < ApplicationController
     # TODO: Implement sorting defaults, saved in the SiteAdmin table
     @users = User.all
     @visit_metrics = popularity_data
-    @earliest = PageVisitGrouping.where(category: 'earliest')
+    @earliest = SiteVisitGrouping.where(category: 'earliest')
                                  .first&.period_start || 1.day.ago
 
     @teams = Team.all
@@ -44,7 +44,7 @@ class AdminController < ApplicationController
     start_time = get_timezone_time time_zone, params[:start].to_i
     end_time = get_timezone_time time_zone, params[:end].to_i
 
-    total = PageVisitGrouping.where(category: 'day').where(period_start: (start_time..end_time)).pluck(:count).sum
+    total = SiteVisitGrouping.where(category: 'day').where(period_start: (start_time..end_time)).pluck(:count).sum
 
     render json: { total: total }
   end

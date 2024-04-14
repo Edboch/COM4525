@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_20_183647) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_13_211529) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -112,17 +112,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_183647) do
     t.integer "count", default: 0, null: false
   end
 
-  create_table "page_visit_groupings", force: :cascade do |t|
-    t.string "category", null: false
-    t.integer "count", default: 0, null: false
-    t.datetime "period_start"
-  end
-
-  create_table "page_visits", force: :cascade do |t|
-    t.datetime "visit_start"
-    t.datetime "visit_end"
-  end
-
   create_table "penultimate_page_counts", force: :cascade do |t|
     t.bigint "landing_page_id", null: false
     t.integer "count", default: 0, null: false
@@ -160,6 +149,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_183647) do
   create_table "site_admins", force: :cascade do |t|
     t.bigint "user_id"
     t.index ["user_id"], name: "index_site_admins_on_user_id"
+  end
+
+  create_table "site_visit_groupings", force: :cascade do |t|
+    t.string "category", null: false
+    t.integer "count", default: 0, null: false
+    t.datetime "period_start"
+  end
+
+  create_table "site_visits", force: :cascade do |t|
+    t.datetime "visit_start"
+    t.datetime "visit_end"
   end
 
   create_table "team_roles", force: :cascade do |t|
