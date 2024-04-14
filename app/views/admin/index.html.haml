@@ -17,22 +17,22 @@
           %p Site Visits
         %h3.total
           %p= @visit_metrics[:total]
-        .pastw
+        .statistic.pastw
           %span.label Past Week
           %span.value= @visit_metrics[:past_week]
-        .pastm
+        .statistic.pastm
           %span.label Past Month
           %span.value= @visit_metrics[:past_month]
-        .pasty
+        .statistic.pasty
           %span.label Past Year
           %span.value= @visit_metrics[:past_year]
-        .avgw
+        .statistic.avgw
           %span.label Weekly Average
           %span.value= @visit_metrics[:avg_week]
-        .avgm
+        .statistic.avgm
           %span.label Monthly Average
           %span.value= @visit_metrics[:avg_month]
-        .avgy
+        .statistic.avgy
           %span.label Yearly Average
           %span.value= @visit_metrics[:avg_year]
 
@@ -73,6 +73,15 @@
           = render partial: 'admin/user_card', locals: { user: user }
 
     #teams
+      .stats-block
+        .statistic
+          %h3.label Number of Teams
+          %h4.value= @teams.size
+
+        .statistic
+          %h3.label Number of site visits per team
+          %h4.value= "#{@visits_teams_ratio}"
+
       .teams-list
         - @teams.each do |team|
           = render partial: 'admin/team_card', locals: { team: team }

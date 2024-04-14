@@ -25,6 +25,8 @@ class AdminController < ApplicationController
 
     @template_user = FE_User.new id: 0, name: '', email: '', is_admin: false
     @template_member = FE_Member.new id: '{1}', name: ''
+
+    @visits_teams_ratio = SiteVisit.count / @teams.size
   end
 
   ############
