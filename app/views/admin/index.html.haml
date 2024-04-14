@@ -74,13 +74,13 @@
 
     #teams
       .stats-block
-        .statistic
+        .statistic.num-teams
           %h3.label Number of Teams
           %h4.value= @teams.size
 
-        .statistic
+        .statistic.visits-per-team
           %h3.label Number of site visits per team
-          %h4.value= "#{@visits_teams_ratio}"
+          %h4.value= @visits_teams_ratio
 
       .teams-list
         - @teams.each do |team|

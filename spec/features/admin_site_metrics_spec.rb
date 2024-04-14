@@ -5,7 +5,7 @@ require 'rake'
 
 Rails.application.load_tasks
 
-RSpec.describe 'Admin View Page Metrics' do
+RSpec.describe 'Admin View Site Metrics' do
   # rubocop:disable RSpec/BeforeAfterAll
   before :all do
     create_list(:site_visit, 100)
@@ -61,6 +61,26 @@ RSpec.describe 'Admin View Page Metrics' do
       sleep 0.2
 
       expect(find('.output')).to have_content total.to_s
+    end
+  end
+
+  context 'when viewing team metrics' do
+    before do
+      create_list(:user, 20)
+      create_list(:team, 3)
+
+      visit current_path
+      click_on 'Teams'
+    end
+
+    specify 'I can see the number of teams' do
+      num_teams = Team.count
+      expect(find(:css, '#teams .statistic.num-teams')).to have_content num_teams
+    end
+
+    specify 'I can see the number of site vists per team' do
+      visits_per_team = SiteVisit.count / Team.count
+      expect(find(:css, '#teams .statistic.visits-per-team')).to have_content visits_per_team
     end
   end
 end
