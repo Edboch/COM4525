@@ -87,11 +87,8 @@ class AdminController < ApplicationController
   end
 
   def new_team
-    user = User.find_by email: params[:manager_email]
-    return if user.nil?
-
-    team = Team.create location_name: params[:location_name], name: params[:team_name], owner_id: user.id
-    team.save
+    result = Admin::NewTeamService.call params[:location_name], params[:team_name], params[:owner_email]
+    render json: result.to_json
   end
 
   # Adds a new player to the corresponding team

@@ -404,50 +404,38 @@ function wireupTeamsView() {
 
 async function wireUpCreateNewTeam() {
   const domNewTeam = $('#new-team');
-  let domTeamName = domNewTeam.find('[name="team_name"]');
-  let domLocationName = domNewTeam.find('[name="location_name"]');
-  let domManagerEmail = domNewTeam.find('[name="manager_email"]');
+  let inp_teamname = domNewTeam.find('[name="team_name"]');
+  let inp_location = domNewTeam.find('[name="location_name"]');
+  let inp_owneremail = domNewTeam.find('[name="live-search-first-owner"]');
 
-  let managers = $('.manager-list');
-
-  domNewTeam.find('#new-team-submit').on('click', function() {
-    if (domTeamName.val() === '') {
+  domNewTeam.find('#new-team-submit').on('click', async function() {
+    if (inp_teamname.val() === '') {
       console.error('NEW TEAM No team name provided');
       return;
     }
-    if (domLocationName.val() === '') {
+    if (inp_location.val() === '') {
       console.error('NEW TEAM No location name provided');
       return;
     }
-    if (domManagerEmail.val() === '') {
+    if (inp_owneremail.val() === '') {
       console.error("NEW TEAM Manager's email not provided");
       return;
     }
-    SERVER.send('new-team', {
-      'team_name': domTeamName.val(), 'location_name': domLocationName.val(), 'manager_email': domManagerEmail.val()
+    const response = await SERVER.send('new-team', {
+      team_name: inp_teamname.val(), location_name: inp_location.val(), owner_email: inp_owneremail.val()
     });
+    inp_teamname.val('');
+    inp_location.val('');
+    inp_owneremail.val('');
     
   });
 
-  const tmpl_entry = $($('template.search-entry').contents()[1]);
-
-  const createManagerEntry = function(jq_searchBox, manager) {
-    let entry = tmpl_entry.clone();
-    entry.html(`${manager.email}`);
-
-    entry.on('click', function() {
-      managers.find('input[name="manager_email"]').val(`${manager.email}`);
-    });
-
-    return entry;
-  }
-
-  UTIL.createSearchBox(
-    managers.find('input[name="manager_email"]'),
-    (jq) => jq.siblings('.search-dropdown'),
-    ALL_MANAGERS,
-    ['email'],
-    createManagerEntry
+  UTIL.wireupLiveSearch(
+    'first-owner',
+    function(container, user) {
+      let entry = UTIL.createLiveSearchEntry(container, user);
+      return entry;},
+    maxOptionsWhenEmpty = 3
   );
 }
 
