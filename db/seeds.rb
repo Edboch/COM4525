@@ -57,13 +57,33 @@ teams.each do |team|
 end
 
 ############
-## Generate Page Visits
+## Generate User Activity
 
 SiteVisit.destroy_all
+TeamActivity.destroy_all
 
 date_start = 3.years.ago
+num_days = (3.years / 1.day).to_i
+last_day = Time.current.beginning_of_day
 
-rand(600..800).times do
+Team.find_each do |team|
+  day = rand(date_start...Time.current).beginning_of_day
+  while day <= last_day
+    num_visits = rand(0..team.users.size)
+    num_visits = [1, num_visits].max
+    TeamActivity.create team: team, day_start: day, active_users: num_visits
+
+    v_end = rand(day..day.end_of_day)
+    v_end = [v_end, Time.current].min
+    limit = v_end - 2.hours
+    v_start = rand(limit..v_end)
+    SiteVisit.create visit_start: v_start, visit_end: v_end
+
+    day = day + [1, 1, 1, 1, 2, 2, 3, 4].sample.days
+  end
+end
+
+rand(300..500).times do
   v_start = rand(date_start...2.hours.ago)
   limit = v_start + 1.hour + 59.minutes + 50.seconds
   v_end = rand(v_start...limit)

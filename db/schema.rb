@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_13_211529) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_15_211505) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -162,6 +162,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_13_211529) do
     t.datetime "visit_end"
   end
 
+  create_table "team_activities", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.integer "active_users", default: 0, null: false
+    t.datetime "day_start", null: false
+    t.index ["team_id"], name: "index_team_activities_on_team_id"
+  end
+
   create_table "team_roles", force: :cascade do |t|
     t.string "name", null: false
     t.integer "type"
@@ -210,6 +217,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_13_211529) do
   add_foreign_key "like_reviews", "landing_users"
   add_foreign_key "like_reviews", "reviews"
   add_foreign_key "matches", "teams"
+  add_foreign_key "team_activities", "teams"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"
 end
