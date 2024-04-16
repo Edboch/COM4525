@@ -28,6 +28,9 @@ class AdminController < ApplicationController
 
     num_teams = @teams.size
     @visits_teams_ratio = SiteVisit.count / [1, num_teams].max
+
+    recent_activities = TeamActivity.where('day_start > ?', 2.weeks.ago.beginning_of_day)
+    @num_teams_past_two_weeks = recent_activities.select(:team_id).distinct.count
   end
 
   ############

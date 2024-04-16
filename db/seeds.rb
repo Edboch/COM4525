@@ -22,7 +22,7 @@ manager = User.create email: 'manager@grr.la', password: 'password', name: 'John
 ### Generate Users
 
 rand(80..100).times do
-  user = FactoryBot.create :user, :proper_password
+  user = FactoryBot.create :user
 
   SiteAdmin.create user_id: user.id if rand(30) < 1
 end

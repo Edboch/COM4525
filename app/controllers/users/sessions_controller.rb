@@ -12,14 +12,15 @@ module Users
     # POST /resource/sign_in
     def create
       super
-       
+      return if current_user.nil?
+
+      TeamActivityService.call current_user
     end
 
     # DELETE /resource/sign_out
-    def destroy
-      super
-      logger.info 'LOG OUT #############################'
-    end
+    # def destroy
+    #   super
+    # end
 
     # protected
 

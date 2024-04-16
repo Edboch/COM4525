@@ -82,6 +82,10 @@
           %h3.label Number of site visits per team
           %h4.value= @visits_teams_ratio
 
+        .statistic.team-activity
+          %h3.label Number of teams using the application in the past two weeks
+          %h4.value= @num_teams_past_two_weeks
+
       .teams-list
         - @teams.each do |team|
           = render partial: 'admin/team_card', locals: { team: team }
