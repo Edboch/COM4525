@@ -33,4 +33,9 @@ module MetricsHelper
       past_year: SiteVisitGrouping.where(category: 'past year').first&.count
     }
   end
+
+  def get_team_activity_from(start)
+    TeamActivity.where('day_start > ?', start.beginning_of_day)
+                .select(:team_id).distinct.count
+  end
 end

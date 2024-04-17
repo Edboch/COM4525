@@ -69,6 +69,15 @@ RSpec.describe 'Admin View Site Metrics' do
       create_list(:user, 20)
       create_list(:team, 3)
 
+      days_back = 20
+      while days_back > 0
+        team = Team.offset(rand(Team.count)).first
+        day_start = days_back.days.ago.beginning_of_day
+        TeamActivity.create team: team, day_start: day_start, active_users: rand(team.users.size)
+
+        days_back -= rand(1..3)
+      end
+
       visit current_path
       click_on 'Teams'
     end
@@ -81,6 +90,12 @@ RSpec.describe 'Admin View Site Metrics' do
     specify 'I can see the number of site vists per team' do
       visits_per_team = SiteVisit.count / Team.count
       expect(find(:css, '#teams .statistic.visits-per-team')).to have_content visits_per_team
+    end
+
+    specify 'I can see the number of active teams in the last two weeks' do
+      recent_activities = TeamActivity.where('day_start > ?', 2.weeks.ago.beginning_of_day)
+      num_teams_past_two_weeks = recent_activities.select(:team_id).distinct.count
+      expect(find(:css, '#teams .statistic.team-activity')).to have_content num_teams_past_two_weeks
     end
   end
 end

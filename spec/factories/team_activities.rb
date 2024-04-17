@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: team_activities
@@ -15,8 +17,7 @@
 #
 #  fk_rails_...  (team_id => teams.id)
 #
-FactoryBot.define do
-  factory :team_activity do
-    
-  end
-end
+# FactoryBot.define do
+#   factory :team_activity do
+#   end
+# end

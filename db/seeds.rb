@@ -63,7 +63,6 @@ SiteVisit.destroy_all
 TeamActivity.destroy_all
 
 date_start = 3.years.ago
-num_days = (3.years / 1.day).to_i
 last_day = Time.current.beginning_of_day
 
 Team.find_each do |team|
@@ -79,7 +78,7 @@ Team.find_each do |team|
     v_start = rand(limit..v_end)
     SiteVisit.create visit_start: v_start, visit_end: v_end
 
-    day = day + [1, 1, 1, 1, 2, 2, 3, 4].sample.days
+    day += [1, 1, 1, 1, 2, 2, 3, 4].sample.days
   end
 end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: team_activities
@@ -17,6 +19,6 @@
 #
 require 'rails_helper'
 
-RSpec.describe TeamActivity, type: :model do
+RSpec.describe TeamActivity do
   pending "add some examples to (or delete) #{__FILE__}"
 end

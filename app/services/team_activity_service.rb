@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# Updates the TeamActivity for today for all
+# the teams that the provided user is a part of
+#
+# @param [User] user The user whose activity to log
 class TeamActivityService < ApplicationService
   def initialize(user)
     @user = user

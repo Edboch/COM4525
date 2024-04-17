@@ -26,11 +26,11 @@ class AdminController < ApplicationController
     @template_user = FE_User.new id: 0, name: '', email: '', is_admin: false
     @template_member = FE_Member.new id: '{1}', name: ''
 
-    num_teams = @teams.size
-    @visits_teams_ratio = SiteVisit.count / [1, num_teams].max
+    @visits_teams_ratio = SiteVisit.count / [1, @teams.size].max
 
-    recent_activities = TeamActivity.where('day_start > ?', 2.weeks.ago.beginning_of_day)
-    @num_teams_past_two_weeks = recent_activities.select(:team_id).distinct.count
+    # recent_activities = TeamActivity.where('day_start > ?', 2.weeks.ago.beginning_of_day)
+    # @num_teams_past_two_weeks = recent_activities.select(:team_id).distinct.count
+    @num_teams_past_two_weeks = get_team_activity_from 2.weeks.ago
   end
 
   ############
