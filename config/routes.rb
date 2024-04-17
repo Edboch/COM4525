@@ -54,15 +54,21 @@ Rails.application.routes.draw do
   end
 
   resources :admin, only: :index do
-    resources :teams, only: :index, module: 'admin'
-    resources :teams, only: [] do
-      post 'set-owner', to: 'admin/teams#set_owner'
-      post 'add-member', to: 'admin/teams#add_member'
+    resources :users, module: 'admin', only: :index do
+      post 'new'
+      post 'update'
+      post 'remove'
     end
 
-    resources :user_teams, only: [] do
-      post 'remove', to: 'admin/teams#remove_member'
-      post 'update-roles', to: 'admin/teams#update_member_roles'
+    # resources :teams, only: :index, module: 'admin'
+    resources :teams, module: 'admin', only: :index do
+      post 'set-owner'
+      post 'add-member'
+    end
+
+    resources :user_teams, module: 'admin', only: [] do
+      post 'remove', to: 'teams#remove_member'
+      post 'update-roles', to: 'teams#update_member_roles'
     end
   end
 
