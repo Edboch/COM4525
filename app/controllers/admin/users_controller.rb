@@ -9,6 +9,7 @@ module Admin
     before_action :check_access_rights
 
     def index
+
     end
 
     ###################

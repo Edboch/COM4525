@@ -1,8 +1,19 @@
+-# Admin User Card
+-# HAML for a user card on the admin dashboard
+-#
+-# @param [ActiveRecord] user - The user to be rendered
+
 .user-card{ id: "user-card-#{user.id}" }
   .uc-pill
+    %a.page-link{ href: admin_users_url(current_user.id, user.id) }
+      %span Go
+
     .email= user.email
 
   .uc-enlarge
+    %a.page-link{ href: admin_users_url(current_user.id, user.id) }
+      %span Go
+
     %input(name='name'){ value: user.name }
     %input(name='email'){ value: user.email }
 

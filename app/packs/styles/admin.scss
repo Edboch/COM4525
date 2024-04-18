@@ -43,6 +43,17 @@ main {
   }
 }
 
+.page-link {
+  width: 5%;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #CCCCCC;
+}
+
 // ##################################
 // General
 // ##################################
@@ -110,7 +121,7 @@ main {
     }
 
     .uc-enlarge {
-      display: block;
+      display: flex;
     }
   }
 }
@@ -119,18 +130,20 @@ main {
   display: flex;
   flex-flow: row nowrap;
 
+  gap: .8em;
+
   .email {
     font-size: 1.4em;
-    width: 28%;
     overflow-x: hidden;
-    margin-right: 1em;
   }
+}
 
-  .role-list {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-  }
+.uc-enlarge {
+  flex-flow: row nowrap;
+
+  gap: 0.3em;
+
+  align-items: baseline;
 }
 
 // ##################################
