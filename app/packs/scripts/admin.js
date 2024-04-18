@@ -19,10 +19,6 @@ const GENERATED_PASSWORD_LENGTH = 8;
  */
 function getRoles(parent) {
   let roles = '';
-  if (parent.find('[name="player"]').prop('checked'))
-    roles += 'p';
-  if (parent.find('[name="manager"]').prop('checked'))
-    roles += 'm';
   if (parent.find('[name="site-admin"]').prop('checked'))
     roles += 's';
   return roles;
@@ -108,11 +104,11 @@ async function setupPopularityView() {
 }
 
 /**
- * Wires up the functionality of the create new user dialogue bo
+ * Wires up the functionality of the create new user dialogue box
  */
 async function wireUpCreateNewUser() {
   const domNewUser = $('#new-user');
-  let domPassword = domNewUser.find('[name="password"]');
+  let inp_password = domNewUser.find('[name="password"]');
 
   // Generates a random string for the password
   domNewUser.find('#new-user-regen-pw').on('click', function() {
@@ -128,70 +124,55 @@ async function wireUpCreateNewUser() {
       }
     }
 
-    domPassword.val(generated);
+    inp_password.val(generated);
   });
 
-  let domName = domNewUser.find('[name="name"]');
-  let domEmail = domNewUser.find('[name="email"]');
-  let domPlayer = domNewUser.find('[name="player"]');
-  let domManager = domNewUser.find('[name="manager"]');
-  let domSiteAdmin = domNewUser.find('[name="site-admin"]');
+  let inp_name = domNewUser.find('[name="name"]');
+  let inp_email = domNewUser.find('[name="email"]');
+  let inp_admin = domNewUser.find('[name="site-admin"]');
 
   domNewUser.find('#new-user-submit').on('click', async function() {
     // Checks to see the name, email and password fields are not empty
-    if (domName.val() === '') {
+    if (inp_name.val() === '') {
       console.error('NEW USER No name provided');
       return;
     }
-    if (domEmail.val() === '') {
+    if (inp_email.val() === '') {
       console.error('NEW USER No email provided');
       return;
     }
-    if (domPassword.val() === '') {
+    if (inp_password.val() === '') {
       console.error('NEW USER No password provided');
       return;
     }
 
-    // Check to see if any roles have been sent
-    let roles = getRoles(domNewUser);
-    if (roles === '') {
-      console.error('NEW USER No role set');
-      return;
-    }
-
     const response = await SERVER.send('new-user', {
-      'name': domName.val(), 'email': domEmail.val(), 'password': domPassword.val(), 'roles': roles
+      name: inp_name.val(), email: inp_email.val(),
+      password: inp_password.val(), site_admin: inp_admin.prop('checked')
     });
 
-    populateUsers();
-    domName.val('');
-    domEmail.val('');
-    domPassword.val('');
-    domPlayer.prop('checked', false);
-    domManager.prop('checked', false);
-    domSiteAdmin.prop('checked', false);
+    // TODO Update the page with the new user
+
+    inp_name.val('');
+    inp_email.val('');
+    inp_password.val('');
+    inp_admin.prop('checked', false);
   });
 }
 
 /**
- * Pulls the users from the server then uses them to populate the user table div
- * Also wires uup the functionallity in the card
+ * Wires up the functionality of the user cards on the page
+ *
+ * Configures the cards so that they can open and close upon
+ * clicking on them.
+ * Adds functionality to the cards' save button so the data
+ * can be sent to the server.
  */
-async function populateUsers() {
-  const response = await SERVER.fetch('get-users');
-  const json = await response.json();
-
-  // Deletes all children
-  USER_CARDS.empty();
-
-  let userCard = $('template.user-card').contents()[1];
+function wireupUserCards() {
   let idxCard = 0;
-
-  function addCard(user) {
-    let card = $(userCard).clone();
-    card.attr('id', 'user-' + user.id);
-
-    const index = idxCard;
+  USER_CARDS.children().each(function() {
+    let card = $(this);
+    const index = idxCard; // Necessary due to closures
     card.on('click', function(evt) {
       // When a closed card is clicked, close an other open card then
       // open the clicked card
@@ -213,55 +194,212 @@ async function populateUsers() {
       IDX_OPEN_CARD = index;
     });
 
-    card.find('.email').text(user.email);
-    let inpName = card.find('[name="name"]');
-    inpName.val(user.name);
-    let inpEmail = card.find('[name="email"]');
-    inpEmail.val(user.email);
+    let id = card.attr('id').split('-')[2];
+    let inp_name = card.find('[name="name"]');
+    let inp_email = card.find('[name="email"]');
+    let inp_admin = card.find('[name="site-admin"]');
 
-    let roleList = card.find('.role-list span');
-    user.roles.forEach(function(role, idx) {
-      let tickbox = card.find('input:checkbox[name="' + role + '"]');
-
-      let text = roleList.text();
-      if (idx != 0)
-        text += " | ";
-      roleList.text(text + role);
-
-      if (tickbox) {
-        tickbox.prop('checked', true);
-      }
+    card.find('button.pwreset').on('click', function() {
+      // TODO: Reset password
     });
 
     card.find('button.save').on('click', function() {
-      let name = inpName.val();
-      let email = inpEmail.val();
+      let name = inp_name.val();
+      let email = inp_email.val();
       // TODO 'Are you sure' alert if a role change is detected
       // If site admin is changed also ask for password confirmation
-      let roles = getRoles(card);
-      if (roles === '') {
-        console.error('EDIT USER No role set');
-        return;
-      }
-      SERVER.send('update-user', { 'id': user.id, 'name': name, 'email': email, 'roles': roles });
+      let admin = inp_admin.prop('checked');
+      SERVER.send('update-user', { id: id, name: name, email: email, site_admin: admin });
     });
 
     card.find('button.remove').on('click',function(){
-      let name = inpName.val();
-      let email = inpEmail.val();
-      SERVER.send('remove-user', { 'id': user.id, 'name': name, 'email': email });
+      let name = inp_name.val();
+      let email = inp_email.val();
+      SERVER.send('remove-user', { 'id': id, 'name': name, 'email': email });
     })
 
-    USER_CARDS.append(card);
     idxCard++;
-  }
-
-  // Players then managers then site admins
-  // This will be configurable
-  json.players.forEach(addCard);
-  json.managers.forEach(addCard);
-  json.site_admins.forEach(addCard);
+  });
 }
+
+/**
+ * Wires up the functionality of the teams view
+ *
+ * Enabling the pills to fold in and out
+ * Wiring up the search bars with a live dropdown feature, as well as
+ * defining the entry generation functions
+ */
+function wireupTeamsView() {
+  let teams = $('.teams-list');
+  UTIL.wireupPillFoldout(
+    teams, '.team-card', 'input, button, .live-search, .tc-new-member .role-list, .tc-member',
+    jq_pill => jq_pill.find('.live-search-dropdown').empty()
+  );
+
+  UTIL.wireupPillFoldout(
+    $('.tc-member-list'), '.tc-member', 'input, button, .live-search',
+    jq_pill => jq_pill.find('.live-search-dropdown').empty()
+  );
+
+  UTIL.wireupLiveSearch(
+    'owner',
+    function(container, user) {
+      let currentOwnerID = parseInt(container.domData('owner-id'));
+      if (user.id == currentOwnerID)
+        return;
+
+      const url = container.domData('action');
+      let entry = UTIL.createLiveSearchEntry(container, user, false);
+      entry.attr('data-owner-id', user.id);
+      entry.on('click', async function() {
+        let body = { user_id: user.id }
+
+        const response = await SERVER.sendUrl(url, body);
+        const json = await response.json();
+        if (!json.success) {
+          console.error(json.message);
+          return;
+        }
+
+        // TODO Update owner fields
+      });
+      return entry;
+    });
+
+
+  UTIL.wireupLiveSearch(
+    'team-new-member',
+    function(container, user) {
+      let currentMembers = container.domData('member-ids');
+      if (currentMembers.includes(user.id))
+        return;
+
+      let entry = UTIL.createLiveSearchEntry(container, user);
+      entry.domData('user-id', user.id);
+      return entry;
+  });
+
+  UTIL.wireupLiveSearch(
+    'nm-team-role',
+    function(container, role) {
+      let selectedRoles = container.domData('roles');
+      if (selectedRoles.includes(role.id))
+        return;
+
+      let entry = UTIL.createLiveSearchEntry(container, role, false);
+      entry.on('click', function() {
+        const roles = container.domData('roles');
+        let newRoles = roles.slice(0);
+        newRoles.push(role.id);
+        container.domData('roles', newRoles);
+
+        let roleList = container.siblings('.role-list');
+        let roleEntry = $('<span></span>');
+        roleEntry.text(role.name);
+        roleEntry.on('click', function() {
+          let roles = container.domData('roles');
+          roles.remove(role.id);
+          container.domData('roles', roles);
+          $(this).remove();
+        });
+
+        roleList.append(roleEntry);
+        container.find('input').val('');
+      });
+
+      return entry;
+    });
+
+  $('.tc-new-member form').on('submit', async function(e) {
+    e.preventDefault();
+    let parentCard = $(this).parents('.team-card');
+
+    let dom_user = $(this).find('.live-search-team-new-member');//.data();
+    let dom_roles = $(this).find('.live-search-nm-team-role');//.data();
+
+    let userID = dom_user.domData('id');
+    let roleIDs = dom_roles.domData('roles');
+
+    if (userID === undefined) {
+      console.error('ADD MEMBER No user assigned');
+      return;
+    }
+
+    let body = { user_id: userID, role_ids: roleIDs };
+    const response = await SERVER.sendUrl($(this).attr('action'), body);
+    const json = await response.json();
+    if (!json.success) {
+      console.error(json.message);
+      return;
+    }
+
+    // TODO Clean up
+  });
+
+  $('button.tcm-delete').on('click', async function() {
+    let memberCard = $(this).parents('.tc-member');
+    let userTeamID = memberCard.domData('id');
+    let url = $(this).domData('url');
+
+    // TODO Some kind of are you sure dialogue
+    // TODO Make route
+    const response = await SERVER.sendUrl(url, { user_team_id: userTeamID });
+    const json = await response.json();
+    if (!json.success) {
+      console.error(json.message);
+      return;
+    }
+
+    memberCard.remove();
+  });
+
+  UTIL.wireupLiveSearch(
+    'tm-team-role',
+    function(container, role) {
+      let memberCard = container.parents('.tc-member');
+      let roleIDs = memberCard.domData('role-ids');
+      if (roleIDs.includes(role.id))
+        return;
+
+      let entry = UTIL.createLiveSearchEntry(container, role, false);
+      entry.on('click', async function() {
+        let newRoleIDs = roleIDs.slice(0);
+        newRoleIDs.push(role.id);
+
+        const url = container.domData('url');
+        const response = await SERVER.sendUrl(url, { role_ids: newRoleIDs });
+        const json = await response.json();
+        if (!json.success) {
+          console.error(json.error);
+          return;
+        }
+
+        // TODO Update DOM
+
+        container.find('input').val('');
+      });
+
+      return entry;
+    });
+
+  $('button.tr-remove').on('click', async function() {
+    let memberCard = $(this).parents('.tc-member');
+    let roleIDs = memberCard.domData('role-ids');
+    let roleID = $(this).domData('role-id');
+    roleIDs.remove(roleID);
+
+    const url = $(this).domData('url');
+    const response = await SERVER.sendUrl(url, { role_ids: roleIDs });
+    const json = await response.json();
+    if (!json.success) {
+      console.error(json.error);
+      return;
+    }
+
+    // TODO Result check + HTML Clean up
+  });
+}
+
 
 function mkfn_selectInfoView(target) {
   return function() {
@@ -327,8 +465,9 @@ document.addEventListener('DOMContentLoaded', function() {
     $(BUTTON_VIEWS[first]).show();
   }
 
+  wireupTeamsView();
+  wireupUserCards();
   setupPopularityView();
-  populateUsers();
 
   wireUpCreateNewUser();
 });

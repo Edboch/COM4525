@@ -13,8 +13,23 @@
 #
 FactoryBot.define do
   factory :team do
-    name { 'TeamName' }
-    location_name { 'TeamCity' }
-    owner_id { 1 } # matches the manager factorybot in /factories/user.rb
+    transient do
+      owner do
+        num_users = User.count
+        User.offset(rand(num_users)).first
+      end
+    end
+
+    location_name { Faker::Address.city }
+    name do
+      name = Faker::Creature::Animal.name.pluralize.capitalize
+      if rand > 0.3
+        "#{location_name} #{name}"
+      else
+        "The #{name}"
+      end
+    end
+
+    owner_id { owner.id }
   end
 end

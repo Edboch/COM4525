@@ -26,6 +26,8 @@ main {
     background-color: rgb(60, 60, 60);
     color: inherit;
 
+    align-items: center;
+
     &.selected {
       background-color: rgb(150, 150, 150);
       font-size: 1.3em;
@@ -130,3 +132,153 @@ main {
     justify-content: center;
   }
 }
+
+// ##################################
+// Teams
+// ##################################
+
+.team-card {
+  margin: .4em;
+  padding: .2em .3em;
+
+  background-color: white;
+  color: black;
+
+  &.open {
+    .tc-pill {
+      display: none;
+    }
+
+    .tc-body {
+      display: block;
+    }
+  }
+}
+
+.tc-pill {
+  padding-left: 1.6em;
+}
+
+.tc-body {
+  display: none;
+  position: relative;
+
+  margin-left: 2vw;
+  padding: .4em 0;
+
+  width: fit-content;
+}
+
+.tc-owner {
+  margin: .7em .4em 1em;
+
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 2em;
+
+  h4 { margin: 0; }
+}
+
+.tc-new-member {
+  margin: .3em 0 .6em;
+
+  .add {
+    height: fit-content;
+  }
+
+  form {
+    padding-left: .4em;
+
+    display: flex;
+    flex-flow: row nowrap;
+    gap: .8em;
+  }
+
+  .roles-context {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  .role-list {
+    padding: .2em;
+
+    span {
+      padding: .2em .3em;
+      cursor: pointer;
+    }
+
+    &:empty {
+      padding: 0;
+
+      &::after {
+        display: block;
+        width: 100%;
+
+        content: "None";
+        color: #ABABAB;
+        text-align: center;
+        font-style: italic;
+      }
+    }
+  }
+}
+
+.tc-member {
+  margin-bottom: .4em;
+
+  &.open {
+    .tcm-pill {
+      display: none;
+    }
+
+    .tcm-body {
+      display: block;
+    }
+  }
+}
+
+$delete-button-width: 10%;
+
+.tcm-pill {
+  display: grid;
+  grid-template-columns: $delete-button-width 50% auto;
+  gap: .4em;
+}
+
+.tcm-name, .tcm-roles {
+  margin: 0;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+
+  text-overflow: hidden;
+}
+
+.tcm-body {
+  display: none;
+  margin-left: .4em;
+
+  .head {
+    margin-bottom: .8em;
+
+    display: grid;
+    grid-template-columns: $delete-button-width auto;
+    gap: .4em;
+  }
+}
+
+.live-search-tm-team-role {
+  margin-bottom: .4em;
+}
+
+.tcm-team-role {
+  margin-bottom: .3em;
+  width: 60%;
+
+  display: grid;
+  grid-template-columns: 22% repeat(2, 1fr);
+  gap: .2em;
+}
+
