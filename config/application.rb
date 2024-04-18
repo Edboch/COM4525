@@ -33,6 +33,15 @@ module Project
 
     config.time_zone = 'London'
 
+    config.action_mailer.smtp_settings = {
+      address: 'mailhost.shef.ac.uk',
+      port: 587,
+      enable_starttls_auto: true,
+      openssl_verify_mode: OpenSSL::SSL::VERIFY_PEER,
+      openssl_verify_depth: 3,
+      ca_file: '/etc/ssl/certs/ca-certificates.crt'
+    }
+
     config.generators do |g|
       g.template_engine      :haml
       g.assets               false
@@ -50,5 +59,8 @@ module Project
                              helper_specs: false,
                              controller_specs: false
     end
+
+    config.autoload_paths += Dir[Rails.root.join('app/lib/*.rb').to_s].each { |l| require l }
+    config.autoload_paths += Dir[Rails.root.join('app/services/*.rb').to_s].each { |l| require l }
   end
 end

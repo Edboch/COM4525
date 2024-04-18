@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Delete all pre-existing symbolic links
-find -L .git/hooks/ -xtype l -delete
+find .git/hooks/ -type l -delete
 
 link_hook() {
   chmod +x .hooks/$1
