@@ -8,15 +8,21 @@ document.onvisibilitychange = function() {
 
   let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   let time = Date.now();
-  SERVER.send('visitor-track', { 'visitor_id': VISITOR_ID, 'time_zone': timeZone, 'end_time': time });
+  SERVER.send(
+    'visitor-track',
+    { visitor_id: VISITOR_ID, time_zone: timeZone, end_time: time, url: document.url }
+  );
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   VISITOR_ID = UTIL.getMetaData('visit-id');
 
   let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   let time = Date.now();
-  SERVER.send('visitor-track', { 'visitor_id': VISITOR_ID, 'time_zone': timeZone, 'start_time': time })
-    .then(() => { SENT_START = true; });
+  await SERVER.send(
+    'visitor-track',
+    { visitor_id: VISITOR_ID, time_zone: timeZone, start_time: time, url: document.url }
+  );
+  SENT_START = true;
 });
 

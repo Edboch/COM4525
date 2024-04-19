@@ -3,6 +3,7 @@
 # Base controller for all other controllers
 class ApplicationController < ActionController::Base
   include AuthenticationHelper
+  include MetricsHelper
 
   rescue_from CanCan::AccessDenied do |exception|
     redirect_to root_url, alert: exception.message
@@ -19,7 +20,13 @@ class ApplicationController < ActionController::Base
 
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  before_action :fill_page_visit
+
   private
+
+  def fill_page_visit
+    @page_visit = find_page_visit
+  end
 
   def update_headers_to_disable_caching
     response.headers['Cache-Control'] = 'no-cache, no-cache="set-cookie", no-store, private, proxy-revalidate'
