@@ -199,8 +199,9 @@ RSpec.describe 'Admin Manage Teams', :js do
   end
 
   context 'when creating a new team' do
-    let!(:name)  { Faker::Name.name }
-    let!(:location)  { Faker::Name.name }
+    let!(:name) { Faker::Name.name }
+    let!(:location) { Faker::Name.name }
+
     context 'when the form is filled in correctly' do
       before do
         id = rand(20)
@@ -231,8 +232,6 @@ RSpec.describe 'Admin Manage Teams', :js do
         find(:css, '[name="live-search-first-owner"]').set ''
         sleep 0.1
 
-        save_and_open_page
-
         find_by_id('new-team-submit').click
       end
 
@@ -241,5 +240,4 @@ RSpec.describe 'Admin Manage Teams', :js do
       expect(team).to be_nil
     end
   end
-  
 end
