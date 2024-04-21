@@ -435,7 +435,7 @@ async function wireUpCreateNewTeam() {
     function(container, user) {
       let entry = UTIL.createLiveSearchEntry(container, user);
       return entry;},
-    maxOptionsWhenEmpty = 3
+    maxOptionsWhenEmpty = 0
   );
 }
 
