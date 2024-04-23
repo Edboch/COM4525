@@ -3,7 +3,6 @@
 # Pages controller (probably won't survive)
 class PagesController < ApplicationController
   include ApplicationHelper
-  include MetricsHelper
   before_action :redirect_if_authenticated
   # before_action :fill_visitor
 
