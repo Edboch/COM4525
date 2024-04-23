@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Controller for managing metrics collected across the web application
 class MetricsController < ApplicationController
   include MetricsHelper
 
@@ -38,8 +41,6 @@ class MetricsController < ApplicationController
       logger.err 'No time_zone passed'
       return false
     end
-
-    params[:time_zone]
 
     if params[:start_time].nil? && params[:end_time].nil?
       logger.err 'No time field'
