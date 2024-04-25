@@ -3,15 +3,16 @@
 -#
 -# @param [ActiveRecord] user - The user to be rendered
 
+- user_path = user.id.nil? ? '' : admin_user_path(current_user, user)
 .user-card{ id: "user-card-#{user.id}" }
   .uc-pill
-    %a.page-link{ href: admin_users_url(current_user.id, user.id) }
+    %a.page-link{ href: user_path }
       %span Go
 
     .email= user.email
 
   .uc-enlarge
-    %a.page-link{ href: admin_users_url(current_user.id, user.id) }
+    %a.page-link{ href: user_path }
       %span Go
 
     %input(name='name'){ value: user.name }

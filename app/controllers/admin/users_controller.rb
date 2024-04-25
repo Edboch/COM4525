@@ -7,9 +7,10 @@ module Admin
 
     layout 'admin'
     before_action :check_access_rights
+    before_action :populate_user, only: :show
 
-    def index
-
+    def show
+      @js_teams = Team.all.to_json
     end
 
     ###################
@@ -22,6 +23,12 @@ module Admin
     end
 
     def remove
+    end
+
+    private
+
+    def populate_user
+      @user = User.find_by(id: params[:id]).decorate
     end
   end
 end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# TODO: Introduce pagination to the users and teams lists
+
 # Controller for the admin page
 class AdminController < ApplicationController
   include AdminHelper

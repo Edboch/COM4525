@@ -8,7 +8,7 @@
     = stylesheet_pack_tag 'styles', media: 'all'
     = javascript_pack_tag 'application'
 
-    - if user_signed_in? && current_user.decorate.site_admin?
+    - if user_signed_in? && current_user.decorate.is_admin?
       = stylesheet_pack_tag 'admin_styles', media: 'all'
 
   %body

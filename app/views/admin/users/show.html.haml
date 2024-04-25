@@ -1,0 +1,23 @@
+:javascript
+  let LIVE_SEARCH = { teams: #{@js_teams} }
+
+- append_pack_tag 'admin/users'
+
+%input(name='usr-name'){ value: @user.name }
+%input(name='usr-email'){ value: @user.email }
+%input(name='usr-admin' type='checkbox'){ checked: @user.is_admin? }
+
+#teams-block
+  = render(partial: 'snippets/live_search',
+           locals: { name: 'user-new-team',
+                     placeholder: 'Team Name',
+                     search_data_var: 'teams',
+                     search_fields: %w[name] })
+  - @user.teams.each do |team|
+    .team
+      %h2.team-name= team.name
+      %h3.team-location= team.location_name
+
+      %button.leave Leave Team
+
+%button.save Save Changes
