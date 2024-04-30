@@ -23,4 +23,5 @@
           Web Scraping
         .card-body
           = render 'scraper_form'
-          = link_to 'League Table', league_team_path(@team), class: 'btn btn-link'
+      = link_to 'League Table', league_team_path(@team), class: 'btn btn-link'
+      = link_to 'Sync Fixtures', sync_fixtures_team_path(@team)

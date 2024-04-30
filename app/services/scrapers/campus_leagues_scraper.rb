@@ -145,7 +145,7 @@ module Scrapers
 
   # holds fixture details
   class TeamFixture
-    attr_accessor :opposition, :start_time, :goals_for, :goals_against, :kickoff
+    attr_accessor :opposition, :start_time, :goals_for, :goals_against, :location
 
     def initialize(team_name, match_hash)
       @team_name = team_name
@@ -158,9 +158,20 @@ module Scrapers
       score_key_against = opposition_key == :team_a ? :score_a : :score_b
 
       @opposition = match_hash[opposition_key]
-      @goals_for = match_hash[score_key_for]
-      @goals_against = match_hash[score_key_against]
-      @kickoff = match_hash[:kickoff]
+      @goals_for = match_hash[score_key_for] || nil
+      @goals_against = match_hash[score_key_against] || nil
+      @start_time = match_hash[:kickoff]
+      @location = 'Unknown'
+    end
+
+    def to_json(_ = {})
+      {
+        opposition: @opposition,
+        start_time: @start_time.strftime('%B %d, %Y %H:%M'),
+        goals_for: @goals_for,
+        goals_against: @goals_against,
+        location: @location
+      }.to_json
     end
 
     def to_s
