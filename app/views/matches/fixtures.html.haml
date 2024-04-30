@@ -14,6 +14,7 @@
             %td{ scope: 'col' } Result
             - if current_user.staff_of_team?(@team, current_user)
               %td{ scope: 'col' } 
+              %td{ scope: 'col' }
         %tbody 
           - @matches.each_with_index do | match, index |
             %tr 
@@ -25,5 +26,6 @@
               %td= match.result
               - if current_user.staff_of_team?(@team, current_user)
                 %td= link_to 'Edit', edit_team_match_path(@team, match), class: 'btn btn-primary'
+                %td= link_to 'Delete', team_match_path(@team, match), class: 'btn btn-danger', method: :delete, data: { confirm: 'Are you sure?' } 
 
   
