@@ -2,7 +2,7 @@
 
 # Controller for managing teams in the application
 class TeamsController < ApplicationController
-  before_action :set_team, only: %i[show edit update destroy players]
+  before_action :set_team, only: %i[show edit update destroy players league]
 
   # GET /teams
   def index
@@ -58,6 +58,10 @@ class TeamsController < ApplicationController
 
     # send all players to view
     @players = players
+  end
+
+  def league
+    @league = Scrapers::ScraperFactory.create_scraper(@team.url, @team.team_name).fetch_league
   end
 
   private

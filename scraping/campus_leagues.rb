@@ -114,7 +114,7 @@ end
 
 # holds data about a team
 class Team
-  attr_accessor :name, :points, :wins, :draws, :losses, :goal_difference, :goals_for, :goals_against
+  attr_accessor :name, :played, :points, :wins, :draws, :losses, :goal_difference, :goals_for, :goals_against
 
   def initialize(team_data)
     @name = team_data[:name]
