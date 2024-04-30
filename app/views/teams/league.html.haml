@@ -1,27 +1,30 @@
-%h1 League Table
+- if @league.nil?
+  %p This league URL doesn't seem to exist! Any issues, don't hesitate to request support!
+- else
+  %h1 League Table
 
-%table.table.table-striped
-  %thead
-    %tr
-      %th Team
-      %th P
-      %th W
-      %th D
-      %th L
-      %th GF
-      %th GA
-      %th GD
-      %th Pts
-  %tbody
-    - @league.teams.each do |team|
+  %table.table.table-striped
+    %thead
       %tr
-        %td= team.name
-        %td= team.played
-        %td= team.wins
-        %td= team.draws
-        %td= team.losses
-        %td= team.goals_for
-        %td= team.goals_against
-        %td= team.goal_difference
-        %td= team.points
+        %th Team
+        %th P
+        %th W
+        %th D
+        %th L
+        %th GF
+        %th GA
+        %th GD
+        %th Pts
+    %tbody
+      - @league.teams.each do |team|
+        %tr
+          %td= team.name
+          %td= team.played
+          %td= team.wins
+          %td= team.draws
+          %td= team.losses
+          %td= team.goals_for
+          %td= team.goals_against
+          %td= team.goal_difference
+          %td= team.points
 
