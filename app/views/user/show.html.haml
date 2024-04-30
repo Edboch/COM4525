@@ -3,9 +3,6 @@
 .container 
   .row 
     .col 
-      %h2 Roles:
-      - @user.roles.each do |role|
-        %span= role.name
       %h2= "Name: #{@user.name}"
       %h2= "Email: #{@user.email}"
 
