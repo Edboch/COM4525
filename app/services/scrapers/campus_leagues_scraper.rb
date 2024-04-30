@@ -20,6 +20,8 @@ module Scrapers
 
     URL_PREFIX = 'https://sportsheffield.sportpad.net/leagues'
 
+    attr_reader :url_suffix, :team_name
+
     def initialize(input_url, team_name)
       @url_suffix = extract_league_url_suffix(input_url)
       @team_name = team_name
@@ -158,8 +160,8 @@ module Scrapers
       score_key_against = opposition_key == :team_a ? :score_a : :score_b
 
       @opposition = match_hash[opposition_key]
-      @goals_for = match_hash[score_key_for] || nil
-      @goals_against = match_hash[score_key_against] || nil
+      @goals_for = match_hash[score_key_for].to_i || nil
+      @goals_against = match_hash[score_key_against].to_i || nil
       @start_time = match_hash[:kickoff]
       @location = 'Unknown'
     end
