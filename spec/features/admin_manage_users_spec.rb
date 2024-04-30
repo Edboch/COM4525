@@ -61,6 +61,16 @@ RSpec.describe 'Admin Edit Users', :js do
       regular.reload
       expect(regular.site_admin).not_to be_nil
     end
+
+    specify 'A user can be deleted' do
+      within user_card do
+        click_on 'Remove Account'
+      end
+
+      sleep 0.2
+      user = User.find_by id: regular.id
+      expect(user.nil?).to be true
+    end
   end
 
   context 'when creating new users' do
