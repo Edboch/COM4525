@@ -1,0 +1,11 @@
+= form_with(model: @team, local: true) do |form|
+  .field
+    = form.label :url, 'League URL (where you can see your league table)'
+    = form.text_field :url
+
+  .field
+    = form.label :team_name, 'Team Name (exactly as on the website)'
+    = form.text_field :team_name
+
+  .actions
+    = form.submit "Update"
