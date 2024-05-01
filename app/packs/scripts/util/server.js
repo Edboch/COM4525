@@ -31,7 +31,19 @@ window.SERVER = (function($) {
         dataType: 'json', keepalive: true
       }
     );
-  }
+  };
+
+  mod.sendUrl = async function(url, body) {
+    return await fetch(
+      url,
+      {
+        method: 'POST', headers: getHeaders(),
+        body: new URLSearchParams(body),
+        dataType: 'json', keepalive: true
+      }
+    );
+  };
 
   return mod;
 }(window.$));
+

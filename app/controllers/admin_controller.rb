@@ -13,14 +13,24 @@ class AdminController < ApplicationController
   # GET
 
   def index
-    @users = user_data
+    # TODO: Implement sorting defaults, saved in the SiteAdmin table
+    @users = User.all
     @visit_metrics = popularity_data
-    @earliest = PageVisitGrouping.where(category: 'earliest').first&.period_start || 1.day.ago
+    @earliest = SiteVisitGrouping.where(category: 'earliest')
+                                 .first&.period_start || 1.day.ago
 
-    @teams = user_teams
+    @teams = Team.all
+    @js_users = @users.to_json
+    @js_roles = TeamRole.all.to_json
+
+    @template_user = FE_User.new id: 0, name: '', email: '', is_admin: false
     @template_member = FE_Member.new id: '{1}', name: ''
-    @js_managers = js_user_role 'Manager'
-    @js_players = js_user_role 'Player'
+
+    @visits_teams_ratio = SiteVisit.count / [1, @teams.size].max
+
+    # recent_activities = TeamActivity.where('day_start > ?', 2.weeks.ago.beginning_of_day)
+    # @num_teams_past_two_weeks = recent_activities.select(:team_id).distinct.count
+    @num_teams_past_two_weeks = get_team_activity_from 2.weeks.ago
   end
 
   ############
@@ -40,38 +50,25 @@ class AdminController < ApplicationController
     start_time = get_timezone_time time_zone, params[:start].to_i
     end_time = get_timezone_time time_zone, params[:end].to_i
 
-    total = PageVisitGrouping.where(category: 'day').where(period_start: (start_time..end_time)).pluck(:count).sum
+    total = SiteVisitGrouping.where(category: 'day').where(period_start: (start_time..end_time)).pluck(:count).sum
 
     render json: { total: total }
   end
 
   def retrieve_users
-    response = user_data
+    # TODO: Implement sorting options
+    response = get_fe_users User.all
     render json: response
   end
 
   def update_user
-    user = User.find_by(id: params[:id]).decorate
-    if user.nil?
-      render json: { success: false, message: "Could not find user by ID #{params[:id]}" }
-      return
-    end
-
-    user.name = params[:name]
-    user.email = params[:email]
-    user.update_roles params[:roles]
-
-    result = user.save
-    render json: { success: result }
+    result = Admin::UpdateUserService.call params[:id], params[:name], params[:email], params[:is_admin]
+    render json: result.to_json
   end
 
   def new_user
-    # TODO: Send email with current password telling the user to update it
-
-    user = User.create name: params[:name], email: params[:email], password: params[:password]
-    user.decorate.update_roles params[:roles]
-
-    render json: { success: true }
+    result = Admin::NewUserService.call params[:name], params[:email], params[:password], params[:site_admin]
+    render json: result.to_json
   end
 
   def remove_user
@@ -125,28 +122,10 @@ class AdminController < ApplicationController
 
   private
 
-  def user_data
-    # Rather than returning separate arrays of the different types, we'll
-    # do the sorting in the SQL query, which will be configurable by url params
-    # TODO: Implement sorting options
-    #       The intended default sorting is intended to be Player > Manager > Admin
-    User.select(:id, :name, :email).includes(:roles)
-        .sort_by { |u| u.roles.pluck(:name).sort.reverse }
-        .map do |user|
-          {
-            id: user.id, name: user.name, email: user.email,
-            roles: user.roles.pluck(:name).sort.reverse
-          }
-        end
-  end
-
   ############
   # ACTIONS
 
   def check_access_rights
-    # return if !user_signed_in? || !current_user.decorate.site_admin?
-    # return if can? :manage, :admin_dashboard
     authorize! :manage, :admin_dashboard
-    # redirect_to root_url
   end
 end

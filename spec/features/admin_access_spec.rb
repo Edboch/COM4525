@@ -3,52 +3,59 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin Access' do
-  # TODO: Move these to factories
-  let!(:role_player) { Role.find_or_create_by! name: 'Player' }
-  let!(:role_manager) { Role.find_or_create_by! name: 'Manager' }
+  let!(:regular) { create(:user) }
+  let!(:admin) { create(:user, :site_admin) }
+
+  before do
+    regular
+    admin
+
+    visit '/'
+  end
 
   specify 'A site visitor cannot access the site admin page' do
-    visit '/'
-    visit '/dashboard/1/site-admin'
+    visit admin_index_url
     expect(page).to have_content 'You are not authorized to access this page.'
   end
 
-  specify 'A player cannot access the site admin page' do
-    player = User.create email: 'player@1.com', password: 'password', name: 'Striking Name'
-    UserRole.create user_id: player.id, role_id: role_player.id
+  context 'when I log in as a regular user' do
+    before do
+      fill_in 'user[email]', with: regular.email
+      fill_in 'user[password]', with: 'password'
+      click_on 'Log in'
+    end
 
-    visit '/'
-    fill_in 'user[email]', with: player.email
-    fill_in 'user[password]', with: 'password'
-    click_on 'Log in'
-    visit "/dashboard/#{player.id}/site-admin"
-    expect(page).to have_content 'You are not authorized to access this page.'
+    specify 'The admin button does not show up' do
+      expect(page).to have_no_link href: admin_index_url
+    end
+
+    specify 'I cannot access the admin page via url' do
+      visit admin_index_url
+      expect(page).to have_content 'You are not authorized to access this page.'
+    end
   end
 
-  specify 'A manager cannot access the site admin page' do
-    manager = User.create email: 'da@manager.com', password: 'password', name: 'Striking Name (Retired)'
-    UserRole.create user_id: manager.id, role_id: role_manager.id
+  context 'when I log in as an admin' do
+    before do
+      fill_in 'user[email]', with: admin.email
+      fill_in 'user[password]', with: 'password'
+      click_on 'Log in'
+    end
 
-    visit '/'
-    fill_in 'user[email]', with: manager.email
-    fill_in 'user[password]', with: 'password'
-    click_on 'Log in'
-    visit "/dashboard/#{manager.id}/site-admin"
-    expect(page).to have_content 'You are not authorized to access this page.'
+    specify 'The admin button does show up' do
+      expect(page).to have_link href: admin_index_path(admin)
+    end
+
+    specify 'I can access the admin page via url' do
+      visit admin_index_url
+      expect(page).to have_no_content 'You are not authorized to access this page.'
+    end
+
+    specify 'I can access the admin page via the admin button' do
+      within 'nav.lnd-nav' do
+        click_on 'Admin'
+      end
+      expect(page).to have_content 'General Stats'
+    end
   end
-
-  # specify 'A site admin can access the site admin page' do
-  #   sa = User.create email: 'grand@authority.com', password: 'password', name: 'Eye of Sauron'
-  #   SiteAdmin.create user_id: sa.id
-
-  #   visit '/'
-  #   fill_in 'user[email]', with: sa.email
-  #   fill_in 'user[password]', with: 'password'
-  #   click_on 'Log in'
-
-  #   within 'nav.lnd-nav' do
-  #     click_on 'Admin'
-  #   end
-  #   expect(page).to have_content 'General Stats'
-  # end
 end

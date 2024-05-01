@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_07_141322) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_15_211505) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -112,17 +112,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_07_141322) do
     t.integer "count", default: 0, null: false
   end
 
-  create_table "page_visit_groupings", force: :cascade do |t|
-    t.string "category", null: false
-    t.integer "count", default: 0, null: false
-    t.datetime "period_start"
-  end
-
-  create_table "page_visits", force: :cascade do |t|
-    t.datetime "visit_start"
-    t.datetime "visit_end"
-  end
-
   create_table "penultimate_page_counts", force: :cascade do |t|
     t.bigint "landing_page_id", null: false
     t.integer "count", default: 0, null: false
@@ -148,12 +137,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_07_141322) do
     t.integer "display_priority", limit: 2, default: 1, null: false
   end
 
-  create_table "roles", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "sessions", force: :cascade do |t|
     t.string "session_id", null: false
     t.text "data"
@@ -168,6 +151,29 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_07_141322) do
     t.index ["user_id"], name: "index_site_admins_on_user_id"
   end
 
+  create_table "site_visit_groupings", force: :cascade do |t|
+    t.string "category", null: false
+    t.integer "count", default: 0, null: false
+    t.datetime "period_start"
+  end
+
+  create_table "site_visits", force: :cascade do |t|
+    t.datetime "visit_start"
+    t.datetime "visit_end"
+  end
+
+  create_table "team_activities", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.integer "active_users", default: 0, null: false
+    t.datetime "day_start", null: false
+    t.index ["team_id"], name: "index_team_activities_on_team_id"
+  end
+
+  create_table "team_roles", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "type"
+  end
+
   create_table "teams", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -176,13 +182,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_07_141322) do
     t.bigint "owner_id"
   end
 
-  create_table "user_roles", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "role_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["role_id"], name: "index_user_roles_on_role_id"
-    t.index ["user_id"], name: "index_user_roles_on_user_id"
+  create_table "user_team_roles", id: false, force: :cascade do |t|
+    t.bigint "user_team_id", null: false
+    t.bigint "team_role_id", null: false
+    t.index ["team_role_id"], name: "index_user_team_roles_on_team_role_id"
+    t.index ["user_team_id"], name: "index_user_team_roles_on_user_team_id"
   end
 
   create_table "user_teams", force: :cascade do |t|
@@ -213,8 +217,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_07_141322) do
   add_foreign_key "like_reviews", "landing_users"
   add_foreign_key "like_reviews", "reviews"
   add_foreign_key "matches", "teams"
-  add_foreign_key "user_roles", "roles"
-  add_foreign_key "user_roles", "users"
+  add_foreign_key "team_activities", "teams"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"
 end

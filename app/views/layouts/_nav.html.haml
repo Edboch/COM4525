@@ -5,10 +5,10 @@
     #navbarNav.collapse.navbar-collapse.my-2.mx-4
       %ul.navbar-nav.ms-auto
         - if user_signed_in?
-          - if current_user.decorate.site_admin?
+          - unless current_user.site_admin.nil?
             %li.nav-item
-              = link_to 'Admin', admin_page_path(current_user), class: 'nav-link'
+              = link_to 'Admin', admin_index_path(current_user), class: 'nav-link'
           %li.nav-item
-            = link_to 'Logout', destroy_user_session_path, method: :delete, class: 'nav-link'
+            = button_to 'Logout', destroy_user_session_path, method: :delete, class: 'nav-link'
           %li.nav-item
             = link_to 'My Profile', user_profile_path, class: 'nav-link'

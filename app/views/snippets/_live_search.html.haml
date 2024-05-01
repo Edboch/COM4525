@@ -1,0 +1,23 @@
+-# Live Search Box
+-# HAML for a search box that dynamically shows results of the query
+-# Use JS function UTIL.createSearchBox to give it functionality
+-#
+-# @param [String] name - The name of this search box, will be a class for the container and
+-#                        prepended to the name of input field
+-# @param [String] field_label - Optional value of the label for the search box
+-# @param [String] placeholder - Optional placeholder value for the input field
+-# @param [String] search_data_var - The name of a JSON Array of JSON objects to search, this array must
+-#                                  be declared else where on the page/in a JS file
+-# @param [Array<String>] search_fields - The params in a search_options object to be searched
+-# @param [Hash] other_data - Optional hash of HTML data attributes to be added
+
+- ls_name = "live-search-#{name}"
+- attr_data = defined?(other_data) ? other_data : {}
+- attr_data[:search_data_var] = search_data_var
+- attr_data[:search_fields] = search_fields
+
+.live-search{ class: ls_name, data: attr_data }
+  - if defined?(field_label) && !field_label.empty?
+    %label{ for: ls_name }= field_label
+  %input{ name: ls_name, placeholder: defined?(placeholder) && placeholder }
+  .live-search-dropdown

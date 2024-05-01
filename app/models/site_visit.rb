@@ -2,9 +2,11 @@
 
 # == Schema Information
 #
-# Table name: page_visits
+# Table name: site_visits
 #
 #  id          :bigint           not null, primary key
 #  visit_end   :datetime
 #  visit_start :datetime
 #
+class SiteVisit < ApplicationRecord
+end

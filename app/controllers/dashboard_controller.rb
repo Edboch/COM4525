@@ -19,6 +19,6 @@ class DashboardController < ApplicationController
   private
 
   def fill_visitor
-    @page_visit = find_page_visit
+    @site_visit = find_site_visit
   end
 end
