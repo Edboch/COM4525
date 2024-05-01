@@ -61,7 +61,7 @@ class TeamsController < ApplicationController
   end
 
   private
-  
+
   def set_team
     @team = Team.find(params[:id]).decorate
     @matches = Match.where(team_id: @team.id).order(:start_time)

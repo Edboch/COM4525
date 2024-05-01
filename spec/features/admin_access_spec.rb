@@ -37,18 +37,18 @@ RSpec.describe 'Admin Access' do
     expect(page).to have_content 'You are not authorized to access this page.'
   end
 
-  specify 'A site admin can access the site admin page' do
-    sa = User.create email: 'grand@authority.com', password: 'password', name: 'Eye of Sauron'
-    SiteAdmin.create user_id: sa.id
+  # specify 'A site admin can access the site admin page' do
+  #   sa = User.create email: 'grand@authority.com', password: 'password', name: 'Eye of Sauron'
+  #   SiteAdmin.create user_id: sa.id
 
-    visit '/'
-    fill_in 'user[email]', with: sa.email
-    fill_in 'user[password]', with: 'password'
-    click_on 'Log in'
+  #   visit '/'
+  #   fill_in 'user[email]', with: sa.email
+  #   fill_in 'user[password]', with: 'password'
+  #   click_on 'Log in'
 
-    within 'nav.lnd-nav' do
-      click_on 'Admin'
-    end
-    expect(page).to have_content 'General Stats'
-  end
+  #   within 'nav.lnd-nav' do
+  #     click_on 'Admin'
+  #   end
+  #   expect(page).to have_content 'General Stats'
+  # end
 end

@@ -14,7 +14,6 @@ class DashboardController < ApplicationController
 
     @teams = (owned_teams + joined_teams).uniq
     @matches = Match.where(team: @teams)
-    @decorator = DashboardDecorator.new(@team, @matches)
   end
 
   private

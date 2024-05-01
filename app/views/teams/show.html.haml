@@ -3,7 +3,7 @@
     .container.border.rounded.my-3
       .row.m-3
         .col
-          %h1= "#{@team.name}"
+          %h1= @team.name.to_s
         .col.text-end
           %h4= "Joined: #{@team.formatted_created_at}"
 

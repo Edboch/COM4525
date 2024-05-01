@@ -53,7 +53,7 @@
                       - else  
                         %h4 Player 
                     .row  
-                      %p= "Next match in #{@decorator.days_until_next_match} days"
+                      %p= team.decorate.days_until_next_match.to_s
                     .row  
                       = link_to 'View Team', team_path(team), class: 'btn btn-rounded'
         
