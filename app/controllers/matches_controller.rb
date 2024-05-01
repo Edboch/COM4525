@@ -15,11 +15,17 @@ class MatchesController < ApplicationController
   # GET /matches/1
   def show
     @team = @match.team
-    user_teams = UserTeam.where(team_id: @team.id, accepted: true)
-    @players = user_teams.map { |user_team| User.find_by(id: user_team.user_id) }
-    @options = [['N/A', -1]]
-    (0..10).each do |v|
-      @options << [v, v]
+
+    if current_user.staff_of_team?(@team, current_user)
+      user_teams = UserTeam.where(team_id: @team.id, accepted: true)
+      @players = user_teams.map { |user_team| User.find_by(id: user_team.user_id) }
+      @options = [['N/A', -1]]
+      (0..10).each do |v|
+        @options << [v, v]
+      end
+    else
+      rating = current_user.player_ratings.find_by(match: @match)&.rating
+      @rating = rating == -1 ? 'N/A' : rating
     end
   end
 

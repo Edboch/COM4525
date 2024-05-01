@@ -9,5 +9,8 @@
         = link_to 'Edit', edit_team_match_path(@match), class: 'btn btn-link'
         = link_to 'Back', team_matches_path, class: 'btn btn-link ms-auto'
     .container
-      %h1 Player Ratings
-      = render 'player_ratings_form', match: @match
+      - if current_user.staff_of_team?(@team, current_user)
+        %h1 Player Ratings
+        = render 'player_ratings_form', match: @match
+      - else
+        %h1 Match Rating: #{@rating}
