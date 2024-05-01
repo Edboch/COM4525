@@ -9,9 +9,12 @@ class DashboardController < ApplicationController
   before_action :fill_visitor
 
   def index
-    return unless current_user.manager?
+    owned_teams = Team.where(owner_id: current_user.id)
+    joined_teams = current_user.teams.where({ user_teams: { accepted: true } })
 
-    @teams = Team.where(owner_id: current_user.id)
+    @teams = (owned_teams + joined_teams).uniq
+    @matches = Match.where(team: @teams)
+    @decorator = DashboardDecorator.new(@team, @matches)
   end
 
   private

@@ -1,0 +1,63 @@
+:root {
+  --primary-color: #5a189a;
+  --secondary-color: #884ab2;
+}
+
+body {
+  font-family: 'Poppins';
+}
+
+.footer {
+  background-color: var(--primary-color);
+}
+
+.navbar {
+  background-color: var(--primary-color);
+}
+
+.navbar-brand {
+  color: white;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden; 
+  transition: color 0.3s; 
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 90%;
+  height: 3px;
+  background-color: white;
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+}
+
+.nav-link:hover {
+  color: white;
+}
+
+.nav-link:hover::after {
+  transform: translateX(0%); 
+}
+
+.db-side-btn {
+  background-color: var(--secondary-color); /* Primary color */
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  outline: none;
+}
+
+.db-side-btn:hover, .db-side-btn:focus {
+  background-color: var(--primary-color);
+}

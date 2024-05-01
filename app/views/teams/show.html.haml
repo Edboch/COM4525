@@ -1,3 +1,52 @@
+.container 
+  .row 
+    .container.border.rounded.my-3
+      .row.m-3
+        .col
+          %h1= "#{@team.name}"
+        .col.text-end
+          %h4= "Joined: #{@team.formatted_created_at}"
+
+  .row 
+    .container
+      .row  
+        .col-sm-4 
+          .card
+            %table.table
+              %thead 
+                %tr 
+                  %th{ scope: 'col' } Opposition
+                  %th{ scope: 'col' } Location 
+                  %th{ scope: 'col' } Kick Off 
+
+              %tbody 
+                - @matches.first(5).each do | match |
+                  %tr 
+                    %td= match.opposition 
+                    %td= match.location 
+                    %td= match.start_time 
+            .card-body 
+              .card-text.text-end
+                = link_to 'All Fixtures', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn'
+        .col-sm-8
+          .row 
+            .container.border.rounded
+              .row.text-center.m-4 
+                %h5 Team Record 
+              .row.m-2
+                .col  
+                  %p= "Played: #{@team.played_count}"
+                .col
+                  %p= "Wins: #{@team.win_count}"
+                .col  
+                  %p= "Draws: #{@team.draw_count}"
+                .col
+                  %p= "Losses: #{@team.loss_count}"
+
+
+
+
+
 .row.justify-content-center
   .col-sm-8.col-lg-6
     .card

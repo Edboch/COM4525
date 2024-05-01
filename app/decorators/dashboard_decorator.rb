@@ -4,12 +4,17 @@
 class DashboardDecorator < ApplicationDecorator
   delegate_all
 
-  # Define presentation-specific methods here. Helpers are accessed through
-  # `helpers` (aka `h`). You can override attributes, for example:
-  #
-  #   def created_at
-  #     helpers.content_tag :span, class: 'time' do
-  #       object.created_at.strftime("%a %m/%d/%y")
-  #     end
-  #   end
+  def initialize(team, matches)
+    @team = team
+    @matches = matches
+  end
+
+  def days_until_next_match
+    next_match_date = @matches.where('start_time > ?', Time.zone.now)
+                              .order(start_time: :asc)
+                              .pick(:start_time)
+    return 'No upcoming matches' unless next_match_date
+
+    (next_match_date.to_date - Time.zone.today).to_i
+  end
 end
