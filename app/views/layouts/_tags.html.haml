@@ -10,6 +10,6 @@
 = csrf_meta_tags
 = csp_meta_tag
 
-- unless @page_visit.nil?
-  %meta(name='visit-id'){ content: @page_visit.id }
+- unless @site_visit.nil?
+  %meta(name='visit-id'){ content: @site_visit.id }
   %meta(name='visitor-track'){ content: visitor_tracker_url }

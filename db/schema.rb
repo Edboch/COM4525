@@ -112,17 +112,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_30_004742) do
     t.integer "count", default: 0, null: false
   end
 
-  create_table "page_visit_groupings", force: :cascade do |t|
-    t.string "category", null: false
-    t.integer "count", default: 0, null: false
-    t.datetime "period_start"
-  end
-
-  create_table "page_visits", force: :cascade do |t|
-    t.datetime "visit_start"
-    t.datetime "visit_end"
-  end
-
   create_table "penultimate_page_counts", force: :cascade do |t|
     t.bigint "landing_page_id", null: false
     t.integer "count", default: 0, null: false
@@ -160,6 +149,24 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_30_004742) do
   create_table "site_admins", force: :cascade do |t|
     t.bigint "user_id"
     t.index ["user_id"], name: "index_site_admins_on_user_id", unique: true
+  end
+
+  create_table "site_visit_groupings", force: :cascade do |t|
+    t.string "category", null: false
+    t.integer "count", default: 0, null: false
+    t.datetime "period_start"
+  end
+
+  create_table "site_visits", force: :cascade do |t|
+    t.datetime "visit_start"
+    t.datetime "visit_end"
+  end
+
+  create_table "team_activities", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.integer "active_users", default: 0, null: false
+    t.datetime "day_start", null: false
+    t.index ["team_id"], name: "index_team_activities_on_team_id"
   end
 
   create_table "team_roles", force: :cascade do |t|
@@ -212,7 +219,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_30_004742) do
   add_foreign_key "like_reviews", "landing_users"
   add_foreign_key "like_reviews", "reviews"
   add_foreign_key "matches", "teams"
-  add_foreign_key "site_admins", "users"
+  add_foreign_key "team_activities", "teams"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"
 end

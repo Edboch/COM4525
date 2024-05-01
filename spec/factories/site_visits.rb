@@ -2,14 +2,14 @@
 
 # == Schema Information
 #
-# Table name: page_visits
+# Table name: site_visits
 #
 #  id          :bigint           not null, primary key
 #  visit_end   :datetime
 #  visit_start :datetime
 #
 FactoryBot.define do
-  factory :page_visit do
+  factory :site_visit do
     transient do
       min_start_date { 2.years.ago }
       max_start_date { 10.minutes.ago }

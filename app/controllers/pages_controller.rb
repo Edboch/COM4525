@@ -15,13 +15,13 @@ class PagesController < ApplicationController
     tz = params[:time_zone]
     if !params[:end_time].nil?
       datetime = get_timezone_time tz, params[:end_time].to_i
-      @page_visit.visit_end = datetime
-    elsif @page_visit.visit_start.nil?
+      @site_visit.visit_end = datetime
+    elsif @site_visit.visit_start.nil?
       datetime = get_timezone_time tz, params[:start_time].to_i
-      @page_visit.visit_start = datetime
+      @site_visit.visit_start = datetime
     end
 
-    @page_visit.save
+    @site_visit.save
   end
 
   private
@@ -52,6 +52,6 @@ class PagesController < ApplicationController
   end
 
   def fill_visitor
-    @page_visit = find_page_visit
+    @site_visit = find_site_visit
   end
 end
