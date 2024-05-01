@@ -5,6 +5,10 @@ window.UTIL = (function($) {
     return $(`meta[name='${name}']`).attr('content');
   }
 
+  mod.fromTemplate = function(query) {
+    return $($('template' + query).contents()[1]);
+  };
+
   /**
    * Sets up pill foldout functionality. Only always you to fold
    * the pill back in when the event target is `q_pill_body`.
@@ -85,9 +89,9 @@ window.UTIL = (function($) {
   // TODO: New Documentation
   mod.wireupLiveSearch = function(liveSearchName, fn_createEntry,
                                   maxOptionsWhenEmpty = 10) {
-    const allContainers = $(`.live-search-${liveSearchName}`);
-    const searchFields = allContainers.domData('search-fields');
-    let varName = allContainers.domData('search-data-var');
+    const liveSearch = $(`.live-search-${liveSearchName}`);
+    const searchFields = liveSearch.domData('search-fields');
+    let varName = liveSearch.domData('search-data-var');
     if (varName === undefined)
       return;
 
@@ -133,6 +137,10 @@ window.UTIL = (function($) {
 
       matches.forEach(makeEntry);
     });
+
+    const dropdown = liveSearch.find('.live-search-dropdown');
+    $(window).on('click', function() { dropdown.empty(); });
+
   };
 
   // TODO Documentation

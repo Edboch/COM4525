@@ -1,0 +1,9 @@
+-# Admin User Team Field
+-#
+-# @param [Team] team - The team to render
+
+.au-team{ data: { id: team.id } }
+  %h2.team-name= team.name
+  %h3.team-location= team.location_name
+
+  %button.leave Leave Team

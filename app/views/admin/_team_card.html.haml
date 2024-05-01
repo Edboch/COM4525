@@ -37,12 +37,13 @@
                            search_fields: %w[name email],
                            other_data: { member_ids: user_ids } })
 
-        .roles-context
-          = render(partial: 'snippets/live_search',
-                   locals: { name: 'nm-team-role', field_label: 'Team Role',
-                             search_data_var: 'team_roles',
-                             search_fields: ['name'], other_data: { roles: [] } })
-          .role-list
+        = render partial: 'snippets/multi_role_selection', locals: { name: 'nm-team-role' }
+        -# .roles-context
+        -#   = render(partial: 'snippets/live_search',
+        -#            locals: { name: 'nm-team-role', field_label: 'Team Role',
+        -#                      search_data_var: 'team_roles',
+        -#                      search_fields: ['name'], other_data: { roles: [] } })
+        -#   .role-list
 
         %button.add Add
 

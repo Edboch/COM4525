@@ -50,6 +50,7 @@ window.$ = (function(jQuery) {
         else {
           let obj = arguments[0];
           for (let key in obj) {
+            console.log(key.asHTMLToken());
             let attribName = 'data-' + key.asHTMLToken();
             this.attr(attribName, JSON.stringify(obj[key]));
           }
