@@ -6,7 +6,11 @@ Rails.application.routes.draw do
 
   resources :teams do
     resources :user_teams
-    resources :matches
+    resources :matches do
+      member do
+        post :rate_players
+      end
+    end
     get 'fixtures', to: 'matches#fixtures', as: :fixtures
     member do
       get 'league'
