@@ -20,5 +20,7 @@ class Team < ApplicationRecord
 
   has_many :matches, dependent: :destroy
 
+  has_many :team_activities, dependent: :destroy
+
   belongs_to :owner, class_name: :User, inverse_of: :owned_teams
 end
