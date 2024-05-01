@@ -17,7 +17,3 @@
 #
 #  fk_rails_...  (team_id => teams.id)
 #
-# FactoryBot.define do
-#   factory :team_activity do
-#   end
-# end

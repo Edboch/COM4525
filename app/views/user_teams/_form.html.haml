@@ -5,9 +5,10 @@
       %ul
         - @user_team.errors.full_messages.each do |message|
           %li= message
-  .field 
-    = form.label :email, "Player's Email"
+  .field.d-flex.align-items-center.my-3
+    .mx-4
+      = form.label :email, "Player's Email"
     = form.email_field :email, id: :email
 
-  .actions
-    = form.submit 'Invite Player'
+  .actions.actions.text-end.m-3
+    = form.submit 'Invite', class: 'btn db-side-btn'

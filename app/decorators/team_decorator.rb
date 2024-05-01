@@ -4,10 +4,6 @@
 class TeamDecorator < ApplicationDecorator
   delegate_all
 
-  def formatted_created_at
-    object.created_at.strftime('%d %B %Y')
-  end
-
   def played_count
     object.matches.where('start_time < ?', Time.current).count
   end
@@ -42,5 +38,13 @@ class TeamDecorator < ApplicationDecorator
     days = (next_match_date.to_date - Time.zone.today).to_i
 
     "Next match in #{days} days"
+  end
+
+  def manager_name
+    User.find_by(id: object.owner_id).name
+  end
+
+  def player_count
+    object.users.where(user_teams: { accepted: true }).count
   end
 end

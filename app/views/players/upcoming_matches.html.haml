@@ -1,6 +1,6 @@
-%h2 Here are your fixtures
-
-.container
+.container.justify-content-center.m-5.text-center 
+  .row
+    %h2 Your Upcoming Fixtures
   .row 
     .col
       %table.table
@@ -12,8 +12,8 @@
             %th{ scope: 'col' } Kick Off 
             %th{ scope: 'col' } Score
             %td{ scope: 'col' } Result
-            %th{ scope: 'col' } Line Up
-            %td{ scope: 'col' } Availability
+            %th{ scope: 'col' } 
+            %td{ scope: 'col' } 
 
         %tbody 
           - @matches.each_with_index do | match, index |

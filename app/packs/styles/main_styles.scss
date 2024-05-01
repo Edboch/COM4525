@@ -60,4 +60,15 @@ body {
 
 .db-side-btn:hover, .db-side-btn:focus {
   background-color: var(--primary-color);
+  color: white;
+}
+
+.footer a {
+  color: white;
+}
+
+.flex-teams {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
