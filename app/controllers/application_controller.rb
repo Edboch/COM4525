@@ -20,12 +20,12 @@ class ApplicationController < ActionController::Base
 
   before_action :configure_permitted_parameters, if: :devise_controller?
 
-  before_action :fill_page_visit
+  before_action :fill_site_visit
 
   private
 
-  def fill_page_visit
-    @page_visit = find_page_visit
+  def fill_site_visit
+    @site_visit = find_site_visit
   end
 
   def update_headers_to_disable_caching
