@@ -69,6 +69,10 @@ gem 'sentry-ruby'
 
 gem 'rack', '>= 3.0.9.1'
 
+# for scraping
+gem 'httparty'
+gem 'nokogiri'
+
 group :development do
   gem 'annotate'
   gem 'brakeman'
@@ -101,6 +105,7 @@ group :test do
   gem 'launchy'
   gem 'selenium-webdriver'
   gem 'simplecov'
+  gem 'webmock'
 end
 
 group :development, :test do

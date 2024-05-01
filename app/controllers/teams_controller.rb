@@ -2,11 +2,34 @@
 
 # Controller for managing teams in the application
 class TeamsController < ApplicationController
-  before_action :set_team, only: %i[show edit update destroy players]
+  before_action :set_team, only: %i[show edit update destroy players league sync_fixtures create_fixtures]
 
   # GET /teams
   def index
     @teams = Team.all
+  end
+
+  # GET /teams/:id/sync_fixtures
+  def sync_fixtures
+    scraper = Scrapers::ScraperFactory.create_scraper(@team.url, @team.team_name)
+    @fixtures = scraper.fetch_fixtures + scraper.fetch_results
+  end
+
+  # POST /teams/:id/sync_fixtures
+  def create_fixtures
+    params[:fixtures].each do |fixture|
+      next unless fixture[:selected] == '1'
+
+      @team.matches.create(
+        location: fixture[:location],
+        start_time: Time.zone.parse(fixture[:start_time]),
+        opposition: fixture[:opposition],
+        goals_for: fixture[:goals_for],
+        goals_against: fixture[:goals_against],
+        status: fixture[:goals_for].nil? ? 'Upcoming' : 'Completed'
+      )
+    end
+    redirect_to team_fixtures_path(@team), notice: t('team.sync_success')
   end
 
   # GET /teams/1
@@ -60,6 +83,12 @@ class TeamsController < ApplicationController
     @players = players
   end
 
+  def league
+    @league = Scrapers::ScraperFactory.create_scraper(@team.url, @team.team_name).fetch_league
+  rescue StandardError
+    @league = nil
+  end
+
   private
 
   def set_team
@@ -69,6 +98,6 @@ class TeamsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def team_params
-    params.require(:team).permit(:name, :location_name, :owner_id)
+    params.require(:team).permit(:name, :location_name, :owner_id, :url, :team_name)
   end
 end

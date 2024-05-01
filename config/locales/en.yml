@@ -40,6 +40,7 @@ en:
       success: "Team was successfully deleted."
     players:
       remove: "Player removed from your team successfully."
+    sync_success: "Fixtures successfully synchronised."
   profile:
     update:
       success: "Profile was successfully updated."
