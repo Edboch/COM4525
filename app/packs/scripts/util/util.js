@@ -37,7 +37,7 @@ window.UTIL = (function($) {
       card.on('click', function(evt) {
         let target = $(evt.target);
 
-        let isOpen = jq_list.find('.open')
+        let isOpen = jq_list.find('.pf-open')
                             .toArray()
                             .some((el) => $(el).attr('id') === cardID);
 
@@ -49,20 +49,20 @@ window.UTIL = (function($) {
           // if (!(target.is(card) || target.is(card.find(q_pill_body))))
           //   return;
 
-          card.removeClass('open');
+          card.removeClass('pf-open');
           fn_onFoldChange(card, false);
           return;
         }
 
         let cards = jq_list.find(q_pill);
         cards.toArray()
-             .filter((card) => $(card).hasClass('open'))
+             .filter((card) => $(card).hasClass('pf-open'))
              .forEach(function(elem) {
                 fn_onFoldChange($(elem), false);
-                elem.classList.remove('open');
+                elem.classList.remove('pf-open');
               });
 
-        card.addClass('open');
+        card.addClass('pf-open');
         fn_onFoldChange(card, true);
       });
     });

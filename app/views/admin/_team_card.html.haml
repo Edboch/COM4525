@@ -8,12 +8,12 @@
 -#       Move the new member, member deletion and member role editing to the
 -#       admin/teams page
 
-.team-card{ id: "team-card-#{team.id}", data: { id: team.id } }
-  .tc-pill
+.team-card.pill-foldout{ id: "team-card-#{team.id}", data: { id: team.id } }
+  .pf-pill.tc-pill
     %h2.team-name= team.name
     %h4.owner-name= "Owner: #{team.owner.name}"
 
-  .tc-body
+  .pf-body.tc-body
     %h2= team.name
 
     .tc-owner
@@ -52,15 +52,16 @@
         - role_ids = member.roles.pluck :id
         - delete_url = admin_user_team_remove_url current_user.id, member.id
 
-        .tc-member{ id: "user-team-#{member.id}", data: { id: member.id, role_ids: role_ids } }
-          .tcm-pill
-            %button.tcm-delete{ data: { url: delete_url } } Delete
-            %h5.tcm-name
-              %span= member.user.name
-            .tcm-roles
-              %span= member.roles.pluck(:name).join ' | '
+        .pill-foldout.tc-member{ id: "user-team-#{member.id}", data: { id: member.id, role_ids: role_ids } }
+          .pf-pill
+            .tcm-pill
+              %button.tcm-delete{ data: { url: delete_url } } Delete
+              %h5.tcm-name
+                %span= member.user.name
+              .tcm-roles
+                %span= member.roles.pluck(:name).join ' | '
 
-          .tcm-body
+          .pf-body.tcm-body
             .head
               %button.tcm-delete{ data: { url: delete_url } } Delete
               %h5.tcm-name

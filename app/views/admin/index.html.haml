@@ -68,7 +68,7 @@
 
           %button#new-user-submit Submit
 
-      .card-list
+      .user-list
         - @users.each do |user|
           = render partial: 'admin/user_card', locals: { user: user }
 

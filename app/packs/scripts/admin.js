@@ -170,29 +170,10 @@ async function wireUpCreateNewUser() {
  */
 function wireupUserCards() {
   let idxCard = 0;
+  UTIL.wireupPillFoldout($('.user-list'), '.user-card', 'input, button');
   USER_CARDS.children().each(function() {
     let card = $(this);
     const index = idxCard; // Necessary due to closures
-    card.on('click', function(evt) {
-      // When a closed card is clicked, close an other open card then
-      // open the clicked card
-      // When an open card is clicked close it
-      let target = $(evt.target);
-      if (IDX_OPEN_CARD == index) {
-        if (!(target.is(card) || target.is(card.find('.uc-enlarge'))))
-          return;
-
-        card.removeClass('open');
-        IDX_OPEN_CARD = -1;
-        return;
-      }
-
-      if (IDX_OPEN_CARD > -1)
-        USER_CARDS.children().eq(IDX_OPEN_CARD).removeClass('open');
-
-      card.addClass('open');
-      IDX_OPEN_CARD = index;
-    });
 
     let id = card.attr('id').split('-')[2];
     let inp_name = card.find('[name="name"]');

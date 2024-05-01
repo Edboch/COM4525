@@ -4,22 +4,24 @@
 -# @param [ActiveRecord] user - The user to be rendered
 
 - user_path = user.id.nil? ? '' : admin_user_path(current_user, user)
-.user-card{ id: "user-card-#{user.id}" }
-  .uc-pill
-    %a.page-link{ href: user_path }
-      %span Go
+.user-card.pill-foldout{ id: "user-card-#{user.id}" }
+  .pf-pill
+    .uc-pill
+      %a.page-link{ href: user_path }
+        %span Go
 
-    .email= user.email
+      .email= user.email
 
-  .uc-enlarge
-    %a.page-link{ href: user_path }
-      %span Go
+  .pf-body
+    .uc-enlarge
+      %a.page-link{ href: user_path }
+        %span Go
 
-    %input(name='name'){ value: user.name }
-    %input(name='email'){ value: user.email }
+      %input(name='name'){ value: user.name }
+      %input(name='email'){ value: user.email }
 
-    %input(type='checkbox' name='site-admin'){ checked: !user.site_admin.nil? }
-    %label(for='site-admin') Site Admin
+      %input(type='checkbox' name='site-admin'){ checked: !user.site_admin.nil? }
+      %label(for='site-admin') Site Admin
 
-    %button.save Save
-    %button.pwreset Reset Password
+      %button.save Save
+      %button.pwreset Reset Password
