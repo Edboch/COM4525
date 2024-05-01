@@ -21,7 +21,7 @@
                   %th{ scope: 'col' } Location 
                   %th{ scope: 'col' } Kick Off 
               %tbody
-                - @matches.first(5).each do | match |
+                - @matches.first(3).each do | match |
                   %tr
                     %td.py-3= match.opposition 
                     %td.py-3= match.location 

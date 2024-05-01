@@ -2,8 +2,8 @@
 
 .container
 
-  .row.text-center  
-    %h4= "#{@team.name} Fixtures"
+  .row.text-center.my-2
+    %h3= "#{@team.name} Fixtures"
   .row 
     .col
       %table.table
@@ -23,10 +23,10 @@
               %th{ scope: 'row' }= index + 1
               %td= match.opposition 
               %td= match.location 
-              %td= match.start_time 
+              %td= match.start_time.strftime('%A, %B %-d, %Y %I:%M %p') 
               %td= match.scoreline 
               %td= match.result
               - if current_user.staff_of_team?(@team, current_user)
-                %td= link_to 'Edit', edit_team_match_path(@team, match), class: 'btn btn-primary'
+                %td= link_to 'Edit', edit_team_match_path(@team, match), class: 'btn db-side-btn'
 
   

@@ -14,7 +14,7 @@
                   %th{ scope: 'col' } Kick Off 
 
               %tbody 
-                - @matches.first(5).each do | match |
+                - @matches.first(4).each do | match |
                   %tr 
                     %td= match.opposition 
                     %td= match.location 
@@ -30,25 +30,30 @@
       .row
         .text-center.my-2
           %h2 Your Teams
-        .container.flex-teams
-          - @teams.each_slice(2) do |team_pair|
-            .row.d-flex
-              - team_pair.each do |team|
-                .col-md-6
-                  .card.h-100.text-center.m-3.d-flex.flex-column
-                    .my-2
-                      %h2= team.name
-                    .card-body
-                      .container
-                        .row.text-start
-                          - if team.owner_id == current_user.id
-                            %h5 Role: Manager
-                          - else
-                            %h5 Role: Player
-                        .row.text-start
-                          %p= team.decorate.days_until_next_match.to_s
-                    .mt-auto.mb-3
-                      = link_to 'View Team', team_path(team), class: 'btn db-side-btn'
+        .container
+          - if @teams.any?
+            - @teams.each_slice(2) do |team_pair|
+              .row
+                - team_pair.each do |team|
+                  .col-md-6
+                    .card.h-100.text-center.m-3
+                      .my-2
+                        %h2= team.name
+                      .card-body
+                        .container
+                          .row.text-start
+                            - if team.owner_id == current_user.id
+                              %h5 Role: Manager
+                            - else
+                              %h5 Role: Player
+                          .row.text-start
+                            %p= team.decorate.days_until_next_match.to_s
+                      .mt-auto.mb-3
+                        = link_to 'View Team', team_path(team), class: 'btn db-side-btn'
+          - else 
+            .text-center.m-3 
+              %h4 You are not a member of any team
+        
         
           
       
