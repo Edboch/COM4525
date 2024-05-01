@@ -8,6 +8,11 @@ Rails.application.routes.draw do
     resources :user_teams
     resources :matches
     get 'fixtures', to: 'matches#fixtures', as: :fixtures
+    member do
+      get 'league'
+      get :sync_fixtures
+      post :sync_fixtures, action: :create_fixtures
+    end
   end
 
   resources :user_teams do

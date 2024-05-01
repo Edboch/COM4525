@@ -9,7 +9,11 @@
 #
 # Indexes
 #
-#  index_site_admins_on_user_id  (user_id)
+#  index_site_admins_on_user_id  (user_id) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
 #
 require 'rails_helper'
 

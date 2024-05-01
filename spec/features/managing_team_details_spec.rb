@@ -51,6 +51,14 @@ RSpec.describe 'Managing team details' do
     #   expect(page).to have_content 'Cannot have empty cells'
     # end
 
+    specify 'Then I can add league URL and team name' do
+      click_on 'View Team'
+      fill_in 'team_url', with: 'https://sportsheffield.sportpad.net/leagues/view/1471/86'
+      fill_in 'team_team_name', with: 'CompSoc Greens'
+      click_on 'Update'
+      expect(page).to have_content 'Team was successfully updated.'
+    end
+
     specify 'Then i can delete my team' do
       click_on 'View Team'
       click_on 'Delete'

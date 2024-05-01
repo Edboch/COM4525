@@ -1,0 +1,24 @@
+%h2 Select Fixtures to Add
+= form_with url: save_team_matches_path(@team), method: :post do |form|
+  %table
+    %thead
+      %tr
+        %th Opposition
+        %th Start Time
+        %th Location
+        %th Status
+        %th Goals For
+        %th Goals Against
+        %th Select
+    %tbody
+      - @match_hashes.each_with_index do |match, index|
+        %tr
+          %td= text_field_tag "matches[#{index}][opposition]", match[:opposition]
+          %td= datetime_select_tag "matches[#{index}][start_time]", match[:start_time]
+          %td= text_field_tag "matches[#{index}][location]", match[:location]
+          %td= number_field_tag "matches[#{index}][goals_for]", match[:goals_for]
+          %td= number_field_tag "matches[#{index}][goals_against]", match[:goals_against]
+          %td= check_box_tag "matches[#{index}][save]", 1
+          %td= select_tag "matches[#{index}][status]", options_for_select(%w[Scheduled Completed Cancelled], match[:status])
+  = form.submit 'Save Selected Matches'
+

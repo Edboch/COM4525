@@ -48,7 +48,7 @@ class MatchesController < ApplicationController
   # DELETE /matches/1
   def destroy
     @match.destroy
-    redirect_to matches_url, notice: I18n.t('match.destroy'), status: :see_other
+    redirect_back(fallback_location: root_path, notice: I18n.t('match.destroy'), status: :see_other)
   end
 
   private

@@ -148,6 +148,9 @@ GEM
     chronic (0.10.2)
     concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
+    crack (1.0.0)
+      bigdecimal
+      rexml
     crass (1.0.6)
     daemons (1.4.1)
     database_cleaner (2.0.2)
@@ -204,6 +207,10 @@ GEM
       activesupport (>= 4.0.1)
       hamlit (>= 1.2.0)
       railties (>= 4.0.1)
+    hashdiff (1.1.0)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     io-console (0.7.2)
@@ -230,6 +237,7 @@ GEM
     minitest (5.21.2)
     msgpack (1.7.2)
     multi_json (1.15.0)
+    multi_xml (0.6.0)
     mutex_m (0.2.0)
     net-imap (0.4.10)
       date
@@ -413,6 +421,10 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
+    webmock (3.23.0)
+      addressable (>= 2.8.0)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.8.1)
     websocket (1.2.10)
     websocket-driver (0.7.6)
@@ -456,8 +468,10 @@ DEPENDENCIES
   faker
   hamlit
   hamlit-rails
+  httparty
   launchy
   letter_opener
+  nokogiri
   pg (~> 1.1)
   puma (~> 6.0)
   rack (>= 3.0.9.1)
@@ -478,6 +492,7 @@ DEPENDENCIES
   simplecov
   tzinfo-data
   web-console
+  webmock
   whenever
 
 BUNDLED WITH
