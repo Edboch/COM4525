@@ -15,6 +15,8 @@ Capybara.register_driver :headless_chrome do |app|
                                            default_directory: '/tmp')
   chrome_options.add_preference(:browser, set_download_behavior: { behavior: 'allow' })
 
+  chrome_options.add_option('goog:loggingPrefs', { browser: 'ALL' })
+
   if ENV['SELENIUM_HOST']
     Capybara::Selenium::Driver.new(
       app,
@@ -27,6 +29,12 @@ Capybara.register_driver :headless_chrome do |app|
   end
 end
 Capybara.javascript_driver = :headless_chrome
+
+RSpec.configure do |config|
+  config.after :each, :js do
+    warn page.driver.browser.logs.get(:browser) if defined? page.driver.browser.logs
+  end
+end
 
 if ENV['SELENIUM_HOST']
   RSpec.configure do |config|

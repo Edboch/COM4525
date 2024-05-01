@@ -36,6 +36,25 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_08_025135) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
+  create_table "matches", force: :cascade do |t|
+    t.string "location", null: false
+    t.string "opposition", null: false
+    t.datetime "start_time", null: false
+    t.string "status", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "goals_for"
+    t.integer "goals_against"
+    t.bigint "team_id", default: 1, null: false
+    t.index ["team_id"], name: "index_matches_on_team_id"
+  end
+
+  create_table "page_visit_groupings", force: :cascade do |t|
+    t.string "category", null: false
+    t.integer "count", default: 0, null: false
+    t.datetime "period_start"
+  end
+
   create_table "page_visits", force: :cascade do |t|
     t.datetime "visit_start"
     t.datetime "visit_end"
@@ -47,12 +66,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_08_025135) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "solved"
-  end
-
-  create_table "roles", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -69,6 +82,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_08_025135) do
     t.index ["user_id"], name: "index_site_admins_on_user_id", unique: true
   end
 
+  create_table "team_roles", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "type"
+  end
+
   create_table "teams", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -77,13 +95,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_08_025135) do
     t.bigint "owner_id"
   end
 
-  create_table "user_roles", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "role_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["role_id"], name: "index_user_roles_on_role_id"
-    t.index ["user_id"], name: "index_user_roles_on_user_id"
+  create_table "user_team_roles", id: false, force: :cascade do |t|
+    t.bigint "user_team_id", null: false
+    t.bigint "team_role_id", null: false
+    t.index ["team_role_id"], name: "index_user_team_roles_on_team_role_id"
+    t.index ["user_team_id"], name: "index_user_team_roles_on_user_team_id"
   end
 
   create_table "user_teams", force: :cascade do |t|
@@ -110,9 +126,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_08_025135) do
   end
 
   add_foreign_key "admin_reports", "users"
+  add_foreign_key "matches", "teams"
   add_foreign_key "site_admins", "users"
-  add_foreign_key "user_roles", "roles"
-  add_foreign_key "user_roles", "users"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"
 end

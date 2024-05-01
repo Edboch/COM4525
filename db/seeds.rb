@@ -1,14 +1,9 @@
 # frozen_string_literal: true
 
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
-role_player = Role.find_or_create_by! name: 'Player'
-role_manager = Role.find_or_create_by! name: 'Manager'
+require 'factory_bot_rails'
+
+Team.destroy_all
+TeamRole.destroy_all
 
 User.destroy_all
 SiteAdmin.destroy_all
@@ -19,68 +14,69 @@ Report.destroy_all
 sa_user = User.create email: 'site-admin@grr.la', password: 'password', name: 'Dominic Admin'
 SiteAdmin.create user_id: sa_user.id
 
-player = User.create email: 'player@grr.la', password: 'password', name: 'Player Messi'
-UserRole.create user_id: player.id, role_id: role_player.id
+User.create email: 'player@grr.la', password: 'password', name: 'Player Messi'
 
 manager = User.create email: 'manager@grr.la', password: 'password', name: 'John Manager'
-UserRole.create user_id: manager.id, role_id: role_manager.id
 
-#############
-# Generated users
+##############
+### Generate Users
 
-email_usernames = [
-  'test', 'john', 'username', 'what', 'okay', 'naice', 'grimbo',
-  'jimothy', 'tominic', 'big.rich', 'whatever', 'expletive',
-  'various_expletives', 'note.the.plural'
-]
+rand(80..100).times do
+  user = FactoryBot.create :user, :proper_password
 
-mail_servers = [
-  'gmail', 'outlook', 'yahoo', 'hotmail', 'rocketmail', 'shef.ac',
-  'gamedevsoc', 'genesys', 'fbx'
-]
+  SiteAdmin.create user_id: user.id if rand(30) < 1
 
-domain_names = %w[
-  org com co cool io game tv ca
-  fr_ewwwwww cc
-]
-
-passwords = %w[
-  password 12345678 pass1234
-]
-
-firstnames = %w[
-  Michael Matthew Mark Luke John Paul Patrick
-  Rebecca Jennifer Amy Jemima Isabelle
-]
-
-surnames = %w[
-  Smith Cook Xixiang Allen Bateman
-  Green Repuga
-]
-
-# TODO: Improve this by making use of the insert_all method
-#       would probably be best to do once players and managers have dedicated tables
-rand(35..60).times do
-  email = email_usernames.sample + (rand > 0.3 ? rand(1...999_999).to_s : '')
-  email += "@#{mail_servers.sample}.#{domain_names.sample}"
-  pw = passwords.sample
-  name = "#{firstnames.sample} #{surnames.sample}"
-
-  roll = rand 100
-  user = User.create email: email, password: pw, name: name
-
-  if roll < 28
-    UserRole.create user_id: user.id, role_id: role_player.id
-    Report.create user_id: user.id, content: 'see if work', solved: false
-  elsif roll < 48
-    UserRole.create user_id: user.id, role_id: role_player.id
+  if rand(30) > 10
     Report.create user_id: user.id, content: 'see if work', solved: true
-  elsif roll < 98
-    UserRole.create user_id: user.id, role_id: role_manager.id
   else
-    SiteAdmin.create user_id: user.id
+    Report.create user_id: user.id, content: 'see if work', solved: false
+  end
+end
+
+##############
+## Generate Teams
+
+tr_manager = FactoryBot.create :team_role, :manager
+tr_player = FactoryBot.create :team_role, :player
+
+num_users = User.count
+num_teams = ((num_users.to_f * 0.8) / rand(8..12)).floor.to_i
+teams = FactoryBot.create_list :team, num_teams
+
+max_per_team = (num_users / (num_teams + 1)).clamp(1, 16)
+min_per_team = [max_per_team / 2, 1].max
+
+teams.each do |team|
+  num_players = rand min_per_team..max_per_team
+
+  owner = team.owner
+  manager = rand > 0.8 ? User.offset(rand(num_users)).first : owner
+  ut = team.user_teams.create user_id: manager.id
+  ut.roles << tr_manager
+
+  player_ids = User.where.not(id: team.owner.id).pluck :id
+  num_players.times do
+    player_id = player_ids.delete_at rand(player_ids.size)
+    ut = team.user_teams.create user_id: player_id
+    ut.roles << tr_player
   end
 end
 
 ############
-# TODO: Generate page visits
+## Generate Page Visits
+
+PageVisit.destroy_all
+
+date_start = 3.years.ago
+
+rand(1200..1500).times do |_i|
+  next_visit_time = rand(date_start..20.minutes.ago)
+  rand(1..20).times do |_j|
+    v_start = next_visit_time
+    v_end = v_start + rand(0..5).minutes + rand(1..59).seconds
+    PageVisit.create visit_start: v_start, visit_end: v_end
+    break if v_end > Time.current
+  end
+end
+
+Rake::Task['page_visits:collate'].invoke

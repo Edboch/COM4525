@@ -21,23 +21,17 @@
 #
 FactoryBot.define do
   factory :user do
-    email { 'test@email.com' }
-    name { 'Test' }
-    password { 'Password' }
+    email { Faker::Internet.email }
+    name { Faker::Name.name }
+    password { 'password' }
 
-    trait :player do
-      id { 0 }
-      after(:create) do |user|
-        player_role = Role.find_or_create_by!(name: 'Player')
-        user.roles << player_role
-      end
+    trait :proper_password do
+      password { Faker::Internet.password }
     end
 
-    trait :manager do
-      id { 1 }
-      after(:create) do |user|
-        manager_role = Role.find_or_create_by!(name: 'Manager')
-        user.roles << manager_role
+    trait :site_admin do
+      after :create do |user|
+        SiteAdmin.create user_id: user.id
       end
     end
   end

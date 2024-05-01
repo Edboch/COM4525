@@ -1,13 +1,18 @@
-- if current_user.manager?
-  %h1 Manage Your Team
-  =link_to 'Create a new team', create_team_path
-  - for team in @teams
-    %h2= "Team name: #{team.name}"
-    =link_to 'View team', team_path(team)
+// teams for which the user owns
+- @owned_teams.each do |team|
+  %h3= "Manage #{team.name}"
+  = link_to 'View Team', team_path(team)
 
+// other teams for which the user is involved 
+- @teams.each do |team|
+  %h3= team.name.to_s
+  = link_to 'View Team', team_path(team)
 
+%h2 Your invites
+= link_to 'View invites', player_invites_path
+%h2 Upcoming Fixtures
+= link_to 'View your next matches', player_upcoming_matches_path 
 
-- if current_user.player?
-  %h1 Player
-  = link_to 'View invites', player_invites_path
+%h2 Create a team
+=link_to 'Create a new team', create_team_path
 
