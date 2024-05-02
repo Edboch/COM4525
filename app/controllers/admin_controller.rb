@@ -92,6 +92,11 @@ class AdminController < ApplicationController
     team.save
   end
 
+  def new_team
+    result = Admin::NewTeamService.call params[:location_name], params[:team_name], params[:owner_email]
+    render json: result.to_json
+  end
+
   # Adds a new player to the corresponding team
   #
   # @param [Integer] team_id   The id of the team

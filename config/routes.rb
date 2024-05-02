@@ -58,6 +58,7 @@ Rails.application.routes.draw do
     post('/update-manager',
          to: 'admin#update_team_manager',
          as: :admin_update_team_manager)
+    post '/new-team', to: 'admin#new_team', as: :admin_new_team
     post '/add-player', to: 'admin#add_team_player', as: :admin_add_team_player
     post('/remove-player',
          to: 'admin#remove_team_player',
