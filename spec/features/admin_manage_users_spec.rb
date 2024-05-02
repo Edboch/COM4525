@@ -69,7 +69,7 @@ RSpec.describe 'Admin Edit Users', :js do
 
       sleep 0.2
       user = User.find_by id: regular.id
-      expect(user.nil?).to be true
+      expect(user).to be_nil
     end
   end
 
