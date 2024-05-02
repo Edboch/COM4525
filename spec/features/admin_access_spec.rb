@@ -52,9 +52,7 @@ RSpec.describe 'Admin Access' do
     end
 
     specify 'I can access the admin page via the admin button' do
-      within 'nav.lnd-nav' do
-        click_on 'Admin'
-      end
+      click_on 'Admin'
       expect(page).to have_content 'General Stats'
     end
   end
