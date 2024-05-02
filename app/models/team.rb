@@ -7,6 +7,8 @@
 #  id            :bigint           not null, primary key
 #  location_name :string
 #  name          :string
+#  team_name     :string
+#  url           :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  owner_id      :bigint
@@ -19,6 +21,8 @@ class Team < ApplicationRecord
   has_many :users, through: :user_teams
 
   has_many :matches, dependent: :destroy
+
+  has_many :team_activities, dependent: :destroy
 
   belongs_to :owner, class_name: :User, inverse_of: :owned_teams
 end

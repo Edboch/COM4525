@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: { sessions: 'users/sessions' }
   resources :teams
 
   resources :teams do
     resources :user_teams
     resources :matches
     get 'fixtures', to: 'matches#fixtures', as: :fixtures
+    member do
+      get 'league'
+      get :sync_fixtures
+      post :sync_fixtures, action: :create_fixtures
+    end
   end
 
   resources :user_teams do
@@ -34,6 +39,8 @@ Rails.application.routes.draw do
   get 'dashboard', to: 'dashboard#index', as: :dashboard
 
   scope '/metrics' do
+    post '/update-visitor', to: 'metrics#update_visitor'
+
     post '/popularity', to: 'admin#retrieve_popularity_metrics', as: :metrics_popularity
     post '/range_popularity', to: 'admin#retrieve_popularity_range', as: :metrics_popularity_range
   end
