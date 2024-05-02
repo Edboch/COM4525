@@ -2,9 +2,9 @@
 
 # Controller for managing teams in the application
 class TeamsController < ApplicationController
-  before_action :set_team, only: %i[show edit update destroy players league sync_fixtures create_fixtures]
   before_action :authenticate_user!
   load_and_authorize_resource
+  before_action :set_team, only: %i[show edit update destroy players league sync_fixtures create_fixtures]
 
   # GET /teams
   def index

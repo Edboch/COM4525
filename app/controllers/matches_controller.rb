@@ -3,9 +3,10 @@
 # controller for managing creating and editing a team's Matches
 # in the application
 class MatchesController < ApplicationController
+  before_action :authenticate_user!
+  load_and_authorize_resource
   before_action :set_team, only: %i[create new show edit update fixtures]
   before_action :set_match, only: %i[show edit update destroy rate_players]
-  load_and_authorize_resource
 
   # passed a team_id to display that teams matches
   def fixtures
