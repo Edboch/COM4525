@@ -32,5 +32,7 @@
 %button.save(disabled='disabled') Save Changes
 %button.revert(disabled='disabled') Revert
 
+= link_to 'Delete', admin_user_destroy_path(current_user, @user)
+
 %template.team
   = render partial: 'admin/users/team', locals: { team: Team.new }

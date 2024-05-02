@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     delete EDIT_USER.teams[id];
     dom_team.remove();
+
+    checkChange();
   }
 
   UTIL.wireupLiveSearch(

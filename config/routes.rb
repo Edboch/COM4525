@@ -64,10 +64,15 @@ Rails.application.routes.draw do
   # end
 
   resources :admin, only: :index do
+    scope module: 'admin' do
+      post 'users/new'
+    end
+
     resources :users, module: 'admin', only: :show do
-      post 'new'
       post 'update'
+      post 'wide_update'
       post 'remove'
+      get 'destroy'
     end
 
     # resources :teams, only: :index, module: 'admin'

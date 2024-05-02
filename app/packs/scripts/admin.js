@@ -190,7 +190,9 @@ function wireupUserCards() {
       // TODO 'Are you sure' alert if a role change is detected
       // If site admin is changed also ask for password confirmation
       let admin = inp_admin.prop('checked');
-      SERVER.send('update-user', { id: id, name: name, email: email, site_admin: admin });
+
+      let url = $(this).domData('id');
+      SERVER.sendUrl(url, { name: name, email: email, site_admin: admin });
     });
 
     card.find('button.remove').on('click',function(){
@@ -412,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
     avg_year: k_popularity.find('.avgy .value'),
   };
 
-  USER_CARDS = $('#users .card-list');
+  USER_CARDS = $('#users .user-list');
 
   let buttons = $(Q_CONTROL_BUTTON).toArray();
   let infoViews = $('#info-block > *').toArray();

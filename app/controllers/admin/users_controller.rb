@@ -26,13 +26,29 @@ module Admin
     ###################
     ## POST
 
+    def destroy
+      user = User.find_by id: params[:user_id]
+      name = user.name
+      user.destroy
+      redirect_to admin_index_path(current_user), notice: "User '#{name}' successfully deleted"
+    end
+
     def new
+      result = Admin::NewUserService.call params[:name], params[:email], params[:password], params[:site_admin]
+      render json: result.to_json
     end
 
     def update
+      result = Admin::UpdateUserService.call params[:user_id], params[:name], params[:email], params[:is_admin]
+      render json: result.to_json
+    end
+
+    def wide_update
     end
 
     def remove
+      user = User.find_by id: params[:user_id]
+      user&.destroy
     end
 
     private
