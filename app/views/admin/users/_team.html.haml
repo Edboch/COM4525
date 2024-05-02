@@ -2,8 +2,21 @@
 -#
 -# @param [Team] team - The team to render
 
+- ut = UserTeam.find_by user: @user, team: team
+
 .au-team{ data: { id: team.id } }
   %h2.team-name= team.name
   %h3.team-location= team.location_name
+
+  - roles = ut.nil? ? [] : ut.roles.pluck(:id)
+  = render(partial: 'snippets/live_search',
+           locals: { name: 'team-role',
+                     search_data_var: 'team_roles', search_fields: ['name'],
+                     other_data: { roles: roles, team_id: team.id } })
+
+  .roles
+    - unless ut.nil?
+      - ut.roles.decorate.each do |role|
+        = render partial: 'admin/role_entry', locals: { role: role, data: { team_id: team.id } } 
 
   %button.leave Leave Team

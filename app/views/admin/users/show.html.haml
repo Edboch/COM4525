@@ -1,6 +1,6 @@
 :javascript
   let LIVE_SEARCH = { teams: #{@js_teams}, team_roles: #{@js_roles} };
-  let USER = { name: "#{@user.name}", email: "#{@user.email}", isAdmin: #{@user.is_admin?}, teams: #{@js_my_teams} }; 
+  let USER = { name: "#{@user.name}", email: "#{@user.email}", is_admin: #{@user.is_admin?}, teams: #{@js_my_teams} }; 
 
 - append_javascript_pack_tag 'admin_users'
 
@@ -29,10 +29,13 @@
     - @teams.each do |team|
       = render partial: 'admin/users/team', locals: { team: team }
 
-%button.save(disabled='disabled') Save Changes
+%button.save(disabled='disabled'){ data: { href: admin_user_wide_update_path(current_user, @user) } } Save Changes
 %button.revert(disabled='disabled') Revert
 
 = link_to 'Delete', admin_user_destroy_path(current_user, @user)
 
 %template.team
   = render partial: 'admin/users/team', locals: { team: Team.new }
+
+%template.role
+  = render partial: 'admin/role_entry', locals: { role: TeamRole.new.decorate, data: {} }

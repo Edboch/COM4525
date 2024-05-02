@@ -44,6 +44,8 @@ module Admin
     end
 
     def wide_update
+      result = Admin::UpdateSiteUserService.call params[:user_id], params
+      render json: result.to_json
     end
 
     def remove

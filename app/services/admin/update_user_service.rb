@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: Docs
 module Admin
   # Updates the user pointed to by id
   class UpdateUserService < ApplicationService
@@ -14,7 +13,7 @@ module Admin
 
       @name = name
       @email = email
-      @is_admin = is_admin.nil? || is_admin.to_b
+      @is_admin = is_admin.in?([true, false]) ? is_admin : (is_admin.nil? || is_admin.to_b)
       @valid = true
     end
 

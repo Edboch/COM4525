@@ -81,4 +81,50 @@ document.addEventListener('DOMContentLoaded', function() {
 
     checkChange();
   });
+
+  UTIL.wireupLiveSearch(
+    'team-role',
+    function(container, tr) {
+      let roles = container.domData('roles');
+      if (roles.includes(tr.id))
+        return;
+
+      const teamRoleID = tr.id;
+      const teamID = container.domData('team-id');
+
+      let entry = UTIL.createLiveSearchEntry(container, tr);
+      entry.on('click', function() {
+        EDIT_USER.teams[teamID].roles.push(teamRoleID);
+
+        let roleEntry = UTIL.fromTemplate('.role');
+        roleEntry.find('.re-name').text(tr.name);
+        roleEntry.find('.re-type').text(tr.type);
+        let rolesContainer = container.siblings('.roles');
+        rolesContainer.append(roleEntry);
+
+        checkChange();
+      });
+      return entry;
+    });
+
+  $('button.save').on('click', async function() {
+    // I think the fact that the keys in the teams field is causing issues
+    // on the server side
+    let siteUser = JSON.parse(JSON.stringify(EDIT_USER));
+    siteUser.teams = [];
+    for (let tID in EDIT_USER.teams) {
+      let team = structuredClone(EDIT_USER.teams[tID]);
+      team.id = tID;
+      siteUser.teams.push(team);
+    }
+
+    let url = $(this).domData('href');
+    const response = await SERVER.sendJsonUrl(url, siteUser);
+    if (!response.ok) {
+      // TODO: Some error message
+      return;
+    }
+
+    USER = JSON.parse(JSON.stringify(EDIT_USER));
+  });
 });

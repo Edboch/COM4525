@@ -44,5 +44,18 @@ window.SERVER = (function($) {
     );
   };
 
+  mod.sendJsonUrl = async function(url, object) {
+    let headers = getHeaders();
+    headers.append('Content-Type', 'application/json');
+    return await fetch(
+      url,
+      {
+        method: 'POST', headers: headers,
+        body: JSON.stringify(object),
+        dataType: 'json', keepalive: true
+      }
+    );
+  };
+
   return mod;
 }(window.$));
