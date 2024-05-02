@@ -1,19 +1,21 @@
 .row.justify-content-center
   .col-sm-8.col-lg-6
-    .card
-      .card-header
-        Match details
+    .card.m-4
+      .card-header.text-center
+        %h3= @match_decorator.match_header
       .card-body
-        %dl.row.mb-0
-      .card-footer.d-flex
-        = link_to 'Edit', edit_team_match_path(@match), class: 'btn btn-link'
-        = link_to 'Back', team_matches_path, class: 'btn btn-link ms-auto'
-    .container
-      - if current_user.staff_of_team?(@team, current_user)
-        %h1 Player Ratings
-        = render 'player_ratings_form', match: @match
-      - else
-        %h1 Match Rating: #{@rating}
-
-    .card
+        %p= "Location: #{@match.location}"
+        %p= "Kick off: #{@match.start_time.strftime('%A, %B %-d, %Y %I:%M %p')}"
+        .container
+          - if current_user.staff_of_team?(@team, current_user)
+            .text-center 
+              %h3 Player Ratings
+            = render 'player_ratings_form', match: @match
+          - else
+            %h1 Match Rating: #{@rating}
+      .card-footer.text-end
+        - if current_user.owner_of_team?(@team, current_user)
+          = link_to 'Edit Details', edit_team_match_path(@team, @match), class: 'btn db-side-btn'
+        = link_to 'Back', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn'
+    .card.m-4
       = render 'match_event_form', match: @match, players: @players
