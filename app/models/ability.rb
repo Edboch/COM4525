@@ -23,10 +23,6 @@ class Ability
     can :manage, Team, id: team.id
     can :manage, UserTeam, team_id: team.id
     can :manage, Match, team_id: team.id
-
-    team.matches.each do |_match|
-      can :manage, Match, team_id: team.id
-    end
   end
 
   def player_permissions(team)
