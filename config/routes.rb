@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     resources :matches do
       member do
         post :rate_players
+        post :create_match_event
       end
     end
     get 'fixtures', to: 'matches#fixtures', as: :fixtures

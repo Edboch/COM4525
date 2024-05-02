@@ -59,6 +59,8 @@ en:
     destroy: "Match was successfully deleted."
   teammatchratings:
     update: "Ratings updated successfully"
+  matchevent:
+    create: "Match event was successfully created."
 
 
 

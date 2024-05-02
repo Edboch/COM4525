@@ -4,7 +4,7 @@
 # in the application
 class MatchesController < ApplicationController
   before_action :set_team, only: %i[create new show edit update fixtures]
-  before_action :set_match, only: %i[show edit update destroy rate_players]
+  before_action :set_match, only: %i[show edit update destroy rate_players create_match_event]
 
   # passed a team_id to display that teams matches
   def fixtures
@@ -71,6 +71,17 @@ class MatchesController < ApplicationController
     render :edit, status: :unprocessable_entity
   end
 
+  # POST /matches/:id/create_match_event
+  def create_match_event
+    ActiveRecord::Base.transaction do
+      @match_event = @match.match_events.new(match_event_params)
+      @match_event.save!
+    end
+    redirect_to team_match_path(@match.team, @match), notice: I18n.t('matchevent.create')
+  rescue ActiveRecord::RecordInvalid
+    render 'show', status: :unprocessable_entity
+  end
+
   # DELETE /matches/1
   def destroy
     @match.destroy
@@ -78,6 +89,10 @@ class MatchesController < ApplicationController
   end
 
   private
+
+  def match_event_params
+    params.require(:match_event).permit(:user_id, :event_type, :event_minute)
+  end
 
   def get_status(start_time)
     if start_time < Time.current

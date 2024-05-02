@@ -1,0 +1,8 @@
+= form_with(model: [@match, MatchEvent.new], url: create_match_event_team_match_path(@match), local: true) do |f|
+  = f.label :user_id, 'Player'
+  = f.collection_select :user_id, @players, :id, :name, include_blank: true
+  = f.label :event_type, 'Event Type'
+  = f.select :event_type, MatchEvent.event_types.keys.map { |type| [type.titleize, type] }, include_blank: true
+  = f.label :event_minute, 'Event Minute'
+  = f.number_field :event_minute
+  = f.submit 'Add Event'

@@ -29,6 +29,7 @@ class User < ApplicationRecord
   has_many :teams, through: :user_teams
 
   has_many :player_ratings, dependent: :destroy
+  has_many :match_events, dependent: :nullify
   has_many :matches, through: :player_ratings
 
   def owner_of_team?(team, user)

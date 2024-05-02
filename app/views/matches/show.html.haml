@@ -14,3 +14,6 @@
         = render 'player_ratings_form', match: @match
       - else
         %h1 Match Rating: #{@rating}
+
+    .card
+      = render 'match_event_form', match: @match, players: @players
