@@ -8,7 +8,10 @@ class PlayersController < ApplicationController
   end
 
   def upcoming_matches
-    teams = current_user.teams.where({ user_teams: { accepted: true } })
-    @matches = Match.where(team: teams)
+    owned_teams = Team.where(owner_id: current_user.id)
+    joined_teams = current_user.teams.where({ user_teams: { accepted: true } })
+
+    @teams = (owned_teams + joined_teams).uniq
+    @matches = Match.where(team: @teams)
   end
 end

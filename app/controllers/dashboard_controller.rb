@@ -9,8 +9,12 @@ class DashboardController < ApplicationController
   before_action :fill_visitor
 
   def index
-    @owned_teams = current_user.owned_teams
-    @teams = current_user.teams.joins(:user_teams).where(user_teams: { accepted: true })
+    owned_teams = Team.where(owner_id: current_user.id)
+    joined_teams = current_user.teams.where({ user_teams: { accepted: true } })
+
+    @teams = (owned_teams + joined_teams).uniq
+    @matches = Match.where(team: @teams)
+    @future_matches = @matches.where('start_time > ?', Time.current)
   end
 
   private

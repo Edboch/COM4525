@@ -25,4 +25,46 @@ class Team < ApplicationRecord
   has_many :team_activities, dependent: :destroy
 
   belongs_to :owner, class_name: :User, inverse_of: :owned_teams
+
+  def played_count
+    matches.where('start_time < ?', Time.current).count
+  end
+
+  def win_count
+    matches
+      .where('start_time < ?', Time.current)
+      .where('goals_for > goals_against')
+      .count
+  end
+
+  def draw_count
+    matches
+      .where('start_time < ?', Time.current)
+      .where('goals_for = goals_against')
+      .count
+  end
+
+  def loss_count
+    matches
+      .where('start_time < ?', Time.current)
+      .where('goals_for < goals_against')
+      .count
+  end
+
+  def days_until_next_match
+    next_match_date = matches.where('start_time > ?', Time.zone.now)
+                             .order(start_time: :asc)
+                             .pick(:start_time)
+    return -1 unless next_match_date
+
+    (next_match_date.to_date - Time.zone.today).to_i
+  end
+
+  def manager
+    User.find_by(id: owner_id)
+  end
+
+  def player_count
+    users.where(user_teams: { accepted: true }).count
+  end
 end

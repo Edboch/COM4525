@@ -36,7 +36,7 @@ RSpec.describe 'Managing Matches' do
   # Viewing and editing match testing
   context 'when I am logged in as a manager on the fixture view' do
     before do
-      click_on 'View Fixtures'
+      click_on 'All Fixtures'
     end
 
     specify 'then I can view a match' do
