@@ -6,7 +6,11 @@ Rails.application.routes.draw do
 
   resources :teams do
     resources :user_teams
-    resources :matches
+    resources :matches do
+      member do
+        post :rate_players
+      end
+    end
     get 'fixtures', to: 'matches#fixtures', as: :fixtures
     member do
       get 'league'
@@ -54,6 +58,7 @@ Rails.application.routes.draw do
     post('/update-manager',
          to: 'admin#update_team_manager',
          as: :admin_update_team_manager)
+    post '/new-team', to: 'admin#new_team', as: :admin_new_team
     post '/add-player', to: 'admin#add_team_player', as: :admin_add_team_player
     post('/remove-player',
          to: 'admin#remove_team_player',

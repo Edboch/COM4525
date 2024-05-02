@@ -197,4 +197,47 @@ RSpec.describe 'Admin Manage Teams', :js do
       end
     end
   end
+
+  context 'when creating a new team' do
+    let!(:name) { Faker::Name.name }
+    let!(:location) { Faker::Name.name }
+
+    context 'when the form is filled in correctly' do
+      before do
+        id = rand(20)
+        owner = User.find_by id: id
+        within :css, '#new-team' do
+          find(:css, '[name="team_name"]').set name
+          find(:css, '[name="location_name"]').set location
+          find(:css, '[name="live-search-first-owner"]').set owner.name
+        end
+        sleep 0.1
+      end
+
+      specify 'i can create a new team' do
+        within :css, '#new-team' do
+          find_by_id('new-team-submit').click
+        end
+
+        sleep 0.1
+
+        team = Team.find_by name: name
+        expect(!team.nil?).to be true
+      end
+    end
+
+    specify 'And the form is incorrectly filed' do
+      within :css, '#new-team' do
+        find(:css, '[name="team_name"]').set name
+        find(:css, '[name="live-search-first-owner"]').set ''
+        sleep 0.1
+
+        find_by_id('new-team-submit').click
+      end
+
+      sleep 0.1
+      team = Team.find_by name: name
+      expect(team).to be_nil
+    end
+  end
 end

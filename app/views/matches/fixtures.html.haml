@@ -15,6 +15,7 @@
             %th{ scope: 'col' } Kick Off 
             %th{ scope: 'col' } Score
             %td{ scope: 'col' } Result
+            %td{ scope: 'col' } 
             - if current_user.staff_of_team?(@team, current_user)
               %td{ scope: 'col' } 
               %td{ scope: 'col' }
@@ -27,6 +28,7 @@
               %td= match.start_time.strftime('%A, %B %-d, %Y %I:%M %p') 
               %td= match.scoreline 
               %td= match.result
+              %td= link_to 'View', team_match_path(@team, match), class: 'btn btn-primary'
               - if current_user.staff_of_team?(@team, current_user)
                 %td= link_to 'Edit', edit_team_match_path(@team, match), class: 'btn db-side-btn'
                 %td= link_to 'Delete', team_match_path(@team, match), class: 'btn db-side-btn', method: :delete, data: { confirm: 'Are you sure?' } 
