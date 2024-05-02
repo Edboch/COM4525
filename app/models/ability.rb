@@ -11,6 +11,7 @@ class Ability
       if user.owner_of_team?(team, user)
         # manager permissions
         can :manage, Team, team.id
+      end
       if user.player_of_team?(team)
         # player permissions
         can :read, Team, team.id

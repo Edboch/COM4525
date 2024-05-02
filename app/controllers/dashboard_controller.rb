@@ -4,7 +4,7 @@
 class DashboardController < ApplicationController
   include AuthenticationHelper
   include MetricsHelper
-  
+
   before_action :check_user_authenticated
   before_action :fill_visitor
 
