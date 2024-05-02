@@ -82,5 +82,12 @@ RSpec.describe 'Managing Matches' do
       click_on 'Submit'
       expect(page).to have_content 'Match was successfully updated.'
     end
+
+    specify 'then i can delete a match' do
+      within('tr', text: 'Future Opposition') do
+        click_on 'Delete'
+      end
+      expect(page).to have_content 'Match was successfully deleted.'
+    end
   end
 end
