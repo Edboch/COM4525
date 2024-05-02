@@ -61,6 +61,7 @@ en:
     update: "Ratings updated successfully"
   matchevent:
     create: "Match event was successfully created."
+    unsuccessful: "Match event could not be created."
 
 
 

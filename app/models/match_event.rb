@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: match_events
 #
 #  id           :bigint           not null, primary key
 #  event_minute :integer
-#  event_type   :string
+#  event_type   :integer
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  match_id     :bigint           not null

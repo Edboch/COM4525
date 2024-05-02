@@ -17,18 +17,17 @@
         - if current_user.owner_of_team?(@team, current_user)
           = link_to 'Edit Details', edit_team_match_path(@team, @match), class: 'btn db-side-btn'
         = link_to 'Back', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn'
-    .card.m-4
-      .card-header
-        %h3 Match Events
-      .card-body{ style: 'overflow-y: scroll; max-height: 300px;' }
-        %ul.list-group.list-group-flush
-          - @match.match_events.order(:event_minute).each do |event|
-            %li.list-group-item
-              %strong= "#{event.event_type.titleize}:"
-              %span= " Minute #{event.event_minute}"
-              %br/
-              %small= "Player: #{event.user.name}"
-      - if current_user.owner_of_team?(@team, current_user)
-        .card-footer.text-left
+    - if current_user.owner_of_team?(@team, current_user)
+      .card.m-4
+        .card-header
+          %h3 Match Events
+        .card-body{ style: "overflow-y: scroll; max-height: 300px;" }
+          %ul.list-group.list-group-flush
+            - @match.match_events.order(:event_minute).each do |event|
+              %li.list-group-item
+                %strong= "#{event.event_type}:"
+                %span= " Minute #{event.event_minute}"
+                %br/
+                %small= "Player: #{event.user.name}"
+        .card-footer
           = render 'match_event_form', match: @match, players: @players
-

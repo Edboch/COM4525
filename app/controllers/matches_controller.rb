@@ -80,7 +80,7 @@ class MatchesController < ApplicationController
     end
     redirect_to team_match_path(@match.team, @match), notice: I18n.t('matchevent.create')
   rescue ActiveRecord::RecordInvalid
-    render 'show', status: :unprocessable_entity
+    redirect_to team_match_path(@match.team, @match), alert: I18n.t('matchevent.unsuccessful')
   end
 
   # DELETE /matches/1
