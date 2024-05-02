@@ -68,10 +68,4 @@
             = link_to 'Edit Team', edit_team_path(@team), class: 'btn db-side-btn'
             = link_to 'Delete Team', team_path(@team), method: :delete, data: { confirm: 'Are you sure you want to delete the team?' }, class: 'btn db-side-btn'
           = link_to 'Back', dashboard_path, class: 'btn db-side-btn'
-  .card
-    .card-header
-      Web Scraping
-    .card-body
-      = render 'scraper_form'
-  = link_to 'League Table', league_team_path(@team), class: 'btn btn-link'
-  = link_to 'Sync Fixtures', sync_fixtures_team_path(@team)
+          

@@ -53,6 +53,7 @@ RSpec.describe 'Managing team details' do
 
     specify 'Then I can add league URL and team name' do
       click_on 'View Team'
+      click_on 'Edit Team'
       fill_in 'team_url', with: 'https://sportsheffield.sportpad.net/leagues/view/1471/86'
       fill_in 'team_team_name', with: 'CompSoc Greens'
       click_on 'Update'

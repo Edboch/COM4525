@@ -148,7 +148,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_30_004742) do
 
   create_table "site_admins", force: :cascade do |t|
     t.bigint "user_id"
-    t.index ["user_id"], name: "index_site_admins_on_user_id", unique: true
+    t.index ["user_id"], name: "index_site_admins_on_user_id"
   end
 
   create_table "site_visit_groupings", force: :cascade do |t|
