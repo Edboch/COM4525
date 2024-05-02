@@ -25,7 +25,7 @@ class MatchesController < ApplicationController
       end
     else
       rating = current_user.player_ratings.find_by(match: @match)&.rating
-      @rating = rating == -1 ? 'N/A' : rating
+      @rating = rating == -1 ? 'N/A' : rating || 'N/A'
     end
   end
 
