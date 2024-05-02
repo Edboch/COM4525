@@ -16,6 +16,7 @@ class MatchesController < ApplicationController
   # GET /matches/1
   def show
     @team = @match.team
+    @match_decorator = @match.decorate
 
     if current_user.staff_of_team?(@team, current_user)
       user_teams = UserTeam.where(team_id: @team.id, accepted: true)

@@ -10,4 +10,5 @@
           %td= player.name
           %td
             = select_tag "player_ratings[#{player.id}]", options_for_select(@options, player.player_ratings.find_by(match: @match)&.rating || -1)
-  = f.submit 'Submit Ratings'
+  .text-end
+    = f.submit 'Submit Ratings', class: 'btn db-side-btn'

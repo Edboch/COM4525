@@ -93,9 +93,11 @@ class TeamsController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_team
-    @team = Team.find(params[:id])
+    @team = Team.find(params[:id]).decorate
+    @matches = @team.matches
+                    .where('start_time > ?', Time.current)
+                    .order(:start_time)
   end
 
   # Only allow a list of trusted parameters through.
