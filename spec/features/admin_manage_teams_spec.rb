@@ -95,28 +95,28 @@ RSpec.describe 'Admin Manage Teams', :js do
       expect(team.reload.owner_id).to eq new_owner.id
     end
 
-    # specify 'I can remove a member from a team' do
-    #   team_card = random_card
-    #   team_card.click
+    specify 'I can remove a member from a team' do
+      team_card = random_card
+      team_card.click
 
-    #   to_delete = nil
-    #   within team_card do
-    #     members = all '.tc-member'
-    #     to_delete = members.sample
-    #   end
+      to_delete = nil
+      within team_card do
+        members = all '.tc-member'
+        to_delete = members.sample
+      end
 
-    #   member_id = to_delete['data-id']
+      member_id = to_delete['data-id']
 
-    #   within to_delete do
-    #     click_on 'Delete'
-    #   end
+      within to_delete do
+        click_on 'Delete'
+      end
 
-    #   sleep 0.2
+      sleep 0.2
 
-    #   team_id = team_card['data-id']
-    #   user_team = UserTeam.find_by user_id: member_id, team_id: team_id
-    #   expect(user_team).to be_nil
-    # end
+      team_id = team_card['data-id']
+      user_team = UserTeam.find_by user_id: member_id, team_id: team_id
+      expect(user_team).to be_nil
+    end
 
     context 'when adding members' do
       let!(:team_card) { random_card }

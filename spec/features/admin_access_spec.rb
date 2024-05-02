@@ -51,11 +51,11 @@ RSpec.describe 'Admin Access' do
       expect(page).to have_no_content 'You are not authorized to access this page.'
     end
 
-    # specify 'I can access the admin page via the admin button' do
-    #   within 'nav.lnd-nav' do
-    #     click_on 'Admin'
-    #   end
-    #   expect(page).to have_content 'General Stats'
-    # end
+    specify 'I can access the admin page via the admin button' do
+      within 'nav.lnd-nav' do
+        click_on 'Admin'
+      end
+      expect(page).to have_content 'General Stats'
+    end
   end
 end
