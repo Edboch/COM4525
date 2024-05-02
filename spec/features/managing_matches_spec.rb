@@ -24,12 +24,27 @@ RSpec.describe 'Managing Matches' do
 
   # Creating match testing
   context 'when I am logged in as a manager on the team view' do
-    specify 'then I can create a new match' do
+    before do
       click_on 'Add a Match'
+    end
+
+    specify 'then I can create a new match' do
       fill_in 'location', with: 'New Location'
       fill_in 'opposition', with: 'New Opposition'
       click_on 'Submit'
       expect(page).to have_content 'Match was successfully created.'
+    end
+
+    specify 'then i can edit a match with a specific date' do
+      fill_in 'location', with: 'New Location'
+      fill_in 'opposition', with: 'New Opposition'
+      select '2024', from: 'match[start_time(1i)]'
+      select 'May', from: 'match[start_time(2i)]'
+      select '5', from: 'match[start_time(3i)]'
+      select '13', from: 'match[start_time(4i)]'
+      select '00', from: 'match[start_time(5i)]'
+      click_on 'Submit'
+      expect(page).to have_content '2024-05-05 13:00:00'
     end
   end
 
