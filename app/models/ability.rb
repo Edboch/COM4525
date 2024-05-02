@@ -7,7 +7,7 @@ class Ability
   def initialize(user)
     user ||= User.new # guest user (not logged in)
 
-    can :manage, :admin_dashboard if user.decorate.site_admin?
+    can :manage, :admin_dashboard unless user.site_admin.nil?
 
     can :read, :all
   end
