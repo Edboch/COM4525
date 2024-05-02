@@ -7,8 +7,16 @@ class Ability
   def initialize(user)
     user ||= User.new # guest user (not logged in)
 
-    can :manage, :admin_dashboard unless user.site_admin.nil?
+    user.teams.each do |team|
+      if user.owner_of_team?(team, user)
+        # manager permissions
+        can :manage, Team, team.id
+      if user.player_of_team?(team)
+        # player permissions
+        can :read, Team, team.id
+      end
+    end
 
-    can :read, :all
+    can :manage, :admin_dashboard unless user.site_admin.nil?
   end
 end
