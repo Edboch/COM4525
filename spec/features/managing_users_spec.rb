@@ -14,46 +14,49 @@ RSpec.describe 'Managing users' do
       expect(page).to have_content 'Login'
     end
 
-    context 'when making an account' do
+    context 'when the registration form is correctly filled' do
       before do
         click_on 'Register'
       end
-      context 'when the form is correctly filled' do
-        specify 'I can create a new account' do
-          fill_in 'Email', with: 'john_smith@outlook.com'
-          fill_in 'Name', with: 'John'
-          fill_in 'Password', with: 'Password'
-          fill_in 'Password confirmation', with: 'Password'
-          click_on 'Sign up'
-          expect(page).to have_content 'Welcome! You have signed up successfully.'
-        end
+
+      specify 'I can create a new account' do
+        fill_in 'Email', with: 'john_smith@outlook.com'
+        fill_in 'Name', with: 'John'
+        fill_in 'Password', with: 'Password'
+        fill_in 'Password confirmation', with: 'Password'
+        click_on 'Sign up'
+        expect(page).to have_content 'Welcome! You have signed up successfully.'
+      end
+    end
+
+    context 'when the registration form is filled incorrectly' do
+      before do
+        click_on 'Register'
       end
 
-      context 'when the form is filled incorrectly' do
-        specify 'with missing cells' do
-          fill_in 'Email', with: 'john_smith@outlook.com'
-          fill_in 'Name', with: 'John'
-          click_on 'Sign up'
-          expect(page).to have_content 'Please review the problems below:'
-        end
+      specify 'with missing cells' do
+        fill_in 'Email', with: 'john_smith@outlook.com'
+        fill_in 'Name', with: 'John'
+        click_on 'Sign up'
+        expect(page).to have_content 'Please review the problems below:'
+      end
 
-        specify 'with an existing email' do
-          fill_in 'Email', with: regular.email
-          fill_in 'Name', with: 'John'
-          fill_in 'Password', with: 'Password'
-          fill_in 'Password confirmation', with: 'Password'
-          click_on 'Sign up'
-          expect(page).to have_content 'Email has already been taken'
-        end
+      specify 'with an existing email' do
+        fill_in 'Email', with: regular.email
+        fill_in 'Name', with: 'John'
+        fill_in 'Password', with: 'Password'
+        fill_in 'Password confirmation', with: 'Password'
+        click_on 'Sign up'
+        expect(page).to have_content 'Email has already been taken'
+      end
 
-        specify 'with a different password confirmation' do
-          fill_in 'Email', with: 'john_smith@outlook.com'
-          fill_in 'Name', with: 'John'
-          fill_in 'Password', with: 'Password'
-          fill_in 'Password confirmation', with: 'Different'
-          click_on 'Sign up'
-          expect(page).to have_content "Password confirmation doesn't match Password"
-        end
+      specify 'with a different password confirmation' do
+        fill_in 'Email', with: 'john_smith@outlook.com'
+        fill_in 'Name', with: 'John'
+        fill_in 'Password', with: 'Password'
+        fill_in 'Password confirmation', with: 'Different'
+        click_on 'Sign up'
+        expect(page).to have_content "Password confirmation doesn't match Password"
       end
     end
   end
