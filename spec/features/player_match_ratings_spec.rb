@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'player match ratings' do
@@ -69,10 +71,7 @@ RSpec.describe 'player match ratings' do
     end
 
     it 'defaults to N/A' do
-      # create(:player_rating, user: player, match: match, rating: -1)
-      # visit team_match_path(team, match)
       expect(page).to have_text('N/A')
     end
   end
 end
-
