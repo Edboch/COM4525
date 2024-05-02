@@ -35,17 +35,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_171751) do
     t.index ["landing_user_id"], name: "index_landing_viewers_on_landing_user_id"
   end
 
-  create_table "match_events", force: :cascade do |t|
-    t.bigint "match_id", null: false
-    t.bigint "user_id", null: false
-    t.string "event_type"
-    t.integer "event_minute"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["match_id"], name: "index_match_events_on_match_id"
-    t.index ["user_id"], name: "index_match_events_on_user_id"
-  end
-
   create_table "matches", force: :cascade do |t|
     t.string "location", null: false
     t.string "opposition", null: false
@@ -100,7 +89,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_171751) do
 
   create_table "site_admins", force: :cascade do |t|
     t.bigint "user_id"
-    t.index ["user_id"], name: "index_site_admins_on_user_id", unique: true
+    t.index ["user_id"], name: "index_site_admins_on_user_id"
   end
 
   create_table "site_visit_groupings", force: :cascade do |t|
@@ -166,12 +155,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_171751) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "match_events", "matches"
-  add_foreign_key "match_events", "users"
   add_foreign_key "matches", "teams"
   add_foreign_key "player_ratings", "matches"
   add_foreign_key "player_ratings", "users"
-  add_foreign_key "site_admins", "users"
   add_foreign_key "team_activities", "teams"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"

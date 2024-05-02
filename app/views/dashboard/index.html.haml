@@ -14,7 +14,7 @@
                   %th{ scope: 'col' } Kick Off 
 
               %tbody 
-                - @matches.first(4).each do | match |
+                - @future_matches.first(4).each do | match |
                   %tr 
                     %td= match.opposition 
                     %td= match.location 

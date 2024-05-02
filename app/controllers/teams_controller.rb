@@ -93,7 +93,9 @@ class TeamsController < ApplicationController
 
   def set_team
     @team = Team.find(params[:id]).decorate
-    @matches = Match.where(team_id: @team.id).order(:start_time)
+    @matches = @team.matches
+                    .where('start_time > ?', Time.current)
+                    .order(:start_time)
   end
 
   # Only allow a list of trusted parameters through.

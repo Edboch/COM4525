@@ -14,6 +14,7 @@ class DashboardController < ApplicationController
 
     @teams = (owned_teams + joined_teams).uniq
     @matches = Match.where(team: @teams)
+    @future_matches = @matches.where('start_time > ?', Time.current)
   end
 
   private
