@@ -108,7 +108,7 @@ RSpec.describe 'Admin Edit Users', :js do
       end
 
       specify 'I can add the user to a team as a manager' do
-        team_ids_to_avoid = regular.teams.pluck(:id) + regular.owned_teams.pluck(:id)
+        team_ids_to_avoid = regular.teams.pluck(:id)
         team = Team.where.not(id: team_ids_to_avoid).first
 
         within :css, 'div.live-search-new-team' do
