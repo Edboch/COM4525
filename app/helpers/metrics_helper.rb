@@ -34,6 +34,19 @@ module MetricsHelper
     }
   end
 
+  def ratings_per_match
+    total = 0
+    matches = Match.all
+    matches.each do |match|
+      ratings = PlayerRating.where(match_id: match.id)
+      puts ratings
+      total += ratings.length()
+    end
+    average = total/matches.length()
+    return average
+  end
+
+
   def get_team_activity_from(start)
     TeamActivity.where('day_start > ?', start.beginning_of_day)
                 .select(:team_id).distinct.count
