@@ -15,7 +15,7 @@ class AdminController < ApplicationController
 
   def index
     # TODO: Implement sorting defaults, saved in the SiteAdmin table
-    @users = User.all.includes(:site_admin)
+    @users = User.includes(:site_admin)
     @visit_metrics = popularity_data
     @earliest = PageVisitGrouping.where(category: 'earliest')
                                  .first&.period_start || 1.day.ago

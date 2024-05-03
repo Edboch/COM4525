@@ -8,5 +8,9 @@ Metrics/CyclomaticComplexity:
   AllowedMethods:
     - call
 
+Metrics/AbcSize:
+  AllowedMethods:
+    - call
+
 Lint/MissingSuper:
   Enabled: false

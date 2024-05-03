@@ -21,7 +21,7 @@ module Admin
       result = UpdateUserService.call @user.id, @map[:name], @map[:email], @map[:is_admin]
       return failure(result[:error]) unless result[:success?]
 
-      team_ids_from_req = @map[:teams].map { |team| team[:id] }
+      team_ids_from_req = @map[:teams].pluck(:id)
       kept_teams = @user.teams.filter { |t| team_ids_from_req.include? t.id }
       @user.teams = kept_teams
 

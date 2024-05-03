@@ -28,7 +28,6 @@ window.$ = (function(jQuery) {
           name += nameParts[i].capitalise();
       }
 
-      console.log(name);
       data[name] = processAttrib(this.value);
     });
     return data;
@@ -50,7 +49,6 @@ window.$ = (function(jQuery) {
         else {
           let obj = arguments[0];
           for (let key in obj) {
-            console.log(key.asHTMLToken());
             let attribName = 'data-' + key.asHTMLToken();
             this.attr(attribName, JSON.stringify(obj[key]));
           }

@@ -12,7 +12,7 @@ class UserDecorator < ApplicationDecorator
   #       object.created_at.strftime("%a %m/%d/%y")
   #     end
   #   end
-  def is_admin?
-    return !object.site_admin.nil?
+  def admin?
+    !object.site_admin.nil?
   end
 end

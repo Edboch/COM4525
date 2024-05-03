@@ -1,6 +1,6 @@
 :javascript
   let LIVE_SEARCH = { teams: #{@js_teams}, team_roles: #{@js_roles} };
-  let USER = { name: "#{@user.name}", email: "#{@user.email}", is_admin: #{@user.is_admin?}, teams: #{@js_my_teams} }; 
+  let USER = { name: "#{@user.name}", email: "#{@user.email}", is_admin: #{@user.admin?}, teams: #{@js_my_teams} }; 
 
 - append_javascript_pack_tag 'admin_users'
 
@@ -8,7 +8,7 @@
 
 %input(name='usr-name'){ value: @user.name }
 %input(name='usr-email'){ value: @user.email }
-%input(name='usr-admin' type='checkbox'){ checked: @user.is_admin? }
+%input(name='usr-admin' type='checkbox'){ checked: @user.admin? }
 
 #teams-block
   #add-team

@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   $('input[name="usr-admin"]').on('change', function() {
     let value = $(this).val();
-    EDIT_USER.isAdmin = value;
+    EDIT_USER.is_admin = value;
 
     checkChange();
   });

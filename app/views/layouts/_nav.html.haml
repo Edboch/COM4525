@@ -10,7 +10,7 @@
             %p Nav Item
 
         - if user_signed_in?
-          - if current_user.decorate.is_admin?
+          - if current_user.decorate.admin?
             %li.nav-item.list-unstyled.ps-1.pt-1
               = link_to 'Admin', admin_index_path(current_user), class: 'btn btn-outline rounded-pill lnd-button'
           %li.nav-item.list-unstyled.ps-1.pt-1

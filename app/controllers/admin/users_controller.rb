@@ -14,23 +14,12 @@ module Admin
       @js_roles = TeamRole.all.to_json
       @teams = (@user.owned_teams + @user.teams).uniq
       teams = @teams.map do |team|
-          uts = @user.user_teams.where team: team
+        uts = @user.user_teams.where team: team
 
-          "#{team.id}: { name: '#{team.name}', location_name: '#{team.location_name}',"\
-            "roles: #{uts.includes(:roles).pluck('team_roles.id').to_json} }"
+        "#{team.id}: { name: '#{team.name}', location_name: '#{team.location_name}'," \
+          "roles: #{uts.includes(:roles).pluck('team_roles.id').to_json} }"
       end
       @js_my_teams = "{ #{teams.join(',')} }"
-
-    end
-
-    ###################
-    ## POST
-
-    def destroy
-      user = User.find_by id: params[:user_id]
-      name = user.name
-      user.destroy
-      redirect_to admin_index_path(current_user), notice: "User '#{name}' successfully deleted"
     end
 
     def new
@@ -41,6 +30,15 @@ module Admin
     def update
       result = Admin::UpdateUserService.call params[:user_id], params[:name], params[:email], params[:is_admin]
       render json: result.to_json
+    end
+    ###################
+    ## POST
+
+    def destroy
+      user = User.find_by id: params[:user_id]
+      name = user.name
+      user.destroy
+      redirect_to admin_index_path(current_user), notice: "User '#{name}' successfully deleted"
     end
 
     def wide_update
