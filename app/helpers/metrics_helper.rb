@@ -39,13 +39,14 @@ module MetricsHelper
     matches = Match.all
     matches.each do |match|
       ratings = PlayerRating.where(match_id: match.id)
-      puts ratings
-      total += ratings.length()
+      total += ratings.length
     end
-    average = total/matches.length()
-    return average
+    if matches.empty?
+      0
+    else
+      total / matches.length
+    end
   end
-
 
   def get_team_activity_from(start)
     TeamActivity.where('day_start > ?', start.beginning_of_day)
