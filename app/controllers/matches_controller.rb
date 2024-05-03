@@ -4,7 +4,7 @@
 # in the application
 class MatchesController < ApplicationController
   before_action :set_team, only: %i[create new show edit update fixtures]
-  before_action :set_match, only: %i[show edit update destroy rate_players create_match_event]
+  before_action :set_match, only: %i[show edit update destroy rate_players create_match_event destroy_match_event]
 
   # passed a team_id to display that teams matches
   def fixtures
@@ -81,6 +81,16 @@ class MatchesController < ApplicationController
     redirect_to team_match_path(@match.team, @match), notice: I18n.t('matchevent.create')
   rescue ActiveRecord::RecordInvalid
     redirect_to team_match_path(@match.team, @match), alert: I18n.t('matchevent.unsuccessful')
+  end
+
+  # POST /matches/:id/destroy_match_event
+  def destroy_match_event
+    @match_event = @match.match_events.find(params[:match_event])
+    if @match_event.destroy
+      redirect_to team_match_path(@match.team, @match), notice: I18n.t('matchevent.destroy')
+    else
+      redirect_to team_match_path(@match.team, @match), alert: I18n.t('matchevent.unsuccessfuldestroy')
+    end
   end
 
   # DELETE /matches/1

@@ -62,6 +62,8 @@ en:
   matchevent:
     create: "Match event was successfully created."
     unsuccessful: "Match event could not be created."
+    destroy: "Match event removed."
+    unsuccessfuldestroy: "Match event could not be removed."
 
 
 
