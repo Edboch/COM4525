@@ -2,7 +2,7 @@
 
 # Controller for managing teams in the application
 class TeamsController < ApplicationController
-  before_action :set_team, only: %i[show edit update destroy players league sync_fixtures create_fixtures]
+  before_action :set_team, only: %i[show edit update destroy players league sync_fixtures create_fixtures player_stats]
 
   # GET /teams
   def index
@@ -87,6 +87,11 @@ class TeamsController < ApplicationController
     @league = Scrapers::ScraperFactory.create_scraper(@team.url, @team.team_name).fetch_league
   rescue StandardError
     @league = nil
+  end
+
+  # GET /teams/:id/player/:user_id
+  def player_stats
+    @player = User.find(params[:user_id])
   end
 
   private

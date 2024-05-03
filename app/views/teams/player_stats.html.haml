@@ -1,0 +1,20 @@
+%h1.text-center.mb-5= @player.name + "'s Overall Stats for " + @team.name
+.container.justify-content-center
+  .row.justify-content-center
+    .col-sm-6
+      .card.p-4.mb-5
+        %h4 General Stats
+        .card-body
+          %ul.list-unstyled
+            %li= "Goals: #{@player.goals_scored_for_team(@team)}"
+            %li= "Assists: #{@player.assists_for_team(@team)}"
+            %li= "Yellow Cards: #{@player.yellows_for_team(@team)}"
+            %li= "Red Cards: #{@player.reds_for_team(@team)}"
+            %li= "Penalties Won: #{@player.penalties_won_for_team(@team)}"
+            %li= "Penalties Conceded: #{@player.penalties_conceded_for_team(@team)}"
+      .card.p-4
+        %h4 Goalkeeper Stats
+        .card-body
+          %ul.list-unstyled
+            %li= "Saves: #{@player.saves_made_for_team(@team)}"
+            %li= "Goals Conceded: #{@player.goals_conceded_for_team(@team)}"

@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     end
     get 'fixtures', to: 'matches#fixtures', as: :fixtures
     member do
+      get 'player/:user_id', to: 'teams#player_stats', as: 'player_stats'
       get 'league'
       get :sync_fixtures
       post :sync_fixtures, action: :create_fixtures
