@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     resources :user_teams
     resources :matches do
       member do
+        get :lineup
         post :rate_players
       end
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_02_171751) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_04_210906) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -57,6 +57,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_171751) do
   create_table "penultimate_page_counts", force: :cascade do |t|
     t.bigint "landing_page_id", null: false
     t.integer "count", default: 0, null: false
+  end
+
+  create_table "player_matches", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "match_id", null: false
+    t.integer "position", default: 0
+    t.boolean "available", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["match_id"], name: "index_player_matches_on_match_id"
+    t.index ["user_id"], name: "index_player_matches_on_user_id"
   end
 
   create_table "player_ratings", force: :cascade do |t|
@@ -156,6 +167,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_171751) do
   end
 
   add_foreign_key "matches", "teams"
+  add_foreign_key "player_matches", "matches"
+  add_foreign_key "player_matches", "users"
   add_foreign_key "player_ratings", "matches"
   add_foreign_key "player_ratings", "users"
   add_foreign_key "team_activities", "teams"

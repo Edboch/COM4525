@@ -28,6 +28,9 @@ class Match < ApplicationRecord
   has_many :player_ratings, dependent: :destroy
   has_many :users, through: :player_ratings
 
+  has_many :player_matches, dependent: :destroy
+  has_many :players, through: :player_matches, source: :user
+
   # get the result as a string for displaying in fixture list
   def result
     return '' if goals_for.nil? || goals_against.nil?

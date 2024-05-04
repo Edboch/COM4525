@@ -47,6 +47,8 @@ class MatchesController < ApplicationController
     @match.team_id = @team.id
 
     if @match.save
+      create_player_matches(@team, @match)
+
       redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.create')
     else
       render :new, status: :unprocessable_entity
@@ -74,6 +76,13 @@ class MatchesController < ApplicationController
     render :edit, status: :unprocessable_entity
   end
 
+  # GET /matches/:id/lineup
+  def lineup
+    @match_decorator = @match.decorate
+    @player_matches = @match.player_matches
+    @selected = @match.player_matches.includes(:user).where.not(position: 0)
+  end
+
   # DELETE /matches/1
   def destroy
     @match.destroy
@@ -81,6 +90,12 @@ class MatchesController < ApplicationController
   end
 
   private
+
+  def create_player_matches(team, match)
+    team.users.each do |player|
+      match.player_matches.create(user: player)
+    end
+  end
 
   def get_status(start_time)
     if start_time < Time.current
