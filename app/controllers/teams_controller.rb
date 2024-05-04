@@ -25,7 +25,7 @@ class TeamsController < ApplicationController
     @team = Team.new(team_params)
 
     if @team.save
-      redirect_to team_invites_path(@team.id), notice: I18n.t('team.create.success')
+      redirect_to @team, notice: I18n.t('team.create.success')
     else
       render :new, status: :unprocessable_entity
     end
