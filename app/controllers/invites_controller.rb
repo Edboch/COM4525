@@ -47,8 +47,10 @@ class InvitesController < ApplicationController
 
   # DELETE /invites/1
   def destroy
-    @invite.destroy!
-    redirect_to invites_url, notice: I18n.t('Invite was successfully destroyed.'), status: :see_other
+    team_id = @invite.team_id
+    @invite.destroy
+    redirect_to team_published_invites_path(team_id), notice: I18n.t('Invite was successfully destroyed.'),
+                                                      status: :see_other
   end
 
   private

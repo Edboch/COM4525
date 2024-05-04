@@ -15,4 +15,5 @@
           %dd.col-md-9= @invite.description
       .card-footer.d-flex
         = link_to 'Edit', edit_team_invite_path(@team, @invite), class: 'btn btn-link'
+        = link_to 'Delete', team_invite_path(@team, @invite), method: :delete, data: { confirm: 'Are you sure you want to delete this invite?' }, class: 'btn btn-link'
         = link_to 'Back', team_published_invites_path(@team), class: 'btn btn-link ms-auto'
