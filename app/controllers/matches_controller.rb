@@ -5,8 +5,8 @@
 class MatchesController < ApplicationController
   before_action :authenticate_user!
   load_and_authorize_resource
-  before_action :set_team, only: %i[create new show edit update fixtures]
-  before_action :set_match, only: %i[show edit update destroy rate_players]
+  before_action :set_team, only: %i[create new show edit update lineup fixtures]
+  before_action :set_match, only: %i[show edit update destroy lineup rate_players]
 
   # passed a team_id to display that teams matches
   def fixtures
@@ -19,7 +19,7 @@ class MatchesController < ApplicationController
     @team = @match.team
     @match_decorator = @match.decorate
 
-    if current_user.staff_of_team?(@team, current_user)
+    if current_user.staff_of_team?(@team)
       user_teams = UserTeam.where(team_id: @team.id, accepted: true)
       @players = user_teams.map { |user_team| User.find_by(id: user_team.user_id) }
       @options = [['N/A', -1]]
@@ -80,6 +80,7 @@ class MatchesController < ApplicationController
   def lineup
     @match_decorator = @match.decorate
     @player_matches = @match.player_matches
+    @unselected = @match.player_matches.includes(:user).where(position: 0)
     @selected = @match.player_matches.includes(:user).where.not(position: 0)
   end
 

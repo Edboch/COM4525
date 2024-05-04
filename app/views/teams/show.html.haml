@@ -29,7 +29,7 @@
             .card-body 
               .card-text.text-end
                 .col  
-                  - if current_user.owner_of_team?(@team, current_user)
+                  - if current_user.owner_of_team?(@team)
                     = link_to 'Add a Match', new_team_match_path(@team), class: 'btn db-side-btn'
                   = link_to 'All Fixtures', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn'
         .col-sm-8
@@ -58,13 +58,13 @@
                 .col  
                   = link_to 'Show all Players', team_players_path(@team), class: 'btn db-side-btn'
                 .col.text-end
-                  - if current_user.owner_of_team?(@team, current_user)
+                  - if current_user.owner_of_team?(@team)
                     = link_to 'Invite a Player', new_team_user_team_path(@team), class: 'btn db-side-btn'
   .row.my-4
     .container.text-end 
       .row.text-end
         .col
-          - if current_user.owner_of_team?(@team, current_user)
+          - if current_user.owner_of_team?(@team)
             = link_to 'Edit Team', edit_team_path(@team), class: 'btn db-side-btn'
             = link_to 'Delete Team', team_path(@team), method: :delete, data: { confirm: 'Are you sure you want to delete the team?' }, class: 'btn db-side-btn'
           = link_to 'Back', dashboard_path, class: 'btn db-side-btn'

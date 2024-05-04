@@ -4,4 +4,43 @@
 
     - # display the playermatch relations with a position
 
-    
+    %table
+      %thead
+        %tr
+          %th Name
+          %th Position
+          %th Available
+      %tbody
+        - @selected.each do |player|
+          %tr
+            %td= player.user.name
+            %td= player.position
+            %td= player.available ? "Yes" : "No"
+
+    - if current_user.owner_of_team?(@team)
+      .container 
+        .row 
+          %h3 Select Players
+
+          %table
+            %thead
+              %tr
+                %th Name
+                %th Position
+                %th Available
+                %th 
+            %tbody
+              - @unselected.each do |player|
+                %form{action: "//#{player.id}", method: "post"}
+                  %tr
+                    %td= player.user.name
+                    %td
+                      %select{name: "player[position]"}
+                        %option{value: "0"} Goalkeeper
+                        %option{value: "1"} Defender
+                        %option{value: "2"} Midfielder
+                        %option{value: "3"} Forward
+                    %td= player.available ? "Yes" : "No"
+                    %td
+                      %input{type: "submit", value: "Select",class: 'btn db-side-btn'}
+

@@ -34,14 +34,14 @@ class User < ApplicationRecord
   has_many :player_matches, dependent: :destroy
   has_many :matches_playing, through: :player_matches, source: :match
 
-  def owner_of_team?(team, user)
-    team.owner_id == user.id
+  def owner_of_team?(team)
+    team.owner_id == id
   end
 
   # checks whether the user has the privileges of staff
   # TODO change this to fit CanCan authorisation
-  def staff_of_team?(team, user)
-    return true if team.owner_id == user.id
+  def staff_of_team?(team)
+    return true if team.owner_id == id
 
     user_teams.joins(:roles, :team)
               .exists?(teams: { id: team.id }, roles: { type: 1 })

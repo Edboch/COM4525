@@ -7,13 +7,13 @@
         %p= "Location: #{@match.location}"
         %p= "Kick off: #{@match.start_time.strftime('%A, %B %-d, %Y %I:%M %p')}"
         .container
-          - if current_user.staff_of_team?(@team, current_user)
+          - if current_user.staff_of_team?(@team)
             .text-center 
               %h3 Player Ratings
             = render 'player_ratings_form', match: @match
           - else
             %h1 Match Rating: #{@rating}
       .card-footer.text-end
-        - if current_user.owner_of_team?(@team, current_user)
+        - if current_user.owner_of_team?(@team)
           = link_to 'Edit Details', edit_team_match_path(@match), class: 'btn db-side-btn'
         = link_to 'Back', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn'
