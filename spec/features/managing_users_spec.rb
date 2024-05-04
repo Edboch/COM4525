@@ -27,7 +27,7 @@ RSpec.describe 'Managing users' do
     before { visit '/' }
 
     specify 'then i can log into my account' do
-      create(:user)
+      create(:user, email: 'test@email.com', password: 'Password')
       fill_in 'Email', with: 'test@email.com'
       fill_in 'Password', with: 'Password'
       click_on 'Log in'
@@ -37,7 +37,7 @@ RSpec.describe 'Managing users' do
 
   context 'when i am logged into my account' do
     let!(:user1) do
-      create(:user)
+      create(:user, email: 'test@email.com', password: 'Password')
     end
 
     before do
