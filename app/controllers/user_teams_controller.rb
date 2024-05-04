@@ -49,9 +49,13 @@ class UserTeamsController < ApplicationController
 
     return unless @user_team.save
 
-    redirect_to dashboard_path, notice: I18n.t('userteam.create.success')
+    # Adding the following line to avoid Rubocop error 'Lint/Syntax: else without rescue is useless'
+    if @user_team.save
+      redirect_to dashboard_path, notice: I18n.t('userteam.create.success')
     else
       render :new, status: :unprocessable_entity
+      # Adding the following line to avoid Rubocop error 'Lint/Syntax: unexpected token $end'
+    end
   end
 
   def handle_no_user

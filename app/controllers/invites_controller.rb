@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Controller for invites
 class InvitesController < ApplicationController
   before_action :set_team, only: %i[create new show edit update]
   before_action :set_invite, only: %i[show edit update destroy]
@@ -28,7 +29,7 @@ class InvitesController < ApplicationController
     @invite.team_id = @team.id
     # @invite = Invite.new(invite_params)
     if @invite.save
-      redirect_to team_published_invites_path(@team), notice: 'Invite was successfully created.'
+      redirect_to team_published_invites_path(@team), notice: I18n.t('Invite was successfully created.')
     else
       render :new, status: :unprocessable_entity
     end
@@ -37,7 +38,8 @@ class InvitesController < ApplicationController
   # PATCH/PUT /invites/1
   def update
     if @invite.update(invite_params)
-      redirect_to team_published_invites_path(@team), notice: 'Invite was successfully updated.', status: :see_other
+      redirect_to team_published_invites_path(@team), notice: I18n.t('Invite was successfully updated.'),
+                                                      status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
@@ -46,7 +48,7 @@ class InvitesController < ApplicationController
   # DELETE /invites/1
   def destroy
     @invite.destroy!
-    redirect_to invites_url, notice: 'Invite was successfully destroyed.', status: :see_other
+    redirect_to invites_url, notice: I18n.t('Invite was successfully destroyed.'), status: :see_other
   end
 
   private
