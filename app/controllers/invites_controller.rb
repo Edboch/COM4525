@@ -29,7 +29,7 @@ class InvitesController < ApplicationController
     @invite.team_id = @team.id
     # @invite = Invite.new(invite_params)
     if @invite.save
-      redirect_to team_published_invites_path(@team), notice: I18n.t('Invite was successfully created.')
+      redirect_to team_published_invites_path(@team), notice: I18n.t('invite.create.success')
     else
       render :new, status: :unprocessable_entity
     end
@@ -38,7 +38,7 @@ class InvitesController < ApplicationController
   # PATCH/PUT /invites/1
   def update
     if @invite.update(invite_params)
-      redirect_to team_published_invites_path(@team), notice: I18n.t('Invite was successfully updated.'),
+      redirect_to team_published_invites_path(@team), notice: I18n.t('invite.update.success'),
                                                       status: :see_other
     else
       render :edit, status: :unprocessable_entity
@@ -49,7 +49,7 @@ class InvitesController < ApplicationController
   def destroy
     team_id = @invite.team_id
     @invite.destroy
-    redirect_to team_published_invites_path(team_id), notice: I18n.t('Invite was successfully destroyed.'),
+    redirect_to team_published_invites_path(team_id), notice: I18n.t('invite.destroy.success'),
                                                       status: :see_other
   end
 
