@@ -6,7 +6,9 @@ Rails.application.routes.draw do
   resources :teams do
     resources :user_teams
     resources :matches
+    resources :invites
     get 'fixtures', to: 'matches#fixtures', as: :fixtures
+    get 'published_invites', to: 'invites#published_invites', as: :published_invites
   end
 
   resources :user_teams do

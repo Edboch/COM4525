@@ -1,8 +1,10 @@
 - if current_user.manager?
   %h1 Manage Your Team
   =link_to 'Create a new team', create_team_path
+
   - for team in @teams
     %h2= "Team name: #{team.name}"
+    %h2= "Team id: #{team.id}"
     =link_to 'View team', team_path(team)
 
 

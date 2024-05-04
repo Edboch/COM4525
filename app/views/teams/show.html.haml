@@ -16,3 +16,5 @@
     = link_to 'Invite a Player', new_team_user_team_path(@team), class: 'btn btn-primary'
     = link_to 'View Fixtures', team_fixtures_path(team_id: @team.id), class: 'btn btn-primary'
     = link_to 'Add a Match', new_team_match_path(@team), class: 'btn btn-primary'
+    = link_to 'Create a match invite', new_team_invite_path(@team), class: 'btn btn-primary'
+    = link_to 'View all invites published by my team', team_published_invites_path(@team), class: 'btn btn-primary'
