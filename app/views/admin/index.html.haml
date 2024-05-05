@@ -55,17 +55,17 @@
       %h2.title
         %p App Usage
       .row
-        .statistic.col
+        .statistic.col#number_users
           %span.label Number of Users
           %span.value= @users.length
-        .statistic.col
+        .statistic.col#number_teams
           %span.label Number of Teams
           %span.value= @teams.length
         .w-100
-        .statistic.col
+        .statistic.col#number_matches
           %span.label Number of Matches
           %span.value= @matches.length
-        .statistic.col
+        .statistic.col#ratings_per_match
           %span.label Ratings per Match
           %span.value= @rating_metric
 
