@@ -20,6 +20,7 @@ class AdminController < ApplicationController
                                  .first&.period_start || 1.day.ago
 
     @rating_metric = ratings_per_match
+    @matches = Match.all
     @teams = Team.all
     @js_users = @users.to_json
     @js_roles = TeamRole.all.to_json
