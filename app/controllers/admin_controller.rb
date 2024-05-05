@@ -2,16 +2,25 @@
 
 # Controller for the admin page
 class AdminController < ApplicationController
+  include FrontendHelper
+  include AdminHelper
   include MetricsHelper
-  layout false
+
+  layout 'admin'
   before_action :check_access_rights
 
   ####################
   # GET
 
   def index
+    @users = user_data
     @visit_metrics = popularity_data
     @earliest = PageVisitGrouping.where(category: 'earliest').first&.period_start || 1.day.ago
+
+    @teams = user_teams
+    @template_member = FE_Member.new id: '{1}', name: ''
+    @js_managers = js_user_role 'Manager'
+    @js_players = js_user_role 'Player'
   end
 
   ############
@@ -37,36 +46,7 @@ class AdminController < ApplicationController
   end
 
   def retrieve_users
-    players = []
-    managers = []
-    site_admins = []
-
-    # TODO: Look into using CanCanCan abilities to resolve this
-    User.select(:id, :name, :email).decorate.each do |user|
-      data = { id: user.id, name: user.name, email: user.email, roles: [] }
-      array_flag = 0
-
-      data[:roles].append('player') if user.player?
-      if user.manager?
-        data[:roles].append 'manager'
-        array_flag = 1
-      end
-      if user.site_admin?
-        data[:roles].append 'site-admin'
-        array_flag = 2
-      end
-
-      case array_flag
-      when 2
-        site_admins.append data
-      when 1
-        managers.append data
-      else
-        players.append data
-      end
-    end
-
-    response = { players: players, managers: managers, site_admins: site_admins }
+    response = user_data
     render json: response
   end
 
@@ -80,8 +60,8 @@ class AdminController < ApplicationController
     user.name = params[:name]
     user.email = params[:email]
     user.update_roles params[:roles]
-    result = user.save
 
+    result = user.save
     render json: { success: result }
   end
 
@@ -96,25 +76,68 @@ class AdminController < ApplicationController
 
   def remove_user
     user = User.find_by id: params[:id]
-    return if user.nil?
+    user&.destroy
+  end
 
-    user.name = params[:name]
-    user.email = params[:email]
-    user.destroy
+  # Updates the team manager of the corresponding team
+  #
+  # @param [Integer] team_id    The id of the team we want to change
+  # @param [Integer] manager_id The id of the new manager
+  def update_team_manager
+    return if params[:manager_id].nil? || params[:team_id].nil?
+
+    manager_id = Integer params[:manager_id], exception: false
+    team_id = Integer params[:team_id], exception: false
+    return if manager_id.nil? || team_id.nil?
+
+    team = Team.find_by(id: team_id)
+    team.owner_id = manager_id
+    team.save
+  end
+
+  # Adds a new player to the corresponding team
+  #
+  # @param [Integer] team_id   The id of the team
+  # @param [Integer] player_id The user id of the player
+  def add_team_player
+    return if params[:player_id].nil? || params[:team_id].nil?
+
+    player_id = Integer params[:player_id], exception: false
+    team_id = Integer params[:team_id], exception: false
+    return if player_id.nil? || team_id.nil?
+
+    UserTeam.create team_id: team_id, user_id: player_id
+  end
+
+  # Removes a player from a team
+  #
+  # @param [Integer] team_id   The id of the team
+  # @param [Integer] player_id The user id of the player to remove
+  def remove_team_player
+    return if params[:player_id].nil? || params[:team_id].nil?
+
+    player_id = Integer params[:player_id], exception: false
+    team_id = Integer params[:team_id], exception: false
+    return if player_id.nil? || team_id.nil?
+
+    UserTeam.destroy_by team_id: team_id, user_id: player_id
   end
 
   private
 
-  def popularity_data
-    {
-      total: PageVisit.count,
-      avg_week: PageVisitGrouping.where(category: 'avg week').first&.count,
-      avg_month: PageVisitGrouping.where(category: 'avg month').first&.count,
-      avg_year: PageVisitGrouping.where(category: 'avg year').first&.count,
-      past_week: PageVisitGrouping.where(category: 'past week').first&.count,
-      past_month: PageVisitGrouping.where(category: 'past month').first&.count,
-      past_year: PageVisitGrouping.where(category: 'past year').first&.count
-    }
+  def user_data
+    # Rather than returning separate arrays of the different types, we'll
+    # do the sorting in the SQL query, which will be configurable by url params
+    # TODO: Implement sorting options
+    #       The intended default sorting is intended to be Player > Manager > Admin
+    User.select(:id, :name, :email).includes(:roles)
+        .sort_by { |u| u.roles.pluck(:name).sort.reverse }
+        .map do |user|
+          {
+            id: user.id, name: user.name, email: user.email,
+            roles: user.roles.pluck(:name).sort.reverse
+          }
+        end
   end
 
   ############

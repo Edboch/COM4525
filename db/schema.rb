@@ -35,8 +35,39 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_30_144137) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "team_id", null: false
-    t.index ["team_id"], name: "index_invites_on_team_id"
+    t.decimal "latitude", default: "0.0", null: false
+    t.decimal "longitude", default: "0.0", null: false
+    t.index ["email"], name: "index_landing_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_landing_users_on_reset_password_token", unique: true
+  end
+
+  create_table "landing_viewers", force: :cascade do |t|
+    t.bigint "landing_user_id"
+    t.integer "selected_plan", default: 0, null: false
+    t.index ["landing_user_id"], name: "index_landing_viewers_on_landing_user_id"
+  end
+
+  create_table "landing_visitor_locations", force: :cascade do |t|
+    t.decimal "latitude", default: "0.0", null: false
+    t.decimal "longitude", default: "0.0", null: false
+  end
+
+  create_table "like_answers", force: :cascade do |t|
+    t.bigint "landing_user_id", null: false
+    t.bigint "question_answer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["landing_user_id"], name: "index_like_answers_on_landing_user_id"
+    t.index ["question_answer_id"], name: "index_like_answers_on_question_answer_id"
+  end
+
+  create_table "like_reviews", force: :cascade do |t|
+    t.bigint "review_id", null: false
+    t.bigint "landing_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["landing_user_id"], name: "index_like_reviews_on_landing_user_id"
+    t.index ["review_id"], name: "index_like_reviews_on_review_id"
   end
 
   create_table "matches", force: :cascade do |t|
@@ -123,9 +154,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_30_144137) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "invites", "teams"
+  add_foreign_key "like_answers", "landing_users"
+  add_foreign_key "like_answers", "question_answers"
+  add_foreign_key "like_reviews", "landing_users"
+  add_foreign_key "like_reviews", "reviews"
   add_foreign_key "matches", "teams"
-  add_foreign_key "site_admins", "users"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
   add_foreign_key "user_teams", "teams"
