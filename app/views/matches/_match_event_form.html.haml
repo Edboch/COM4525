@@ -1,6 +1,6 @@
 %h3 Add Match Event
 %div.row
-  = form_with(model: [@match, MatchEvent.new], url: create_match_event_team_match_path(@match), local: true) do |f|
+  = form_with(model: [@match.team, @match, MatchEvent.new], local: true) do |f|
     .form-group.mt-2.mb-2.col-sm-4
       = f.label :user_id, 'Player'
       = f.collection_select :user_id, @players, :id, :name, include_blank: true, class: 'form-control'

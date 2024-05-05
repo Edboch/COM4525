@@ -39,15 +39,14 @@ RSpec.describe 'match events' do
 
     it 'does not allow manager to add match event for another team' do
       expect do
-        post create_match_event_team_match_path(another_match.team, another_match), params: event_params
+        post team_match_match_events_path(another_match.team, another_match), params: event_params
       end.not_to change(MatchEvent, :count)
     end
 
     it 'does not allow manager to delete a match event for another team' do
       match_event = create(:match_event, match: another_match, user: player, event_type: 'goal', event_minute: 33)
       expect do
-        post destroy_match_event_team_match_path(another_match.team, another_match),
-             params: { match_event: match_event }
+        delete team_match_match_event_path(another_match.team, another_match, match_event)
       end.not_to change(MatchEvent, :count)
     end
   end
@@ -55,19 +54,18 @@ RSpec.describe 'match events' do
   context 'when user is the player' do
     before do
       login_as(player, scope: :user)
-      visit team_match_path(team, match)
     end
 
     it 'does not allow player to add match event' do
       expect do
-        post create_match_event_team_match_path(match.team, match), params: event_params
+        post team_match_match_events_path(match.team, match), params: event_params
       end.not_to change(MatchEvent, :count)
     end
 
     it 'does not allow player to delete match event' do
       match_event = create(:match_event, match: match, user: player, event_type: 'goal', event_minute: 33)
       expect do
-        post destroy_match_event_team_match_path(match.team, match), params: { match_event: match_event }
+        delete team_match_match_event_path(team.id, match.id, match_event.id)
       end.not_to change(MatchEvent, :count)
     end
   end

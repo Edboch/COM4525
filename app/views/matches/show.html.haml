@@ -32,7 +32,7 @@
                   %small= "Player: #{event.user.name}"
                 - if current_user.owner_of_team?(@match.team, current_user)
                   .col-4
-                    = button_to 'Delete', destroy_match_event_team_match_path(@match.team, @match), method: :post, params: { match_event: event }, class: 'btn btn-danger'
+                    = button_to 'Delete', team_match_match_event_path(@match.team, @match, event), method: :delete, class: 'btn btn-danger'
       - if current_user.owner_of_team?(@team, current_user)
         .card-footer.text-left
           = render 'match_event_form', match: @match, players: @players

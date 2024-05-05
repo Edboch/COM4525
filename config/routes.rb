@@ -9,10 +9,9 @@ Rails.application.routes.draw do
     resources :invites
     get 'published_invites', to: 'invites#published_invites', as: :published_invites
     resources :matches do
+      resources :match_events, only: %i[create destroy]
       member do
         post :rate_players
-        post :create_match_event
-        post :destroy_match_event
       end
     end
     get 'fixtures', to: 'matches#fixtures', as: :fixtures
