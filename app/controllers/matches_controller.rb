@@ -74,27 +74,6 @@ class MatchesController < ApplicationController
     render :edit, status: :unprocessable_entity
   end
 
-  # POST /matches/:id/create_match_event
-  def create_match_event
-    ActiveRecord::Base.transaction do
-      @match_event = @match.match_events.new(match_event_params)
-      @match_event.save!
-    end
-    redirect_to team_match_path(@match.team, @match), notice: I18n.t('matchevent.create')
-  rescue ActiveRecord::RecordInvalid
-    redirect_to team_match_path(@match.team, @match), alert: I18n.t('matchevent.unsuccessful')
-  end
-
-  # POST /matches/:id/destroy_match_event
-  def destroy_match_event
-    @match_event = @match.match_events.find(params[:match_event])
-    if @match_event.destroy
-      redirect_to team_match_path(@match.team, @match), notice: I18n.t('matchevent.destroy')
-    else
-      redirect_to team_match_path(@match.team, @match), alert: I18n.t('matchevent.unsuccessfuldestroy')
-    end
-  end
-
   # DELETE /matches/1
   def destroy
     @match.destroy

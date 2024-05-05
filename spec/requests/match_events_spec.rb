@@ -37,6 +37,12 @@ RSpec.describe 'match events' do
       login_as(manager, scope: :user)
     end
 
+    it 'allows manager to add match event for another team' do
+      expect do
+        post team_match_match_events_path(match.team, match), params: event_params
+      end.not_to change(MatchEvent, :count)
+    end
+
     it 'does not allow manager to add match event for another team' do
       expect do
         post team_match_match_events_path(another_match.team, another_match), params: event_params
