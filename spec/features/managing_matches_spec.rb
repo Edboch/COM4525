@@ -44,7 +44,7 @@ RSpec.describe 'Managing Matches' do
       select '13', from: 'match[start_time(4i)]'
       select '00', from: 'match[start_time(5i)]'
       click_on 'Submit'
-      expect(page).to have_content '2024-05-05 13:00:00'
+      expect(page).to have_content 'Sunday, May 5, 2024 01:00 PM'
     end
   end
 
