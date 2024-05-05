@@ -59,6 +59,14 @@ en:
     destroy: "Match was successfully deleted."
   teammatchratings:
     update: "Ratings updated successfully"
+  invite:
+    create:
+      success: "Invite was successfully created."
+    update:
+      success: "Invite was successfully updated."
+    destroy:
+      success: "Invite was successfully deleted."
+
 
 
 
