@@ -27,6 +27,7 @@ class Ability
 
   def player_permissions(team)
     can :read, Team, id: team.id
+    can :player_stats, Team, id: team.id
     can :players, Team, id: team.id
     can :read, Match, team_id: team.id
     can :fixtures, Match, team_id: team.id
