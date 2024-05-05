@@ -2,6 +2,8 @@
 
 # Controller for managing the dashboard in the application
 class PlayersController < ApplicationController
+  before_action :authenticate_user!
+
   def invites
     # send the current players invites to the view
     @invites = UserTeam.where(user_id: current_user.id, accepted: false)
