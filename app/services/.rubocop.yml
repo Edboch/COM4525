@@ -1,0 +1,12 @@
+inherit_from: ../../.rubocop.yml
+
+Metrics/PerceivedComplexity:
+  AllowedMethods:
+    - call
+
+Metrics/CyclomaticComplexity:
+  AllowedMethods:
+    - call
+
+Lint/MissingSuper:
+  Enabled: false

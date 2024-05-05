@@ -1,17 +1,62 @@
-- if current_user.manager?
-  %h1 Manage Your Team
-  =link_to 'Create a new team', create_team_path
+.container 
+  .row
+    .col-sm-4.my-3
+      .container
+        .row.my-2
+          .card
+            .text-center.my-3
+              %h5 Your Upcoming Games
+            %table.table
+              %thead 
+                %tr 
+                  %th{ scope: 'col' } Opposition
+                  %th{ scope: 'col' } Location 
+                  %th{ scope: 'col' } Kick Off 
 
-  - for team in @teams
-    %h2= "Team name: #{team.name}"
-    %h2= "Team id: #{team.id}"
-    =link_to 'View team', team_path(team)
+              %tbody 
+                - @future_matches.first(4).each do | match |
+                  %tr 
+                    %td= match.opposition 
+                    %td= match.location 
+                    %td= match.start_time.strftime('%A, %B %-d, %Y %I:%M %p')
+            .card-body 
+              .card-text.text-end
+                = link_to 'All Fixtures', player_upcoming_matches_path, class: 'btn db-side-btn'
+        .row.my-2
+          = link_to 'Team Invites', player_invites_path, class: 'btn db-side-btn'
+        .row.my-2 
+          = link_to 'Create Team', create_team_path, class: 'btn db-side-btn'
+    .col-sm-8.my-3
+      .row
+        .text-center.my-2
+          %h2 Your Teams
+        .container
+          - if @teams.any?
+            - @teams.each_slice(2) do |team_pair|
+              .row
+                - team_pair.each do |team|
+                  .col-md-6
+                    .card.h-100.text-center.m-3
+                      .my-2
+                        %h2= team.name
+                      .card-body
+                        .container
+                          .row.text-start
+                            - if team.owner_id == current_user.id
+                              %h5 Role: Manager
+                            - else
+                              %h5 Role: Player
+                          .row.text-start
+                            %p= team.decorate.days_until_next_match.to_s
+                      .mt-auto.mb-3
+                        = link_to 'View Team', team_path(team), class: 'btn db-side-btn'
+          - else 
+            .text-center.m-3 
+              %h4 You are not a member of any team
+        
+        
+          
+      
 
 
-
-- if current_user.player?
-  %h1 Player
-  = link_to 'View invites', player_invites_path
-  %h1 Upcoming Fixtures
-  = link_to 'View your next matches', player_upcoming_matches_path 
 

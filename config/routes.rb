@@ -1,14 +1,22 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  devise_for :users, controllers: { sessions: 'users/sessions' }
   resources :teams
 
   resources :teams do
     resources :user_teams
-    resources :matches
-    resources :invites
+    resources :matches do
+      member do
+        post :rate_players
+      end
+    end
     get 'fixtures', to: 'matches#fixtures', as: :fixtures
-    get 'published_invites', to: 'invites#published_invites', as: :published_invites
+    member do
+      get 'league'
+      get :sync_fixtures
+      post :sync_fixtures, action: :create_fixtures
+    end
   end
 
   resources :user_teams do
@@ -17,8 +25,6 @@ Rails.application.routes.draw do
       delete 'reject'
     end
   end
-
-  devise_for :users
 
   get 'profile', to: 'user#show', as: :user_profile
   get 'profile/edit', to: 'user#edit', as: :edit_user_profile
@@ -36,11 +42,9 @@ Rails.application.routes.draw do
 
   get 'dashboard', to: 'dashboard#index', as: :dashboard
 
-  scope '/dashboard' do
-    get '/:id/site-admin', to: 'admin#index', as: :admin_page
-  end
-
   scope '/metrics' do
+    post '/update-visitor', to: 'metrics#update_visitor'
+
     post '/popularity', to: 'admin#retrieve_popularity_metrics', as: :metrics_popularity
     post '/range_popularity', to: 'admin#retrieve_popularity_range', as: :metrics_popularity_range
   end
@@ -54,10 +58,24 @@ Rails.application.routes.draw do
     post('/update-manager',
          to: 'admin#update_team_manager',
          as: :admin_update_team_manager)
+    post '/new-team', to: 'admin#new_team', as: :admin_new_team
     post '/add-player', to: 'admin#add_team_player', as: :admin_add_team_player
     post('/remove-player',
          to: 'admin#remove_team_player',
          as: :admin_remove_team_player)
+  end
+
+  resources :admin, only: :index do
+    resources :teams, only: :index, module: 'admin'
+    resources :teams, only: [] do
+      post 'set-owner', to: 'admin/teams#set_owner'
+      post 'add-member', to: 'admin/teams#add_member'
+    end
+
+    resources :user_teams, only: [] do
+      post 'remove', to: 'admin/teams#remove_member'
+      post 'update-roles', to: 'admin/teams#update_member_roles'
+    end
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

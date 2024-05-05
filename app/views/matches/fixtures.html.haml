@@ -1,6 +1,9 @@
-%h2 Here are your fixtures
+
 
 .container
+
+  .row.text-center.my-2
+    %h3= "#{@team.name} Fixtures"
   .row 
     .col
       %table.table
@@ -12,18 +15,22 @@
             %th{ scope: 'col' } Kick Off 
             %th{ scope: 'col' } Score
             %td{ scope: 'col' } Result
-            - if current_user.manager?
+            %td{ scope: 'col' } 
+            - if current_user.staff_of_team?(@team, current_user)
               %td{ scope: 'col' } 
+              %td{ scope: 'col' }
         %tbody 
           - @matches.each_with_index do | match, index |
             %tr 
               %th{ scope: 'row' }= index + 1
               %td= match.opposition 
               %td= match.location 
-              %td= match.start_time 
+              %td= match.start_time.strftime('%A, %B %-d, %Y %I:%M %p') 
               %td= match.scoreline 
               %td= match.result
-              - if current_user.manager?
-                %td= link_to 'Edit', edit_team_match_path(@team, match), class: 'btn btn-primary'
+              %td= link_to 'View', team_match_path(@team, match), class: 'btn btn-primary'
+              - if current_user.staff_of_team?(@team, current_user)
+                %td= link_to 'Edit', edit_team_match_path(@team, match), class: 'btn db-side-btn'
+                %td= link_to 'Delete', team_match_path(@team, match), class: 'btn db-side-btn', method: :delete, data: { confirm: 'Are you sure?' } 
 
   

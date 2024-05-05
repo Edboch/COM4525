@@ -1,5 +1,17 @@
+.row.justify-content-center.my-3
+  .col-sm-8.col-lg-6
+    .card.m-4
+      .card-header.text-center
+        %h3 Edit Team Details
+      = render 'form'
+
 .row.justify-content-center
   .col-sm-8.col-lg-6
-    .card
-      .card-header Editing Team
-      = render 'form'
+    .card.m-4
+      .card-header.text-center
+        %h3 Import Fixtures
+      .card-body
+        = render 'scraper_form'
+        .text-end
+          = link_to 'League Table', league_team_path(@team), class: 'btn db-side-btn'
+          = link_to 'Sync Fixtures', sync_fixtures_team_path(@team), class: 'btn db-side-btn'

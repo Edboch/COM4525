@@ -24,4 +24,8 @@
 class UserTeam < ApplicationRecord
   belongs_to :user
   belongs_to :team
+
+  # rubocop:disable Rails/HasAndBelongsToMany
+  has_and_belongs_to_many :roles, join_table: 'user_team_roles', class_name: 'TeamRole'
+  # rubocop:enable Rails/HasAndBelongsToMany
 end

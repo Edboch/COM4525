@@ -1,13 +1,17 @@
-%h1 My Profile 
-
-.container 
-  .row 
+.container.m-5
+  .row.text-center  
+    %h1 My Profile 
+  .row.text-center.my-3
     .col 
-      %h2 Roles:
-      - @user.roles.each do |role|
-        %span= role.name
-      %h2= "Name: #{@user.name}"
-      %h2= "Email: #{@user.email}"
+      %h4= "Name: #{@user.name}"
+    .col
+      %h4= "Email: #{@user.email}"
 
-    = link_to 'Edit Profile', edit_user_profile_path
-    = link_to 'Delete account', delete_user_profile_path, method: :delete, data: { confirm: 'Are you sure?' }
+  .row.text-center.my-3
+    .col  
+      %h4= "Joined: #{@user.created_at.strftime('%d %B %Y')}"
+    .col
+  .row.mt-5
+    .col.text-end
+      = link_to 'Edit Profile', edit_user_profile_path, class: 'btn db-side-btn mx-4'
+      = link_to 'Delete account', delete_user_profile_path, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn db-side-btn'

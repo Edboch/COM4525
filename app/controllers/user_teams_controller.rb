@@ -2,6 +2,7 @@
 
 # Controller for managing user team relations in the application
 class UserTeamsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_team, only: %i[new create destroy]
   before_action :set_user_team, only: %i[accept reject]
 
@@ -9,6 +10,7 @@ class UserTeamsController < ApplicationController
 
   def new
     @user_team = @team.user_teams.build
+    authorize! :new, @user_team
   end
 
   def create
@@ -33,6 +35,11 @@ class UserTeamsController < ApplicationController
 
   def accept
     @user_team.update(accepted: true)
+
+    team_role = TeamRole.find_or_create_by(name: 'regular', type: :regular)
+
+    @user_team.roles << team_role unless @user_team.roles.include?(team_role)
+
     redirect_to dashboard_path, notice: I18n.t('userteam.respond.accept')
   end
 
@@ -46,6 +53,7 @@ class UserTeamsController < ApplicationController
 
   def create_user_team(user)
     @user_team = @team.user_teams.build(user_id: user.id)
+    authorize! :create, @user_team
 
     return unless @user_team.save
 

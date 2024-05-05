@@ -26,6 +26,8 @@ main {
     background-color: rgb(60, 60, 60);
     color: inherit;
 
+    align-items: center;
+
     &.selected {
       background-color: rgb(150, 150, 150);
       font-size: 1.3em;
@@ -61,13 +63,6 @@ main {
   grid-template-areas: "title aw am ay refr"
                        "total pw pm py refr";
 
-  > div, .title, .total {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
   .title { grid-area: title; }
   .total { grid-area: total; }
 
@@ -86,6 +81,16 @@ main {
   .pasty { grid-area: py; }
 
   .refresh { grid-area: refr; }
+}
+
+// TODO: Use some proper SCSS to clean this up
+//       Move the styling into a mixin, then move the class selectors
+//       to the appropriate place
+.statistic, #gnrl-popularity .title, #gnrl-popularity .total {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 // ##################################
@@ -135,6 +140,18 @@ main {
 // Teams
 // ##################################
 
+.stats-block {
+  margin: 0 0 .8em;
+
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0.5em;
+
+  * {
+    margin: 0 0 .2em;
+  }
+}
+
 .team-card {
   margin: .4em;
   padding: .2em .3em;
@@ -167,40 +184,116 @@ main {
   width: fit-content;
 }
 
-.tc-player {
-  margin-top: .2em;
-  padding-left: .4em;
+.tc-owner {
+  margin: .7em .4em 1em;
+
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 2em;
+
+  h4 { margin: 0; }
 }
 
-.tcp-name {
-  margin-left: .4em;
+.tc-new-member {
+  margin: .3em 0 .6em;
+
+  .add {
+    height: fit-content;
+  }
+
+  form {
+    padding-left: .4em;
+
+    display: flex;
+    flex-flow: row nowrap;
+    gap: .8em;
+  }
+
+  .roles-context {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  .role-list {
+    padding: .2em;
+
+    span {
+      padding: .2em .3em;
+      cursor: pointer;
+    }
+
+    &:empty {
+      padding: 0;
+
+      &::after {
+        display: block;
+        width: 100%;
+
+        content: "None";
+        color: #ABABAB;
+        text-align: center;
+        font-style: italic;
+      }
+    }
+  }
 }
 
-.search-dropdown {
-  position: absolute;
-  left: -.9em;
+.tc-member {
+  margin-bottom: .4em;
 
-  width: max-content;
+  &.open {
+    .tcm-pill {
+      display: none;
+    }
 
-  padding: .2em .5em .3em;
+    .tcm-body {
+      display: block;
+    }
+  }
+}
 
-  background-color: #E4E4E4;
+$delete-button-width: 10%;
+
+.tcm-pill {
+  display: grid;
+  grid-template-columns: $delete-button-width 50% auto;
+  gap: .4em;
+}
+
+.tcm-name, .tcm-roles {
+  margin: 0;
 
   display: flex;
   flex-flow: column nowrap;
+  justify-content: center;
 
-  &:empty {
-    padding: 0;
+  text-overflow: hidden;
+}
+
+.tcm-body {
+  display: none;
+  margin-left: .4em;
+
+  .head {
+    margin-bottom: .8em;
+
+    display: grid;
+    grid-template-columns: $delete-button-width auto;
+    gap: .4em;
   }
 }
 
-.search-entry {
-  width: 100%;
-  margin-top: .1em;
-  padding: .1em .4em;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #9AABAA;
-  }
+.live-search-tm-team-role {
+  margin-bottom: .4em;
 }
+
+.tcm-team-role {
+  margin-bottom: .3em;
+  width: 60%;
+
+  display: grid;
+  grid-template-columns: 22% repeat(2, 1fr);
+  gap: .2em;
+}
+

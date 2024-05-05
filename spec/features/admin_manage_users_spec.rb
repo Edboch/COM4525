@@ -3,23 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin Edit Users', :js do
-  let!(:site_admin) do
-    sa = User.create email: 'grand@authority.com', password: 'password', name: 'Eye of Sauron'
-    SiteAdmin.create user_id: sa.id
-    sa
-  end
-
-  # TODO: Player and Manager generation to factories
-  let!(:player) do
-    user = User.create email: 'player@1.com', password: 'password', name: 'John'
-    role_player = Role.find_or_create_by! name: 'Player'
-    UserRole.create user_id: user.id, role_id: role_player.id
-    user
-  end
+  let!(:admin) { create(:user, :site_admin) }
+  let!(:regular) { create(:user) }
 
   before do
+    regular
     visit '/'
-    fill_in 'user[email]', with: site_admin.email
+    fill_in 'user[email]', with: admin.email
     fill_in 'user[password]', with: 'password'
     click_on 'Log in'
     click_on 'Admin'
@@ -29,23 +19,24 @@ RSpec.describe 'Admin Edit Users', :js do
 
   context 'when editing existing users' do
     let!(:user_card) do
-      uc = find "#user-card-#{player.id}"
+      uc = find "#user-card-#{regular.id}"
       uc.click
       uc
     end
 
     specify 'The user cards are being loaded onto the page' do
-      expect(page).to have_css("#user-card-#{player.id}", visible: :visible)
+      expect(page).to have_css("#user-card-#{regular.id}", visible: :visible)
     end
 
     specify 'A user\'s name can be changed' do
+      # save_and_open_page
       within user_card do
-        find(:css, '[name="name"]').set('Dominic')
+        find(:css, 'input[name="name"]').set 'Dominic'
         find(:css, 'button.save').click
       end
 
-      sleep 0.4
-      expect(player.reload.name).to eq 'Dominic'
+      sleep 0.2
+      expect(regular.reload.name).to eq 'Dominic'
     end
 
     specify 'A user\'s email can be changed' do
@@ -57,120 +48,81 @@ RSpec.describe 'Admin Edit Users', :js do
       end
 
       sleep 0.2
-      expect(player.reload.email).to eq email
+      expect(regular.reload.email).to eq email
     end
 
-    specify 'A user\'s role can be changed to also be manager' do
-      within user_card do
-        find(:css, '[name="manager"]').set true
-        click_on 'Save'
-      end
-
-      sleep 0.2
-      player.reload
-      expect(player.player? && player.manager? && !player.decorate.site_admin?).to be true
-    end
-
-    specify 'A user\'s role can be changed to only be manager' do
-      within user_card do
-        find(:css, '[name="player"]').set false
-        find(:css, '[name="manager"]').set true
-        click_on 'Save'
-      end
-
-      sleep 0.2
-      player.reload
-      expect(!player.player? && player.manager? && !player.decorate.site_admin?).to be true
-    end
-
-    specify 'A user\'s role can be changed to be all roles' do
+    specify 'A user can be made a site admin' do
       within user_card do
         find(:css, '[name="site-admin"]').set true
-        find(:css, '[name="manager"]').set true
         click_on 'Save'
       end
 
       sleep 0.2
-      player.reload
-      expect(player.player? && player.manager? && player.decorate.site_admin?).to be true
+      regular.reload
+      expect(regular.site_admin).not_to be_nil
+    end
+
+    specify 'A user can be deleted' do
+      within user_card do
+        click_on 'Remove Account'
+      end
+
+      sleep 0.2
+      user = User.find_by id: regular.id
+      expect(user).to be_nil
     end
   end
 
   context 'when creating new users' do
+    let!(:name)  { Faker::Name.name }
+    let!(:email) { Faker::Internet.email }
+
     context 'when the form is correctly filled' do
       before do
-        email = "test#{rand(1...1000)}@email.com"
         within :css, '#new-user' do
-          find(:css, '[name="name"]').set 'Michael Jones'
+          find(:css, '[name="name"]').set name
           find(:css, '[name="email"]').set email
           find_by_id('new-user-regen-pw').click
 
-          find(:css, '[name="player"]').set false
-          find(:css, '[name="manager"]').set false
           find(:css, '[name="site-admin"]').set false
         end
         sleep 0.1
       end
 
-      specify 'I can create a new player' do
-        email = ''
+      specify 'I can create a new regular user' do
         within :css, '#new-user' do
-          find(:css, '[name="player"]').set true
-          email = find(:css, '[name="email"]').value
           find_by_id('new-user-submit').click
         end
 
-        sleep 0.3
+        sleep 0.1
 
         user = User.find_by email: email
-        expect(!user.nil? && user.player? && !user.manager? && !user.decorate.site_admin?).to be true
-      end
-
-      specify 'I can create a new manager' do
-        email = ''
-        within :css, '#new-user' do
-          find(:css, '[name="player"]').set false
-          find(:css, '[name="manager"]').set true
-          find(:css, '[name="site-admin"]').set false
-          email = find(:css, '[name="email"]').value
-          find_by_id('new-user-submit').click
-        end
-
-        sleep 0.3
-
-        user = User.find_by email: email
-        expect(!user.nil? && !user.player? && user.manager? && !user.decorate.site_admin?).to be true
+        expect(!user.nil? && user.site_admin.nil?).to be true
       end
 
       specify 'I can create a new site admin' do
-        email = ''
         within :css, '#new-user' do
-          find(:css, '[name="player"]').set false
-          find(:css, '[name="manager"]').set false
           find(:css, '[name="site-admin"]').set true
-          email = find(:css, '[name="email"]').value
           find_by_id('new-user-submit').click
         end
 
-        sleep 0.3
+        sleep 0.1
 
         user = User.find_by email: email
-        expect(!user.nil? && !user.player? && !user.manager? && user.decorate.site_admin?).to be true
+        expect(!(user.nil? || user.site_admin.nil?)).to be true
       end
     end
 
     specify 'And the form is incorrectly filed' do
-      email = "test#{rand(1...1000)}@email.com"
       within :css, '#new-user' do
         find(:css, '[name="email"]').set email
         find_by_id('new-user-regen-pw').click
         sleep 0.1
 
-        find(:css, '[name="player"]').set true
         find_by_id('new-user-submit').click
       end
 
-      sleep 0.3
+      sleep 0.1
       user = User.find_by email: email
       expect(user).to be_nil
     end

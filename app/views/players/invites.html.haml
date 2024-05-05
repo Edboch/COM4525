@@ -3,15 +3,20 @@
   .row.justify-content-center
     .col-sm-8.col-lg-6
       .card
-        .card-header
+        .card-header.text-center
           %h3= "Invite from #{team.name}"
         .card-body
-          .row.mb-0
+          .row.my-3
             %h3= "Team location: #{team.location_name}"
         .card-footer.d-flex 
-          = link_to 'Accept', accept_user_team_path(invite), method: :post, class: 'btn btn-success'
-          = link_to 'Reject', reject_user_team_path(invite), method: :delete, class: 'btn btn-danger'
+          = button_to 'Accept', accept_user_team_path(invite), method: :post, class: 'btn btn-success'
+          = button_to 'Reject', reject_user_team_path(invite), method: :delete, class: 'btn btn-danger'
 
 - if @invites.empty?
-  %h3 You have no invites currently
+  .container.text-center
+    .row.m-3
+      %h3 You have no invites currently
+    .row.mt-5
+      .text-center
+        = link_to 'Back to Dashboard', root_path, class: 'btn db-side-btn'
 
