@@ -29,6 +29,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_200218) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
+  create_table "invites", force: :cascade do |t|
+    t.datetime "time"
+    t.string "location"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "team_id", null: false
+    t.index ["team_id"], name: "index_invites_on_team_id"
+  end
+
   create_table "landing_viewers", force: :cascade do |t|
     t.bigint "landing_user_id"
     t.integer "selected_plan", default: 0, null: false
@@ -157,6 +167,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_200218) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "invites", "teams"
   add_foreign_key "match_events", "matches"
   add_foreign_key "match_events", "users"
   add_foreign_key "matches", "teams"

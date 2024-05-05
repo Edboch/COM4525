@@ -64,7 +64,10 @@ en:
     unsuccessful: "Match event could not be created."
     destroy: "Match event removed."
     unsuccessfuldestroy: "Match event could not be removed."
-
-
-
-
+  invite:
+    create:
+      success: "Invite was successfully created."
+    update:
+      success: "Invite was successfully updated."
+    destroy:
+      success: "Invite was successfully deleted."

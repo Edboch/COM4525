@@ -103,6 +103,7 @@ class TeamsController < ApplicationController
     @matches = @team.matches
                     .where('start_time > ?', Time.current)
                     .order(:start_time)
+    @invites = @team.invites.where('time > ?', Time.current).order(:time)
   end
 
   # Only allow a list of trusted parameters through.

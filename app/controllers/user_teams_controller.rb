@@ -16,11 +16,12 @@ class UserTeamsController < ApplicationController
   def create
     @team = Team.find(params[:team_id])
     user = User.find_by(email: user_team_params[:email])
+    return handle_no_user unless user
 
-    if user
-      create_user_team(user)
+    if UserTeam.find_by(user_id: user.id, team_id: @team.id)
+      handle_user_exist
     else
-      handle_no_user
+      create_user_team(user)
     end
   end
 
@@ -54,6 +55,8 @@ class UserTeamsController < ApplicationController
     @user_team = @team.user_teams.build(user_id: user.id)
     authorize! :create, @user_team
 
+    return unless @user_team.save
+
     if @user_team.save
       redirect_to dashboard_path, notice: I18n.t('userteam.create.success')
     else
@@ -62,6 +65,14 @@ class UserTeamsController < ApplicationController
   end
 
   def handle_no_user
+    @user_team = @team.user_teams.build
+    @user_team.errors.add(:email, 'No user found with this email')
+    render :new, status: :unprocessable_entity
+  end
+
+  def handle_user_exist
+    @user_team = @team.user_teams.build
+    @user_team.errors.add(:email, 'User already exists in the team')
     render :new, status: :unprocessable_entity
   end
 
