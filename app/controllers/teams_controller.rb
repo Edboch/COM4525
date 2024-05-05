@@ -2,6 +2,8 @@
 
 # Controller for managing teams in the application
 class TeamsController < ApplicationController
+  before_action :authenticate_user!
+  load_and_authorize_resource
   before_action :set_team, only: %i[show edit update destroy players league sync_fixtures create_fixtures]
 
   # GET /teams
@@ -91,9 +93,11 @@ class TeamsController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_team
-    @team = Team.find(params[:id])
+    @team = Team.find(params[:id]).decorate
+    @matches = @team.matches
+                    .where('start_time > ?', Time.current)
+                    .order(:start_time)
   end
 
   # Only allow a list of trusted parameters through.
