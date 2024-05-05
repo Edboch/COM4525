@@ -9,11 +9,7 @@ class InvitesController < ApplicationController
 
   # GET /invites
   def published_invites
-    # @invites = Invite.all
     @invites = Invite.where(team_id: set_team.id)
-    # @team = Team.find(@team.id)
-    # @invites = Invite.where(team_id: @team.id).order(:time)
-    # @team = Team.find(@team.id)
   end
 
   # GET /invites/1
