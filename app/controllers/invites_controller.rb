@@ -2,6 +2,8 @@
 
 # Controller for invites
 class InvitesController < ApplicationController
+  before_action :authenticate_user!
+  load_and_authorize_resource
   before_action :set_team, only: %i[create new show edit update]
   before_action :set_invite, only: %i[show edit update destroy]
 
@@ -10,6 +12,8 @@ class InvitesController < ApplicationController
     # @invites = Invite.all
     @invites = Invite.where(team_id: set_team.id)
     # @team = Team.find(@team.id)
+    #@invites = Invite.where(team_id: @team.id).order(:time)
+    #@team = Team.find(@team.id)
   end
 
   # GET /invites/1
@@ -29,7 +33,7 @@ class InvitesController < ApplicationController
     @invite.team_id = @team.id
     # @invite = Invite.new(invite_params)
     if @invite.save
-      redirect_to team_published_invites_path(@team), notice: I18n.t('invite.create.success')
+      redirect_to team_published_invites_path(@team.id), notice: I18n.t('invite.create.success')
     else
       render :new, status: :unprocessable_entity
     end

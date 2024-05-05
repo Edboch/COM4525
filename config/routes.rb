@@ -6,6 +6,8 @@ Rails.application.routes.draw do
 
   resources :teams do
     resources :user_teams
+    resources :invites
+    get 'published_invites', to: 'invites#published_invites', as: :published_invites
     resources :matches do
       member do
         post :rate_players
