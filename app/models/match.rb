@@ -26,7 +26,8 @@
 class Match < ApplicationRecord
   belongs_to :team
   has_many :player_ratings, dependent: :destroy
-  has_many :users, through: :player_ratings
+  has_many :match_events, dependent: :destroy
+  has_many :users, through: :team
 
   has_many :player_matches, dependent: :destroy
   has_many :players, through: :player_matches, source: :user

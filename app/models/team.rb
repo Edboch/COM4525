@@ -21,6 +21,7 @@ class Team < ApplicationRecord
   has_many :users, -> { where(user_teams: { accepted: true }) }, through: :user_teams
 
   has_many :matches, dependent: :destroy
+  has_many :invites, dependent: :destroy
 
   has_many :team_activities, dependent: :destroy
 

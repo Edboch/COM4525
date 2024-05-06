@@ -22,8 +22,6 @@
 #  fk_rails_...  (match_id => matches.id)
 #  fk_rails_...  (user_id => users.id)
 #
-# A join table linking users to the match, acting as
-# a lineup / availability table
 class PlayerMatch < ApplicationRecord
   belongs_to :user
   belongs_to :match

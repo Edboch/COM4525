@@ -29,10 +29,31 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_04_210906) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
+  create_table "invites", force: :cascade do |t|
+    t.datetime "time"
+    t.string "location"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "team_id", null: false
+    t.index ["team_id"], name: "index_invites_on_team_id"
+  end
+
   create_table "landing_viewers", force: :cascade do |t|
     t.bigint "landing_user_id"
     t.integer "selected_plan", default: 0, null: false
     t.index ["landing_user_id"], name: "index_landing_viewers_on_landing_user_id"
+  end
+
+  create_table "match_events", force: :cascade do |t|
+    t.bigint "match_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "event_type"
+    t.integer "event_minute"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["match_id"], name: "index_match_events_on_match_id"
+    t.index ["user_id"], name: "index_match_events_on_user_id"
   end
 
   create_table "matches", force: :cascade do |t|
@@ -166,6 +187,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_04_210906) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "invites", "teams"
+  add_foreign_key "match_events", "matches"
+  add_foreign_key "match_events", "users"
   add_foreign_key "matches", "teams"
   add_foreign_key "player_matches", "matches"
   add_foreign_key "player_matches", "users"

@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'player match ratings' do
+  let!(:admin) { create(:user, :site_admin) }
   let!(:manager) { create(:user) }
   let!(:team) { create(:team) }
   let!(:player) { create(:user) }
@@ -72,6 +73,19 @@ RSpec.describe 'player match ratings' do
 
     it 'defaults to N/A' do
       expect(page).to have_text('N/A')
+    end
+  end
+
+  context 'when logged in as site admin' do
+    before do
+      create(:player_rating, match_id: match.id, user_id: player.id)
+      login_as(admin, scope: :user)
+      visit admin_index_url
+    end
+
+    specify 'the average rating per match can be viewed' do
+      click_on 'General Stats'
+      expect(find_by_id('ratings_per_match')).to have_content 1
     end
   end
 end

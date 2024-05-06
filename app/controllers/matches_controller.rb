@@ -5,8 +5,8 @@
 class MatchesController < ApplicationController
   before_action :authenticate_user!
   load_and_authorize_resource
-  before_action :set_team, only: %i[create new show edit update lineup fixtures]
-  before_action :set_match, only: %i[show edit update destroy lineup rate_players]
+  before_action :set_team, only: %i[create new show edit update fixtures]
+  before_action :set_match, only: %i[show edit update destroy rate_players create_match_event destroy_match_event]
 
   # passed a team_id to display that teams matches
   def fixtures
@@ -119,5 +119,9 @@ class MatchesController < ApplicationController
   # only allow a list of trusted parameters through.
   def match_params
     params.require(:match).permit(:location, :start_time, :opposition, :goals_for, :goals_against)
+  end
+
+  def match_event_params
+    params.require(:match_event).permit(:user_id, :event_type, :event_minute)
   end
 end

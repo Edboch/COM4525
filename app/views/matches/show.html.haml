@@ -38,5 +38,25 @@
                 %h1 Match Rating: #{@rating}
       .card-footer.text-end
         - if current_user.owner_of_team?(@team)
-          = link_to 'Edit Details', edit_team_match_path(@match), class: 'btn db-side-btn'
+          = link_to 'Edit Details', edit_team_match_path(@team, @match), class: 'btn db-side-btn'
         = link_to 'Back', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn'
+    .card.m-4
+      .card-header
+        %h3 Match Events
+      .card-body
+        %ul.list-group.list-group-flush
+          - @match.match_events.order(:event_minute).each do |event|
+            %li.list-group-item
+              .row
+                .col-8
+                  %strong= "#{event.event_type.titleize}:"
+                  %span= " Minute #{event.event_minute}"
+                  %br/
+                  %small= "Player: #{event.user.name}"
+                - if current_user.owner_of_team?(@match.team)
+                  .col-4
+                    = button_to 'Delete', team_match_match_event_path(@match.team, @match, event), method: :delete, class: 'btn btn-danger'
+      - if current_user.owner_of_team?(@team)
+        .card-footer.text-left
+          = render 'match_event_form', match: @match, players: @players
+

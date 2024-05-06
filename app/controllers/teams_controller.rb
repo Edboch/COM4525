@@ -4,7 +4,7 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
   load_and_authorize_resource
-  before_action :set_team, only: %i[show edit update destroy players league sync_fixtures create_fixtures]
+  before_action :set_team, only: %i[show edit update destroy players league sync_fixtures create_fixtures player_stats]
 
   # GET /teams
   def index
@@ -91,6 +91,11 @@ class TeamsController < ApplicationController
     @league = nil
   end
 
+  # GET /teams/:id/player/:user_id
+  def player_stats
+    @player = User.find(params[:user_id])
+  end
+
   private
 
   def set_team
@@ -98,6 +103,7 @@ class TeamsController < ApplicationController
     @matches = @team.matches
                     .where('start_time > ?', Time.current)
                     .order(:start_time)
+    @invites = @team.invites.where('time > ?', Time.current).order(:time)
   end
 
   # Only allow a list of trusted parameters through.

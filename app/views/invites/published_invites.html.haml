@@ -1,0 +1,28 @@
+.card
+  .card-header.d-flex.align-items-center
+    %span Listing Invites
+
+    = link_to 'Home', dashboard_path, class: 'btn btn-link ms-auto'
+    = link_to 'Back to Team Profile', team_path(@team), class: 'btn btn-link ms-auto'
+
+  %table.table
+    %thead
+      %tr
+        %th Team
+        %th Time
+        %th Location
+        %th Description
+        %th
+    %tbody
+      - @invites.each_with_index do |invite|
+        %tr
+          %td= invite.team_id
+          %td= invite.time
+          %td= invite.location
+          %td= invite.description
+          %td
+            .btn-toolbar.float-end
+              = link_to 'Show', team_invite_path(@team, invite), class: 'btn btn-outline-secondary btn-sm'
+
+              
+              

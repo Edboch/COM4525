@@ -6,7 +6,10 @@ Rails.application.routes.draw do
 
   resources :teams do
     resources :user_teams
+    resources :invites
+    get 'published_invites', to: 'invites#published_invites', as: :published_invites
     resources :matches do
+      resources :match_events, only: %i[create destroy]
       member do
         get :lineup
         post :rate_players
@@ -15,6 +18,7 @@ Rails.application.routes.draw do
     end
     get 'fixtures', to: 'matches#fixtures', as: :fixtures
     member do
+      get 'player/:user_id', to: 'teams#player_stats', as: 'player_stats'
       get 'league'
       get :sync_fixtures
       post :sync_fixtures, action: :create_fixtures
