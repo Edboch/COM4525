@@ -1,3 +1,5 @@
+const { map } = require("jquery");
+
 let BUTTON_VIEWS = {};
 
 let POP_ELEMS = {};
@@ -400,6 +402,42 @@ function wireupTeamsView() {
   });
 }
 
+async function wireUpCreateNewTeam() {
+  const domNewTeam = $('#new-team');
+  let inp_teamname = domNewTeam.find('[name="team_name"]');
+  let inp_location = domNewTeam.find('[name="location_name"]');
+  let inp_owneremail = domNewTeam.find('[name="live-search-first-owner"]');
+
+  domNewTeam.find('#new-team-submit').on('click', async function() {
+    if (inp_teamname.val() === '') {
+      console.error('NEW TEAM No team name provided');
+      return;
+    }
+    if (inp_location.val() === '') {
+      console.error('NEW TEAM No location name provided');
+      return;
+    }
+    if (inp_owneremail.val() === '') {
+      console.error("NEW TEAM Manager's email not provided");
+      return;
+    }
+    const response = await SERVER.send('new-team', {
+      team_name: inp_teamname.val(), location_name: inp_location.val(), owner_email: inp_owneremail.val()
+    });
+    inp_teamname.val('');
+    inp_location.val('');
+    inp_owneremail.val('');
+    
+  });
+
+  UTIL.wireupLiveSearch(
+    'first-owner',
+    function(container, user) {
+      let entry = UTIL.createLiveSearchEntry(container, user);
+      return entry;},
+    maxOptionsWhenEmpty = 0
+  );
+}
 
 function mkfn_selectInfoView(target) {
   return function() {
@@ -470,5 +508,6 @@ document.addEventListener('DOMContentLoaded', function() {
   setupPopularityView();
 
   wireUpCreateNewUser();
+  wireUpCreateNewTeam();
 });
 

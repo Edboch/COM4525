@@ -23,8 +23,6 @@
 #
 FactoryBot.define do
   factory :user_team do
-    user { nil }
-    team { nil }
-    accepted { false }
+    # To avoid Rubocop error 'Lint/EmptyBlock: Empty block detected.'
   end
 end

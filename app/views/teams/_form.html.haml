@@ -9,13 +9,15 @@
   .field 
     =form.hidden_field :owner_id, value: current_user.id
 
-  .field
-    = form.label :name
+  .field.d-flex.align-items-center.my-3
+    .mx-4
+      = form.label :name
     = form.text_field :name, id: :team_name
 
-  .field
-    = form.label :location_name
+  .field.d-flex.align-items-center.my-3
+    .mx-4
+      = form.label :location_name
     = form.text_field :location_name, id: :team_location
 
-  .actions
-    = form.submit
+  .actions.text-end.m-3
+    = form.submit 'Submit', class: 'btn db-side-btn'

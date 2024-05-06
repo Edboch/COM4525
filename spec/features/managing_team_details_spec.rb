@@ -21,10 +21,10 @@ RSpec.describe 'Managing team details' do
     end
 
     specify 'Then i can create a new team' do
-      click_on 'Create a new team'
+      click_on 'Create Team'
       fill_in 'Name', with: 'Own goals'
       fill_in 'team[location_name]', with: 'Sheffield'
-      click_on 'Create Team'
+      click_on 'Submit'
       expect(page).to have_content 'Team was successfully created'
     end
   end
@@ -37,10 +37,10 @@ RSpec.describe 'Managing team details' do
 
     specify 'Then I can edit the team details' do
       click_on 'View Team'
-      click_on 'Edit'
+      click_on 'Edit Team'
       fill_in 'Name', with: 'NewTeamName'
-      click_on 'Update Team'
-      expect(page).to have_content 'Team name: NewTeamName'
+      click_on 'Submit'
+      expect(page).to have_content 'NewTeamName'
     end
 
     # specify 'Then I cannot change details to be empty' do
@@ -50,6 +50,15 @@ RSpec.describe 'Managing team details' do
     #   click_on 'Update Team'
     #   expect(page).to have_content 'Cannot have empty cells'
     # end
+
+    specify 'Then I can add league URL and team name' do
+      click_on 'View Team'
+      click_on 'Edit Team'
+      fill_in 'team_url', with: 'https://sportsheffield.sportpad.net/leagues/view/1471/86'
+      fill_in 'team_team_name', with: 'CompSoc Greens'
+      click_on 'Update'
+      expect(page).to have_content 'Team was successfully updated.'
+    end
 
     specify 'Then i can delete my team' do
       click_on 'View Team'
