@@ -34,6 +34,15 @@ module MetricsHelper
     }
   end
 
+  def ratings_per_match
+    num_matches = Match.all.length
+    num_ratings = PlayerRating.all.length
+
+    return 0 if num_matches.zero?
+
+    num_ratings / num_matches
+  end
+
   def get_team_activity_from(start)
     TeamActivity.where('day_start > ?', start.beginning_of_day)
                 .select(:team_id).distinct.count
