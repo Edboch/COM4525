@@ -1,0 +1,8 @@
+= form_with(model: @match, url: update_lineup_team_match_path(@match), local: true, method: :post) do |f|
+  = f.label :player_match_user_id, "Select Player"
+  = f.select :player_match_user_id, options_from_collection_for_select(@unselected_players, :id, :name, selected: nil), include_blank: 'Select a Player'
+  
+  = f.label :player_match_position, "Select Position"
+  = f.select :player_match_position, options_for_select([['Goalkeeper', 1], ['Defender', 2], ['Midfielder', 3], ['Forward', 4]]), include_blank: 'Select Position'
+  
+  = f.submit 'Select', class: 'btn db-side-btn'

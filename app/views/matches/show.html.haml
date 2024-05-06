@@ -1,5 +1,5 @@
 .row.justify-content-center
-  .col-sm-8.col-lg-6
+  .col
     .card.m-4
       .card-header.text-center
         %h3= @match_decorator.match_header
@@ -7,12 +7,35 @@
         %p= "Location: #{@match.location}"
         %p= "Kick off: #{@match.start_time.strftime('%A, %B %-d, %Y %I:%M %p')}"
         .container
-          - if current_user.staff_of_team?(@team)
-            .text-center 
-              %h3 Player Ratings
-            = render 'player_ratings_form', match: @match
-          - else
-            %h1 Match Rating: #{@rating}
+          .row.text-center
+            %h2 Lineup 
+
+            %table
+              %thead
+                %tr
+                  %th Name
+                  %th Position
+                  %th Available
+              %tbody
+                - @selected.each do |player|
+                  %tr
+                    %td= player.user.name
+                    %td= player.position
+                    %td= player.available ? 'Yes' : 'No'
+
+            - if current_user.owner_of_team?(@team)
+              .container 
+                .row 
+                  %h3 Select Player
+
+                  = render 'update_lineup_form', match: @match
+            .row
+              - if current_user.staff_of_team?(@team)
+                .text-center 
+                  %h3 Player Ratings
+                = render 'player_ratings_form', match: @match
+              - else
+                %h1 Match Rating: #{@rating}
       .card-footer.text-end
         - if current_user.owner_of_team?(@team)
           = link_to 'Edit Details', edit_team_match_path(@match), class: 'btn db-side-btn'

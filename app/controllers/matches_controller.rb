@@ -19,6 +19,13 @@ class MatchesController < ApplicationController
     @team = @match.team
     @match_decorator = @match.decorate
 
+    @match_decorator = @match.decorate
+
+    @unselected = @match.player_matches.includes(:user).where(position: 0)
+    @unselected_players = @match.players
+
+    @selected = @match.player_matches.includes(:user).where.not(position: 0)
+
     if current_user.staff_of_team?(@team)
       user_teams = UserTeam.where(team_id: @team.id, accepted: true)
       @players = user_teams.map { |user_team| User.find_by(id: user_team.user_id) }
@@ -78,13 +85,6 @@ class MatchesController < ApplicationController
 
   # POST
   def update_lineup; end
-
-  # GET /matches/:id/lineup
-  def lineup
-    @match_decorator = @match.decorate
-    @unselected = @match.player_matches.includes(:user).where(position: 0)
-    @selected = @match.player_matches.includes(:user).where.not(position: 0)
-  end
 
   # DELETE /matches/1
   def destroy
