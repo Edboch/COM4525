@@ -40,6 +40,7 @@ en:
       success: "Team was successfully deleted."
     players:
       remove: "Player removed from your team successfully."
+    sync_success: "Fixtures successfully synchronised."
   profile:
     update:
       success: "Profile was successfully updated."
@@ -56,6 +57,16 @@ en:
     create: "Match was successfully created."
     update: "Match was successfully updated."
     destroy: "Match was successfully deleted."
+  teammatchratings:
+    update: "Ratings updated successfully"
+  invite:
+    create:
+      success: "Invite was successfully created."
+    update:
+      success: "Invite was successfully updated."
+    destroy:
+      success: "Invite was successfully deleted."
+
 
 
 
