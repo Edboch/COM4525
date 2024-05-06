@@ -54,6 +54,9 @@ gem 'daemons'
 gem 'delayed_job'
 gem 'delayed_job_active_record'
 gem 'whenever'
+gem 'faker'
+gem 'factory_bot_rails'
+gem 'rspec-rails'
 
 gem 'sanitize_email'
 
@@ -104,10 +107,10 @@ group :test do
 end
 
 group :development, :test do
-  gem 'factory_bot_rails'
-  gem 'rspec-rails'
+  # gem 'factory_bot_rails'
+  # gem 'rspec-rails'
 
-  gem 'faker'
+  # gem 'faker'
 
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
 end
