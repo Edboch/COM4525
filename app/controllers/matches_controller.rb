@@ -6,7 +6,7 @@ class MatchesController < ApplicationController
   before_action :authenticate_user!
   load_and_authorize_resource
   before_action :set_team, only: %i[create new show edit update fixtures]
-  before_action :set_match, only: %i[show edit update destroy rate_players]
+  before_action :set_match, only: %i[show edit update destroy rate_players create_match_event destroy_match_event]
 
   # passed a team_id to display that teams matches
   def fixtures
@@ -81,6 +81,10 @@ class MatchesController < ApplicationController
   end
 
   private
+
+  def match_event_params
+    params.require(:match_event).permit(:user_id, :event_type, :event_minute)
+  end
 
   def get_status(start_time)
     if start_time < Time.current
