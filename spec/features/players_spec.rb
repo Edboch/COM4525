@@ -39,66 +39,66 @@ RSpec.describe 'Players' do
     end
   end
 
-  #tests for access rights of a player belonging to a team they do not own
+  # tests for access rights of a player belonging to a team they do not own
   context 'when logged in as a player' do
     specify 'then i cannot add fixtures to team' do
       visit new_team_match_path(team.id)
-      expect(page).to have_content "You are not authorized to access this page."
+      expect(page).to have_content 'You are not authorized to access this page.'
     end
 
     specify 'then i cannot edit a fixture from my team' do
       visit edit_team_match_path(team.id, match.id)
-      expect(page).to have_content "You are not authorized to access this page."
+      expect(page).to have_content 'You are not authorized to access this page.'
     end
 
     specify 'then i cannot delete a fixture from my team' do
       visit team_fixtures_path(team.id)
-      expect(page).to have_no_content "Delete"
+      expect(page).to have_no_content 'Delete'
     end
 
     specify 'then i cannot invite other players to team' do
       visit new_team_user_team_path(team.id)
-      expect(page).to have_content "You are not authorized to access this page."
+      expect(page).to have_content 'You are not authorized to access this page.'
     end
 
     specify 'then i cannot delete other players in my team' do
       visit team_players_path(team.id)
-      expect(page).to have_no_content "Delete"
+      expect(page).to have_no_content 'Delete'
     end
 
     specify 'then i cannot invite other teams to a match' do
       visit new_team_invite_path(team.id)
-      expect(page).to have_content "You are not authorized to access this page."
+      expect(page).to have_content 'You are not authorized to access this page.'
     end
 
     specify 'then i cannot edit invites to other teams' do
-      visit edit_team_invite_path(team.id,match_invite.id)
-      expect(page).to have_content "You are not authorized to access this page."
+      visit edit_team_invite_path(team.id, match_invite.id)
+      expect(page).to have_content 'You are not authorized to access this page.'
     end
 
     specify 'then i cannot view invites to other teams' do
       visit team_published_invites_path(team.id)
-      expect(page).to have_content "You are not authorized to access this page."
+      expect(page).to have_content 'You are not authorized to access this page.'
     end
 
     specify 'then i cannot view a specific invite to other teams' do
-      visit team_invite_path(team.id,match_invite.id)
-      expect(page).to have_content "You are not authorized to access this page."
+      visit team_invite_path(team.id, match_invite.id)
+      expect(page).to have_content 'You are not authorized to access this page.'
     end
 
     specify 'then i cannot edit team details' do
       visit edit_team_path(team.id)
-      expect(page).to have_content "You are not authorized to access this page."
+      expect(page).to have_content 'You are not authorized to access this page.'
     end
 
     specify 'then i cannot delete my team' do
       visit team_path(team.id)
-      expect(page).to have_no_content "Delete Team"
+      expect(page).to have_no_content 'Delete Team'
     end
 
     specify 'then i cannot view another team dashboard' do
       visit team_path(other_team.id)
-      expect(page).to have_content "You are not authorized to access this page."
+      expect(page).to have_content 'You are not authorized to access this page.'
     end
   end
 end
