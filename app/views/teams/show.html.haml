@@ -32,6 +32,27 @@
                   - if current_user.owner_of_team?(@team, current_user)
                     = link_to 'Add a Match', new_team_match_path(@team), class: 'btn db-side-btn'
                   = link_to 'All Fixtures', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn'
+          .card
+            .row.text-center.my-3
+              %h4 Published Public Invites
+            %table.table.text-center
+              %thead 
+                %tr 
+                  %th{ scope: 'col' } Time
+                  %th{ scope: 'col' } Location 
+                  %th{ scope: 'col' } Description 
+              %tbody
+                - @invites.first(3).each do | invite |
+                  %tr
+                    %td.py-3= invite.time.strftime('%A, %B %-d, %Y %I:%M %p')
+                    %td.py-3= invite.location 
+                    %td.py-3= invite.description
+            .card-body 
+              .card-text.text-end
+                .col  
+                  - if current_user.owner_of_team?(@team, current_user)
+                    = link_to 'Publish a new public invite', new_team_invite_path(@team), class: 'btn db-side-btn'
+                  = link_to 'All Published Public Invites', team_published_invites_path(team_id: @team.id), class: 'btn db-side-btn'
         .col-sm-8
           .row 
             .container.border.rounded

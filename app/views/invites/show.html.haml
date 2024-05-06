@@ -1,0 +1,19 @@
+.row.justify-content-center
+  .col-sm-8.col-lg-6
+    .card
+      .card-header
+        Invite details
+      .card-body
+        %dl.row.mb-0
+          %dt.col-md-3 Team:
+          %dd.col-md-9= @invite.team_id
+          %dt.col-md-3 Time:
+          %dd.col-md-9= @invite.time
+          %dt.col-md-3 Location:
+          %dd.col-md-9= @invite.location
+          %dt.col-md-3 Description:
+          %dd.col-md-9= @invite.description
+      .card-footer.d-flex
+        = link_to 'Edit', edit_team_invite_path(@team, @invite), class: 'btn btn-link'
+        = link_to 'Delete', team_invite_path(@team, @invite), method: :delete, data: { confirm: 'Are you sure you want to delete this invite?' }, class: 'btn btn-link'
+        = link_to 'Back', team_published_invites_path(@team), class: 'btn btn-link ms-auto'

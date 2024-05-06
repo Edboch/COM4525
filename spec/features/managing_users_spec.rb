@@ -75,7 +75,7 @@ RSpec.describe 'Managing users' do
 
   context 'when i am logged into my account' do
     let!(:user1) do
-      create(:user)
+      create(:user, email: 'test@email.com', password: 'Password')
     end
 
     before do
