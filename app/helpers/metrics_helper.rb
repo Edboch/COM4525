@@ -35,17 +35,12 @@ module MetricsHelper
   end
 
   def ratings_per_match
-    total = 0
-    matches = Match.all
-    matches.each do |match|
-      ratings = PlayerRating.where(match_id: match.id)
-      total += ratings.length
-    end
-    if matches.empty?
-      0
-    else
-      total / matches.length
-    end
+    num_matches = Match.all.length
+    num_ratings = PlayerRating.all.length
+
+    return 0 if num_matches.zero?
+
+    num_ratings / num_matches
   end
 
   def get_team_activity_from(start)
