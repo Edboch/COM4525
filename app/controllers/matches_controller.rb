@@ -19,13 +19,6 @@ class MatchesController < ApplicationController
     @team = @match.team
     @match_decorator = @match.decorate
 
-    @match_decorator = @match.decorate
-
-    @unselected = @match.player_matches.includes(:user).where(position: 0)
-    @unselected_players = @match.players
-
-    @selected = @match.player_matches.includes(:user).where.not(position: 0)
-
     if current_user.staff_of_team?(@team)
       user_teams = UserTeam.where(team_id: @team.id, accepted: true)
       @players = user_teams.map { |user_team| User.find_by(id: user_team.user_id) }
@@ -84,7 +77,18 @@ class MatchesController < ApplicationController
   end
 
   # POST
-  def update_lineup; end
+  def submit_lineup
+    ActiveRecord::Base.transaction do
+      params[:player_matches].each do |player_match_id, attributes|
+        player_match = PlayerMatch.find(player_match_id)
+        pos_value = PlayerMatch.positions[attributes[:position]]
+        player_match.update!(position: pos_value)
+      end
+    end
+    redirect_to team_match_path(@match.team, @match), notice: 'Lineup submitted successfully.'
+  rescue ActiveRecord::RecordInvalid
+    render :show, status: :unprocessable_entity
+  end
 
   # DELETE /matches/1
   def destroy

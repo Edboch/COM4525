@@ -10,25 +10,22 @@
           .row.text-center
             %h2 Lineup 
 
-            %table
-              %thead
-                %tr
-                  %th Name
-                  %th Position
-                  %th Available
-              %tbody
-                - @selected.each do |player|
-                  %tr
-                    %td= player.user.name
-                    %td= player.position
-                    %td= player.available ? 'Yes' : 'No'
-
             - if current_user.owner_of_team?(@team)
-              .container 
-                .row 
-                  %h3 Select Player
-
-                  = render 'update_lineup_form', match: @match
+              = render 'lineup_form', match: @match
+            - else
+              %table.table.table-striped
+                %thead
+                  %tr
+                    %th Name
+                    %th Position
+                    %th Available
+                %tbody
+                  - @selected.each do |player|
+                    %tr
+                      %td= player.user.name
+                      %td= player.position
+                      %td= player.available ? 'Yes' : 'No'
+                      
             .row
               - if current_user.staff_of_team?(@team)
                 .text-center 

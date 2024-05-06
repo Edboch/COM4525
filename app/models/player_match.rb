@@ -27,10 +27,11 @@ class PlayerMatch < ApplicationRecord
   belongs_to :match
 
   enum position: {
-    bench: 0,
-    goalkeeper: 1,
-    defender: 2,
-    midfielder: 3,
-    forward: 4
+    Reserve: 0,
+    Bench: 1,
+    Goalkeeper: 2,
+    Defender: 3,
+    Midfielder: 4,
+    Forward: 5
   }
 end
