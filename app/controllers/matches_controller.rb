@@ -76,10 +76,12 @@ class MatchesController < ApplicationController
     render :edit, status: :unprocessable_entity
   end
 
+  # POST
+  def update_lineup; end
+
   # GET /matches/:id/lineup
   def lineup
     @match_decorator = @match.decorate
-    @player_matches = @match.player_matches
     @unselected = @match.player_matches.includes(:user).where(position: 0)
     @selected = @match.player_matches.includes(:user).where.not(position: 0)
   end

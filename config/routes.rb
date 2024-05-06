@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       member do
         get :lineup
         post :rate_players
+        post :update_lineup
       end
     end
     get 'fixtures', to: 'matches#fixtures', as: :fixtures

@@ -15,7 +15,7 @@
           %tr
             %td= player.user.name
             %td= player.position
-            %td= player.available ? "Yes" : "No"
+            %td= player.available ? 'Yes' : 'No'
 
     - if current_user.owner_of_team?(@team)
       .container 
@@ -31,16 +31,11 @@
                 %th 
             %tbody
               - @unselected.each do |player|
-                %form{action: "//#{player.id}", method: "post"}
+                = form_with(model: player, url: update_lineup_team_match_path(player.match), local: true, method: :post) do |f|
                   %tr
                     %td= player.user.name
                     %td
-                      %select{name: "player[position]"}
-                        %option{value: "0"} Goalkeeper
-                        %option{value: "1"} Defender
-                        %option{value: "2"} Midfielder
-                        %option{value: "3"} Forward
+                      = f.select :position, options_for_select([['Goalkeeper', 0], ['Defender', 1], ['Midfielder', 2], ['Forward', 3]], selected: player.position)
                     %td= player.available ? 'Yes' : 'No'
-                    %td
-                      %input{ type: 'submit', value: 'Select', class: 'btn db-side-btn' }
+                    %td= f.submit 'Select', class: 'btn db-side-btn'
 

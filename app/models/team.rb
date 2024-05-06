@@ -18,7 +18,7 @@ class Team < ApplicationRecord
   validates :name, presence: true
 
   has_many :user_teams, dependent: :destroy
-  has_many :users, through: :user_teams
+  has_many :users, -> { where(user_teams: { accepted: true }) }, through: :user_teams
 
   has_many :matches, dependent: :destroy
 
