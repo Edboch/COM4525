@@ -1,15 +1,13 @@
 = form_with(model: @team, local: true) do |form|
-  .field.d-flex.align-items-center.my-3
-    .mx-4
-      = form.label :url, 'League URL'
+  .form-group.mb-4
+    = form.label :url, 'League URL'
     = form.text_field :url
-  %p This is the URL that you normally access your team's league.
+    %p This is the URL that you normally access your team's league.
 
-  .field.d-flex.align-items-center.my-3
-    .mx-4
-      = form.label :team_name, 'Team Name'
+  .form-group
+    = form.label :team_name, 'Team Name'
     = form.text_field :team_name
-  %p This should be exactly as is displayed on your league website.
+    %p This should be exactly as is displayed on your league website.
 
-  .actions.text-end.m-3
+  .actions
     = form.submit 'Update', class: 'btn db-side-btn'

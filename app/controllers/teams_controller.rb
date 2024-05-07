@@ -83,7 +83,7 @@ class TeamsController < ApplicationController
 
   def league
     @league = Scrapers::ScraperFactory.create_scraper(@team.url, @team.team_name).fetch_league
-  rescue StandardError
+  rescue NotImplementedError, StandardError
     @league = nil
   end
 
