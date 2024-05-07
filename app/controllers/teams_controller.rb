@@ -102,7 +102,7 @@ class TeamsController < ApplicationController
     @team = Team.find(params[:id]).decorate
     @matches = @team.matches
                     .where('start_time > ?', Time.current)
-                    .order(:start_time)
+                    .order(:start_time).decorate
     @invites = @team.invites.where('time > ?', Time.current).order(:time)
   end
 

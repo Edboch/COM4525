@@ -45,10 +45,10 @@ gem 'simple_form'
 
 gem 'draper'
 
-gem 'shakapacker'
-
 gem 'cancancan'
 gem 'devise'
+gem 'kaminari'
+gem 'shakapacker'
 
 gem 'daemons'
 gem 'delayed_job'

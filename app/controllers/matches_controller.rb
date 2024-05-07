@@ -6,11 +6,11 @@ class MatchesController < ApplicationController
   before_action :authenticate_user!
   load_and_authorize_resource
   before_action :set_team, only: %i[create new show edit update fixtures]
-  before_action :set_match, only: %i[show edit update destroy rate_players create_match_event destroy_match_event]
+  before_action :set_match, only: %i[show edit update destroy rate_players]
 
   # passed a team_id to display that teams matches
   def fixtures
-    @matches = Match.where(team_id: @team.id).order(:start_time)
+    @matches = Match.where(team_id: @team.id).order(:start_time).page(params[:page]).per(6)
     @team = Team.find(@team.id)
   end
 

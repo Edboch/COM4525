@@ -22,9 +22,11 @@
               %td= match.start_time.strftime('%d/%m/%y') 
               %td= match.scoreline 
               %td= link_to 'View Match', team_match_path(@team, match), class: 'btn db-side-btn'
+  
       
       - if current_user.owner_of_team?(@team, current_user)
         = link_to 'Sync Fixtures', sync_fixtures_team_path(@team), class: 'btn db-side-btn'
       = link_to 'League Table', league_team_path(@team), class: 'btn db-side-btn'
+  = paginate @matches
 
   
