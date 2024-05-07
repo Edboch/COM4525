@@ -4,85 +4,47 @@ require 'rails_helper'
 
 RSpec.describe 'Admin Manage Teams', :js do
   let!(:site_admin) { create(:user, :site_admin) }
-  let!(:team_count) { 2 }
+  let!(:player) { create(:user) }
+  let!(:manager) { create(:user) }
+  let!(:new_user) { create(:user) }
 
-  let!(:users) { create_list(:user, 20) }
-  let!(:teams) { create_list(:team, team_count) }
+  let!(:team) { create(:team, owner_id: manager.id) }
 
-  let!(:tr_player) { create(:team_role, :manager) }
-  let!(:tr_manager) { create(:team_role, :player) }
+  let!(:tr_player) { create(:team_role, :player) }
+  let!(:tr_manager) { create(:team_role, :manager) }
+
+  let!(:ut_player) { create(:user_team, team_id: team.id, user_id: player.id, accepted: true) }
 
   # TODO: Figure out how to prevent suite specific automatic DB cleanup
   before do
-    teams.each do |team|
-      owner = team.owner
-      manager = rand > 0.6 ? users.sample : owner
-      ut = team.user_teams.create user: manager
-      ut.roles << tr_manager
-
-      num_players = rand 2..5
-      users.sample(num_players).each do |user|
-        ut = team.user_teams.create user: user
-        ut.roles << tr_player
-      end
-    end
+    ut_player.roles << tr_player
 
     sleep 0.2
 
-    visit '/'
-    fill_in 'user[email]', with: site_admin.email
-    fill_in 'user[password]', with: 'password'
-    click_on 'Log in'
+    login_as(site_admin, scope: :user)
+    visit dashboard_path
     click_on 'Admin'
-
     click_on 'Teams'
   end
 
   specify 'The team cards are being loaded onto the page' do
-    expect(page).to have_css('.team-card', count: team_count, visible: :visible)
+    expect(page).to have_css('.team-card', count: 1, visible: :visible)
   end
 
   specify 'The team card\'s id matches the corresponding team name' do
-    all(:css, '.team_card').each do |card|
-      team_id = card[:id]
-      team = Team.find_by id: team_id
-      name = card.find('.team-name').native.text
-      expect(name).to eq team.name
-    end
+    expect(page).to have_content team.name
   end
 
   specify 'The team card\'s manager name matches the corresponding team manager' do
-    all(:css, '.team_card').each do |card|
-      team_id = card[:id]
-      team = Team.find_by id: team_id
-      manager = User.find_by id: team.owner_id
-      name = card.find('.manager-name').native.text
-      expect(name).to eq manager.name
-    end
+    expect(page).to have_content manager.name
   end
 
   context 'when editing the teams' do
-    def random_card
-      cards = all :css, '.team-card'
-      index = rand(cards.size)
-      cards[index]
-    end
-
-    def get_team_id(team_card)
-      dom_id = team_card[:id]
-      dom_id.split('-')[-1]
-    end
-
     specify 'I can change a team\'s owner', :js do
-      team_card = random_card
+      team_card = find "#team-card-#{team.id}"
       team_card.click
 
-      team_id = get_team_id team_card
-      team = Team.find_by id: team_id
-
-      q_other_users = User.where.not id: team.owner.id
-      num_other_users = q_other_users.count
-      new_owner = q_other_users.offset(rand(num_other_users)).first
+      new_owner = new_user
 
       within team_card do
         find(:css, '[name="live-search-owner"]').set new_owner.name
@@ -96,14 +58,10 @@ RSpec.describe 'Admin Manage Teams', :js do
     end
 
     specify 'I can remove a member from a team' do
-      team_card = random_card
+      team_card = find "#team-card-#{team.id}"
       team_card.click
 
-      to_delete = nil
-      within team_card do
-        members = all '.tc-member'
-        to_delete = members.sample
-      end
+      to_delete = find_by_id 'user-team-1'
 
       member_id = to_delete['data-id']
 
@@ -113,28 +71,19 @@ RSpec.describe 'Admin Manage Teams', :js do
 
       sleep 0.2
 
-      team_id = team_card['data-id']
-      user_team = UserTeam.find_by user_id: member_id, team_id: team_id
+      user_team = UserTeam.find_by user_id: member_id, team_id: team.id
       expect(user_team).to be_nil
     end
 
     context 'when adding members' do
-      let!(:team_card) { random_card }
-      let!(:team_id) { team_card['data-id'] }
-      let!(:new_member) do
-        my_members_ids = UserTeam.where(team_id: team_id).pluck :user_id
-        q_other_users = User.where.not(id: my_members_ids)
-
-        num_other_users = q_other_users.count
-        q_other_users.offset(rand(num_other_users)).first
-      end
+      let!(:team_card) { find "#team-card-#{team.id}" }
 
       before do
         team_card.click
 
         within team_card do
-          find(:css, '[name="live-search-team-new-member"]').set new_member.name
-          find(:css, ".live-search-entry[data-user-id='#{new_member.id}']").click
+          find(:css, '[name="live-search-team-new-member"]').set new_user.name
+          find(:css, ".live-search-entry[data-user-id='#{new_user.id}']").click
         end
       end
 
@@ -145,7 +94,7 @@ RSpec.describe 'Admin Manage Teams', :js do
 
         sleep 0.2
 
-        new_user_team = UserTeam.find_by team_id: team_id, user_id: new_member.id
+        new_user_team = UserTeam.find_by team_id: team.id, user_id: new_user.id
         expect(new_user_team).not_to be_nil
       end
 
@@ -158,7 +107,7 @@ RSpec.describe 'Admin Manage Teams', :js do
 
         sleep 0.2
 
-        new_user_team = UserTeam.find_by team_id: team_id, user_id: new_member.id
+        new_user_team = UserTeam.find_by team_id: team.id, user_id: new_user.id
         player_role = new_user_team.roles.where id: tr_player.id
         expect(player_role).not_to be_nil
       end
@@ -172,7 +121,7 @@ RSpec.describe 'Admin Manage Teams', :js do
 
         sleep 0.2
 
-        new_user_team = UserTeam.find_by team_id: team_id, user_id: new_member.id
+        new_user_team = UserTeam.find_by team_id: team.id, user_id: new_user.id
         player_role = new_user_team.roles.where id: tr_manager.id
         expect(player_role).not_to be_nil
       end
@@ -180,12 +129,10 @@ RSpec.describe 'Admin Manage Teams', :js do
 
     context 'when I search for a member' do
       specify 'Members that are already in the team do not show up' do
-        team_card = random_card
+        team_card = find "#team-card-#{team.id}"
         team_card.click
 
-        team_id = team_card['data-id']
-
-        my_players_ids = UserTeam.where(team_id: team_id).pluck :user_id
+        my_players_ids = UserTeam.where(team_id: team.id).pluck :user_id
         target_id = my_players_ids.sample
         target = User.find_by id: target_id
 
@@ -195,6 +142,48 @@ RSpec.describe 'Admin Manage Teams', :js do
 
         expect(team_card).to have_no_css ".live-search-entry[data-user-id='#{target.id}'"
       end
+    end
+  end
+
+  context 'when creating a new team' do
+    let!(:name) { Faker::Name.name }
+    let!(:location) { Faker::Name.name }
+
+    context 'when the form is filled in correctly' do
+      before do
+        owner = new_user
+        within :css, '#new-team' do
+          find(:css, '[name="team_name"]').set name
+          find(:css, '[name="location_name"]').set location
+          find(:css, '[name="live-search-first-owner"]').set owner.name
+        end
+        sleep 0.1
+      end
+
+      specify 'i can create a new team' do
+        within :css, '#new-team' do
+          find_by_id('new-team-submit').click
+        end
+
+        sleep 0.1
+
+        team = Team.find_by name: name
+        expect(!team.nil?).to be true
+      end
+    end
+
+    specify 'And the form is incorrectly filed' do
+      within :css, '#new-team' do
+        find(:css, '[name="team_name"]').set name
+        find(:css, '[name="live-search-first-owner"]').set ''
+        sleep 0.1
+
+        find_by_id('new-team-submit').click
+      end
+
+      sleep 0.1
+      team = Team.find_by name: name
+      expect(team).to be_nil
     end
   end
 end

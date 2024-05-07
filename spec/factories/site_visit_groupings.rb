@@ -2,7 +2,7 @@
 
 # == Schema Information
 #
-# Table name: page_visit_groupings
+# Table name: site_visit_groupings
 #
 #  id           :bigint           not null, primary key
 #  category     :string           not null

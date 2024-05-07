@@ -1,0 +1,19 @@
+= form_with(model: [@team, @invite], local: true) do |form|
+
+  .field 
+    = form.hidden_field :team_id, value: @team.id
+
+  .field
+    = form.label :time
+    = form.datetime_select :time, id: :time
+
+  .field
+    = form.label :location
+    = form.text_field :location, id: :location
+
+  .field
+    = form.label :description
+    = form.text_field :description, id: :description
+
+  .actions
+    = form.submit

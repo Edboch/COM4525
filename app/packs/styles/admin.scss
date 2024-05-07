@@ -63,13 +63,6 @@ main {
   grid-template-areas: "title aw am ay refr"
                        "total pw pm py refr";
 
-  > div, .title, .total {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
   .title { grid-area: title; }
   .total { grid-area: total; }
 
@@ -88,6 +81,16 @@ main {
   .pasty { grid-area: py; }
 
   .refresh { grid-area: refr; }
+}
+
+// TODO: Use some proper SCSS to clean this up
+//       Move the styling into a mixin, then move the class selectors
+//       to the appropriate place
+.statistic, #gnrl-popularity .title, #gnrl-popularity .total {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 // ##################################
@@ -166,6 +169,18 @@ main {
 // ##################################
 // Teams
 // ##################################
+
+.stats-block {
+  margin: 0 0 .8em;
+
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0.5em;
+
+  * {
+    margin: 0 0 .2em;
+  }
+}
 
 .team-card {
   margin: .4em;
