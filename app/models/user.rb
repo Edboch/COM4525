@@ -104,5 +104,9 @@ class User < ApplicationRecord
       .count
   end
 
+  def accepted_team?(team)
+    user_teams.find_by(user_id: id, team_id: team)&.accepted || false
+  end
+
   has_one :site_admin, dependent: :destroy
 end

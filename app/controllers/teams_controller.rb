@@ -73,16 +73,12 @@ class TeamsController < ApplicationController
 
   def players
     # fetch all userteams with this team id and accepted invite
-    user_teams = UserTeam.where(team_id: @team.id, accepted: true)
+    user_teams = UserTeam.where(team_id: @team.id)
 
     # fetch all players with userteams user id
-    players = []
-    user_teams.each do |user_team|
-      players.append(User.find_by(id: user_team.user_id))
-    end
-
-    # send all players to view
-    @players = players
+    @players = user_teams.map do |user_team|
+      User.find_by(user_team.user_id).decorate
+    end.compact
   end
 
   def league

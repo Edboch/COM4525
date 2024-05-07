@@ -1,6 +1,10 @@
 .row.justify-content-center
   .col-sm-8.col-lg-6
-    .card.m-4
+    .card.m-5
       .card-header.text-center
         %h3 Invite a Player
       = render 'form'
+
+  .container
+    %h3 Pending Invites
+    = render 'teams/player_table'
