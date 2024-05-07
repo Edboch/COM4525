@@ -53,21 +53,6 @@ class AdminController < ApplicationController
     render json: response
   end
 
-  # def update_user
-  #   result = Admin::UpdateUserService.call params[:id], params[:name], params[:email], params[:is_admin]
-  #   render json: result.to_json
-  # end
-  #
-  # def new_user
-  #   result = Admin::NewUserService.call params[:name], params[:email], params[:password], params[:site_admin]
-  #   render json: result.to_json
-  # end
-  #
-  # def remove_user
-  #   user = User.find_by id: params[:id]
-  #   user&.destroy
-  # end
-
   # Updates the team manager of the corresponding team
   #
   # @param [Integer] team_id    The id of the team we want to change
