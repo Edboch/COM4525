@@ -59,6 +59,11 @@ en:
     destroy: "Match was successfully deleted."
   teammatchratings:
     update: "Ratings updated successfully"
+  matchevent:
+    create: "Match event was successfully created."
+    unsuccessful: "Match event could not be created."
+    destroy: "Match event removed."
+    unsuccessfuldestroy: "Match event could not be removed."
   invite:
     create:
       success: "Invite was successfully created."
@@ -66,8 +71,3 @@ en:
       success: "Invite was successfully updated."
     destroy:
       success: "Invite was successfully deleted."
-
-
-
-
-

@@ -1,6 +1,6 @@
 
 
-.container
+.container.mb-5
 
   .row.text-center.my-2
     %h3= "#{@team.name} Fixtures"
@@ -32,5 +32,9 @@
               - if current_user.staff_of_team?(@team, current_user)
                 %td= link_to 'Edit', edit_team_match_path(@team, match), class: 'btn db-side-btn'
                 %td= link_to 'Delete', team_match_path(@team, match), class: 'btn db-side-btn', method: :delete, data: { confirm: 'Are you sure?' } 
+      
+      - if current_user.owner_of_team?(@team, current_user)
+        = link_to 'Sync Fixtures', sync_fixtures_team_path(@team), class: 'btn db-side-btn'
+      = link_to 'League Table', league_team_path(@team), class: 'btn db-side-btn'
 
   
