@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'spec_helper'
 
-RSpec.describe 'lineups', :js do
+RSpec.describe 'lineups' do
   let!(:manager) { create(:user) }
   let!(:team) { create(:team, owner_id: manager.id) }
   let!(:player) { create(:user) }
@@ -35,6 +35,34 @@ RSpec.describe 'lineups', :js do
       find_by_id('availability').click
       player_match = PlayerMatch.find_by user_id: player.id, match_id: match.id
       expect(player_match.available).to be false
+    end
+
+    specify 'then i can view my position for the upcoming game' do
+      click_on 'All Fixtures'
+      click_on 'View'
+      expect(page).to have_content 'Reserve'
+    end
+  end
+
+  context 'when logged in as a manager' do
+    before do
+      login_as(manager, scope: :user)
+      visit team_path(team.id)
+    end
+
+    specify 'then i can see the player availability' do
+      click_on 'All Fixtures'
+      click_on 'View'
+      expect(page).to have_content 'false'
+    end
+
+    specify 'then i can give a position for a player for the next match' do
+      click_on 'All Fixtures'
+      click_on 'View'
+      player_match = PlayerMatch.find_by user_id: player.id, match_id: match.id
+      select 'Goalkeeper', from: "player_matches_#{player_match.id}_position"
+      click_on 'Submit Lineup'
+      expect(player_match.reload.position).to eq 'Goalkeeper'
     end
   end
 end
