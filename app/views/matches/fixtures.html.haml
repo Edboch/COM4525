@@ -19,6 +19,8 @@
             - if current_user.staff_of_team?(@team)
               %td{ scope: 'col' } 
               %td{ scope: 'col' }
+            - if current_user.player_of_team?(@team)
+              %td{ scope: 'col' }
         %tbody 
           - @matches.each_with_index do | match, index |
             %tr 
@@ -32,6 +34,11 @@
               - if current_user.staff_of_team?(@team)
                 %td= link_to 'Edit', edit_team_match_path(@team, match), class: 'btn db-side-btn'
                 %td= link_to 'Delete', team_match_path(@team, match), class: 'btn db-side-btn', method: :delete, data: { confirm: 'Are you sure?' } 
+              - if current_user.player_of_team?(@team)
+                - player_match = PlayerMatch.find_by(user_id: current_user.id, match_id: match.id)
+                %td
+                  = form_with(url: team_match_toggle_availability_path(match_id: match.id, user_id: current_user.id), method: :post, local: true) do |f|
+                    = f.submit player_match.available ? 'Available' : 'Unavailable', class: "btn #{player_match.available ? 'btn-success' : 'btn-danger'}"
       
       - if current_user.owner_of_team?(@team)
         = link_to 'Sync Fixtures', sync_fixtures_team_path(@team), class: 'btn db-side-btn'

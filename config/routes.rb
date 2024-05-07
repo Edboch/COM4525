@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     resources :invites
     get 'published_invites', to: 'invites#published_invites', as: :published_invites
     resources :matches do
+      post 'toggle_availability/:user_id', to: 'matches#toggle_availability', as: :toggle_availability
       resources :match_events, only: %i[create destroy]
       member do
         post :rate_players
@@ -30,7 +31,6 @@ Rails.application.routes.draw do
       delete 'reject'
     end
   end
-
   get 'profile', to: 'user#show', as: :user_profile
   get 'profile/edit', to: 'user#edit', as: :edit_user_profile
   patch 'profile', to: 'user#update'

@@ -36,5 +36,6 @@ class Ability
     can :fixtures, Match, team_id: team.id
     can :read, MatchEvent, match: { team_id: team.id }
     can :read, PlayerMatch
+    can :toggle_availability, Match, team_id: team.id
   end
 end

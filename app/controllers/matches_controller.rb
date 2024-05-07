@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
-# controller for managing creating and editing a team's Matches
-# in the application
+# controller for managing matches in the application
 class MatchesController < ApplicationController
   before_action :authenticate_user!
   load_and_authorize_resource
   before_action :set_team, only: %i[create new show edit update fixtures]
-  before_action :set_match, only: %i[show edit update destroy rate_players create_match_event destroy_match_event]
+  before_action :set_match, only: %i[show edit update destroy rate_players]
 
   # passed a team_id to display that teams matches
   def fixtures
@@ -48,7 +47,6 @@ class MatchesController < ApplicationController
 
     if @match.save
       create_player_matches(@team, @match)
-
       redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.create')
     else
       render :new, status: :unprocessable_entity
@@ -85,9 +83,22 @@ class MatchesController < ApplicationController
         player_match.update!(position: pos_value)
       end
     end
-    redirect_to team_match_path(@match.team, @match), notice: 'Lineup submitted successfully.'
+    redirect_to team_match_path(@match.team, @match), notice: I18n.t('lineup.success')
   rescue ActiveRecord::RecordInvalid
     render :show, status: :unprocessable_entity
+  end
+
+  # players toggle their availability for a match (updates the PlayerMatch object)
+  def toggle_availability
+    player_match = PlayerMatch.find_by(match_id: params[:match_id], user_id: params[:user_id])
+
+    if player_match&.update(available: !player_match.available)
+      redirect_back(fallback_location: team_match_path(player_match.match.team, player_match.match),
+                    notice: I18n.t('availability.success'))
+    else
+      redirect_back(fallback_location: team_match_path(player_match.match.team, player_match.match),
+                    alert: I18n.t('availability.fail'))
+    end
   end
 
   # DELETE /matches/1
@@ -104,14 +115,6 @@ class MatchesController < ApplicationController
     end
   end
 
-  def get_status(start_time)
-    if start_time < Time.current
-      'Completed'
-    else
-      'Upcoming'
-    end
-  end
-
   def set_team
     @team = Team.find(params[:team_id])
   end
@@ -123,9 +126,5 @@ class MatchesController < ApplicationController
   # only allow a list of trusted parameters through.
   def match_params
     params.require(:match).permit(:location, :start_time, :opposition, :goals_for, :goals_against)
-  end
-
-  def match_event_params
-    params.require(:match_event).permit(:user_id, :event_type, :event_minute)
   end
 end
