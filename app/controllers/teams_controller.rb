@@ -77,7 +77,7 @@ class TeamsController < ApplicationController
 
     # fetch all players with userteams user id
     @players = user_teams.map do |user_team|
-      User.find_by(user_team.user_id).decorate
+      User.find_by(id: user_team.user_id).decorate
     end.compact
   end
 

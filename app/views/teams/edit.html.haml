@@ -9,9 +9,6 @@
   .col-sm-8.col-lg-6
     .card.m-4
       .card-header.text-center
-        %h3 Import Fixtures
+        %h3 Your Team's League
       .card-body
         = render 'scraper_form'
-        .text-end
-          = link_to 'League Table', league_team_path(@team), class: 'btn db-side-btn'
-          = link_to 'Sync Fixtures', sync_fixtures_team_path(@team), class: 'btn db-side-btn'
