@@ -40,7 +40,7 @@ gem 'activerecord-session_store'
 gem 'bootstrap_form'
 gem 'hamlit'
 gem 'hamlit-rails'
-
+gem 'rspec-benchmark'
 gem 'simple_form'
 
 gem 'draper'

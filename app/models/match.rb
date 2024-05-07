@@ -46,4 +46,8 @@ class Match < ApplicationRecord
   def scoreline
     "#{goals_for}-#{goals_against}"
   end
+
+  def days_until
+    (start_time.to_date - Time.zone.today).to_i
+  end
 end

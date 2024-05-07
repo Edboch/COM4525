@@ -9,29 +9,19 @@
       %table.table
         %thead 
           %tr 
-            %th{ scope: 'col' } #
             %th{ scope: 'col' } Opposition
             %th{ scope: 'col' } Location 
             %th{ scope: 'col' } Kick Off 
             %th{ scope: 'col' } Score
-            %td{ scope: 'col' } Result
             %td{ scope: 'col' } 
-            - if current_user.staff_of_team?(@team, current_user)
-              %td{ scope: 'col' } 
-              %td{ scope: 'col' }
         %tbody 
-          - @matches.each_with_index do | match, index |
+          - @matches.each do | match |
             %tr 
-              %th{ scope: 'row' }= index + 1
               %td= match.opposition 
               %td= match.location 
-              %td= match.start_time.strftime('%A, %B %-d, %Y %I:%M %p') 
+              %td= match.start_time.strftime('%d/%m/%y') 
               %td= match.scoreline 
-              %td= match.result
-              %td= link_to 'View', team_match_path(@team, match), class: 'btn btn-primary'
-              - if current_user.staff_of_team?(@team, current_user)
-                %td= link_to 'Edit', edit_team_match_path(@team, match), class: 'btn db-side-btn'
-                %td= link_to 'Delete', team_match_path(@team, match), class: 'btn db-side-btn', method: :delete, data: { confirm: 'Are you sure?' } 
+              %td= link_to 'View Match', team_match_path(@team, match), class: 'btn db-side-btn'
       
       - if current_user.owner_of_team?(@team, current_user)
         = link_to 'Sync Fixtures', sync_fixtures_team_path(@team), class: 'btn db-side-btn'

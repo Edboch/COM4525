@@ -66,3 +66,17 @@ body {
 .footer a {
   color: white;
 }
+
+.container-fluid {
+  padding: 0;
+}
+
+.text-lnd {
+  color: white;
+  text-shadow: #000 1px 0 10px;
+}
+
+.event-scroll {
+    max-height: 200px;
+    overflow-y: auto; 
+}
