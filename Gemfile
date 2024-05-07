@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # set base64 version for deployment
-gem 'base64', '0.2.0'
+gem 'base64', '0.1.1'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'rails', '>= 7.0.8.1'
