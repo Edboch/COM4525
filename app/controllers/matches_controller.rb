@@ -41,8 +41,8 @@ class MatchesController < ApplicationController
 
   # POST /matches
   def create
-    @match = @team.matches.new(match_params)
-    @match.status = get_status(@match.start_time)
+    @match = @team.matches.new(match_params).decorate
+    @match.status = @match.get_status(@match.start_time)
     @match.team_id = @team.id
 
     if @match.save
