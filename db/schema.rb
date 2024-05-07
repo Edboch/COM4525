@@ -90,6 +90,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_200218) do
     t.index ["user_id"], name: "index_player_ratings_on_user_id"
   end
 
+  create_table "question_answers", force: :cascade do |t|
+    t.string "question", null: false
+    t.string "answer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "show", default: false, null: false
+    t.integer "clicks", default: 0, null: false
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.string "session_id", null: false
     t.text "data"
