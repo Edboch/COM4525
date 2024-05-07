@@ -38,7 +38,7 @@
                 - player_match = PlayerMatch.find_by(user_id: current_user.id, match_id: match.id)
                 %td
                   = form_with(url: team_match_toggle_availability_path(match_id: match.id, user_id: current_user.id), method: :post, local: true) do |f|
-                    = f.submit player_match.available ? 'Available' : 'Unavailable', class: "btn #{player_match.available ? 'btn-success' : 'btn-danger'}"
+                    = f.submit player_match.available ? 'Available' : 'Unavailable', class: "btn #{player_match.available ? 'btn-success' : 'btn-danger'}", id: 'availability'
       
       - if current_user.owner_of_team?(@team)
         = link_to 'Sync Fixtures', sync_fixtures_team_path(@team), class: 'btn db-side-btn'
