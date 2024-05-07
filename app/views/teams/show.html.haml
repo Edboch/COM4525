@@ -68,7 +68,7 @@
                 .col
                   %p= "Losses: #{@team.loss_count}"
               .row.m-2
-                = link_to 'League Table', league_team_path(@team), class: 'btn db-side-btn'
+                = link_to 'League Table', league_team_path(@team), class: 'btn db-side-btn', id: 'league-table-button'
             .container.border.rounded.my-4
               .row.text-center.m-4 
                 %h5 Squad 
