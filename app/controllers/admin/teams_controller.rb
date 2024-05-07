@@ -3,8 +3,27 @@
 module Admin
   # Routes for the teams on the admin page
   class TeamsController < ApplicationController
+    include AdminHelper
+
+    layout 'admin'
+    before_action :check_access_rights
+    before_action :populate_team, only: :show
+
+    def show
+      @js_users = User.select(:id, :name, :email).to_json
+      @js_roles = TeamRole.all.to_json
+    end
+
+    def destroy
+
+    end
+
     ###################
     ## POST
+
+    def update
+      
+    end
 
     def set_owner
       team = Team.find_by id: params[:team_id]
@@ -76,6 +95,13 @@ module Admin
 
       to_update.roles = roles
       render json: { success: true }
+    end
+
+
+    private
+
+    def populate_team
+      @team = Team.find_by id: params[:id]
     end
   end
 end

@@ -8,12 +8,19 @@
 -#       Move the new member, member deletion and member role editing to the
 -#       admin/teams page
 
+- team_path = team.id.nil? ? '' : admin_team_path(current_user, team)
 .team-card.pill-foldout{ id: "team-card-#{team.id}", data: { id: team.id } }
   .pf-pill.tc-pill
+    %a.page-link{ href: team_path }
+      %span Go
+
     %h2.team-name= team.name
     %h4.owner-name= "Owner: #{team.owner.name}"
 
   .pf-body.tc-body
+    %a.page-link{ href: team_path }
+      %span Go
+
     %h2= team.name
 
     .tc-owner

@@ -56,6 +56,7 @@ Rails.application.routes.draw do
   # TODO: I don't think these admin routyes really need the admin resource
 
   # scope '/admin', shallow_prefix: 'admin' do
+  # namespace 'admin'
   #   resources :users, module: 'admin', shallow: true, only: :show do
   #     post 'new'
   #     post 'update'
@@ -77,8 +78,10 @@ Rails.application.routes.draw do
 
     # resources :teams, only: :index, module: 'admin'
     resources :teams, module: 'admin', only: :show do
+      post 'update'
       post 'set-owner'
       post 'add-member'
+      get 'destroy'
     end
 
     resources :user_teams, module: 'admin', only: [] do
