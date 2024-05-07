@@ -30,6 +30,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :reports 
+
   get 'profile', to: 'user#show', as: :user_profile
   get 'profile/edit', to: 'user#edit', as: :edit_user_profile
   patch 'profile', to: 'user#update'

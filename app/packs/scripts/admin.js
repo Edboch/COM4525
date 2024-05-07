@@ -565,11 +565,8 @@ document.addEventListener('DOMContentLoaded', function() {
   setupPopularityView();
 
   wireUpCreateNewUser();
-<<<<<<< HEAD
   populateUnsolvedReports();
   populateSolvedReports();
-=======
   wireUpCreateNewTeam();
->>>>>>> dev
 });
 

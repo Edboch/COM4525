@@ -71,3 +71,6 @@ en:
       success: "Invite was successfully updated."
     destroy:
       success: "Invite was successfully deleted."
+  report:
+    create:
+      success: "Report was successfully submitted."
