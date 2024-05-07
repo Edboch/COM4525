@@ -7,6 +7,8 @@
 #  id            :bigint           not null, primary key
 #  location_name :string
 #  name          :string
+#  team_name     :string
+#  url           :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  owner_id      :bigint

@@ -33,7 +33,7 @@ window.SERVER = (function($) {
     );
   };
 
-  mod.sendUrl = async function(url,  body) {
+  mod.sendUrl = async function(url, body) {
     return await fetch(
       url,
       {
@@ -59,3 +59,4 @@ window.SERVER = (function($) {
 
   return mod;
 }(window.$));
+

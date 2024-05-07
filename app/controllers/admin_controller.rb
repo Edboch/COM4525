@@ -17,12 +17,20 @@ class AdminController < ApplicationController
     # TODO: Implement sorting defaults, saved in the SiteAdmin table
     @users = User.includes(:site_admin)
     @visit_metrics = popularity_data
-    @earliest = PageVisitGrouping.where(category: 'earliest')
+    @earliest = SiteVisitGrouping.where(category: 'earliest')
                                  .first&.period_start || 1.day.ago
 
+    @rating_metric = ratings_per_match
+    @matches = Match.all
     @teams = Team.all
     @js_users = @users.to_json
     @js_roles = TeamRole.all.to_json
+
+    @visits_teams_ratio = SiteVisit.count / [1, @teams.size].max
+
+    # recent_activities = TeamActivity.where('day_start > ?', 2.weeks.ago.beginning_of_day)
+    # @num_teams_past_two_weeks = recent_activities.select(:team_id).distinct.count
+    @num_teams_past_two_weeks = get_team_activity_from 2.weeks.ago
   end
 
   ############
@@ -42,7 +50,7 @@ class AdminController < ApplicationController
     start_time = get_timezone_time time_zone, params[:start].to_i
     end_time = get_timezone_time time_zone, params[:end].to_i
 
-    total = PageVisitGrouping.where(category: 'day').where(period_start: (start_time..end_time)).pluck(:count).sum
+    total = SiteVisitGrouping.where(category: 'day').where(period_start: (start_time..end_time)).pluck(:count).sum
 
     render json: { total: total }
   end
@@ -67,6 +75,11 @@ class AdminController < ApplicationController
     team = Team.find_by(id: team_id)
     team.owner_id = manager_id
     team.save
+  end
+
+  def new_team
+    result = Admin::NewTeamService.call params[:location_name], params[:team_name], params[:owner_email]
+    render json: result.to_json
   end
 
   # Adds a new player to the corresponding team

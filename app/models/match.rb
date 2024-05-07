@@ -25,6 +25,9 @@
 #
 class Match < ApplicationRecord
   belongs_to :team
+  has_many :player_ratings, dependent: :destroy
+  has_many :match_events, dependent: :destroy
+  has_many :users, through: :team
 
   # get the result as a string for displaying in fixture list
   def result

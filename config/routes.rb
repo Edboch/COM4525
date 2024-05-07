@@ -1,13 +1,26 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: { sessions: 'users/sessions' }
   resources :teams
 
   resources :teams do
     resources :user_teams
-    resources :matches
+    resources :invites
+    get 'published_invites', to: 'invites#published_invites', as: :published_invites
+    resources :matches do
+      resources :match_events, only: %i[create destroy]
+      member do
+        post :rate_players
+      end
+    end
     get 'fixtures', to: 'matches#fixtures', as: :fixtures
+    member do
+      get 'player/:user_id', to: 'teams#player_stats', as: 'player_stats'
+      get 'league'
+      get :sync_fixtures
+      post :sync_fixtures, action: :create_fixtures
+    end
   end
 
   resources :user_teams do
@@ -34,19 +47,17 @@ Rails.application.routes.draw do
   get 'dashboard', to: 'dashboard#index', as: :dashboard
 
   scope '/metrics' do
+    post '/update-visitor', to: 'metrics#update_visitor'
+
     post '/popularity', to: 'admin#retrieve_popularity_metrics', as: :metrics_popularity
     post '/range_popularity', to: 'admin#retrieve_popularity_range', as: :metrics_popularity_range
   end
 
   scope '/admin' do
-    post '/all-users', to: 'admin#retrieve_users', as: :admin_all_users
-    post '/update-user', to: 'admin#update_user', as: :admin_update_user
-    post '/new-user', to: 'admin#new_user', as: :admin_new_user
-    post '/remove-user', to: 'admin#remove_user', as: :admin_remove_user
-
     post('/update-manager',
          to: 'admin#update_team_manager',
          as: :admin_update_team_manager)
+    post '/new-team', to: 'admin#new_team', as: :admin_new_team
     post '/add-player', to: 'admin#add_team_player', as: :admin_add_team_player
     post('/remove-player',
          to: 'admin#remove_team_player',

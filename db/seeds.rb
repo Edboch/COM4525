@@ -22,7 +22,7 @@ manager = User.create email: 'manager@grr.la', password: 'password', name: 'John
 ### Generate Users
 
 rand(80..100).times do
-  user = FactoryBot.create :user, :proper_password
+  user = FactoryBot.create :user
 
   SiteAdmin.create user_id: user.id if rand(30) < 1
 end
@@ -57,20 +57,37 @@ teams.each do |team|
 end
 
 ############
-## Generate Page Visits
+## Generate User Activity
 
-PageVisit.destroy_all
+SiteVisit.destroy_all
+TeamActivity.destroy_all
 
 date_start = 3.years.ago
+last_day = Time.current.beginning_of_day
 
-rand(1200..1500).times do |_i|
-  next_visit_time = rand(date_start..20.minutes.ago)
-  rand(1..20).times do |_j|
-    v_start = next_visit_time
-    v_end = v_start + rand(0..5).minutes + rand(1..59).seconds
-    PageVisit.create visit_start: v_start, visit_end: v_end
-    break if v_end > Time.current
+Team.find_each do |team|
+  day = rand(date_start...Time.current).beginning_of_day
+  while day <= last_day
+    num_visits = rand(0..team.users.size)
+    num_visits = [1, num_visits].max
+    TeamActivity.create team: team, day_start: day, active_users: num_visits
+
+    v_end = rand(day..day.end_of_day)
+    v_end = [v_end, Time.current].min
+    limit = v_end - 2.hours
+    v_start = rand(limit..v_end)
+    SiteVisit.create visit_start: v_start, visit_end: v_end
+
+    day += [1, 1, 1, 1, 2, 2, 3, 4].sample.days
   end
 end
 
-Rake::Task['page_visits:collate'].invoke
+rand(300..500).times do
+  v_start = rand(date_start...2.hours.ago)
+  limit = v_start + 1.hour + 59.minutes + 50.seconds
+  v_end = rand(v_start...limit)
+
+  SiteVisit.create visit_start: v_start, visit_end: v_end
+end
+
+Rake::Task['site_visits:collate'].invoke
