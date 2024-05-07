@@ -10,7 +10,7 @@ class MatchesController < ApplicationController
 
   # passed a team_id to display that teams matches
   def fixtures
-    @matches = Match.where(team_id: @team.id).order(:start_time)
+    @matches = Match.where(team_id: @team.id).order(:start_time).page(params[:page]).per(6)
     @team = Team.find(@team.id)
   end
 

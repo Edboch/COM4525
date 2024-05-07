@@ -50,6 +50,7 @@ RSpec.describe 'match events' do
       expect { click_on 'Delete' }.to change(MatchEvent, :count).by(-1)
     end
 
+    # TODO: fix after UI change
     it 'allows manager to view match events for their team' do
       create(:match_event, match: match, user: player, event_type: 'goal', event_minute: 33)
       visit current_path
@@ -76,6 +77,7 @@ RSpec.describe 'match events' do
       visit team_match_path(team, match)
     end
 
+    # TODO: fix after UI changes
     it 'allows player to view match event' do
       create(:match_event, match: match, user: player, event_type: 'goal', event_minute: 33)
       visit current_path

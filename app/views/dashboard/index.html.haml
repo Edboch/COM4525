@@ -1,24 +1,25 @@
 .container 
   .row
-    .col-sm-4.my-3
+    .col-xl-4.my-3
       .container
         .row.my-2
           .card
             .text-center.my-3
               %h5 Your Upcoming Games
-            %table.table
-              %thead 
-                %tr 
-                  %th{ scope: 'col' } Opposition
-                  %th{ scope: 'col' } Location 
-                  %th{ scope: 'col' } Kick Off 
-
-              %tbody 
-                - @future_matches.first(4).each do | match |
-                  %tr 
-                    %td= match.opposition 
-                    %td= match.location 
-                    %td= match.start_time.strftime('%A, %B %-d, %Y %I:%M %p')
+              - @future_matches.first(3).each do | match |
+                .card.m-2
+                  .card-body.p-2.px-3
+                    .row.mb-2
+                      .col-6.text-start
+                        %h5= match.opposition
+                      .col-6.text-end.text-muted
+                        %p= match.display_days_until
+                    .row
+                      .col-6.d-flex.align-items-center
+                        = image_pack_tag('images/location.svg', alt: 'Location')
+                        %span.ms-2= match.location
+                      .col-6.text-end
+                        = link_to 'View Match', team_match_path(match.team, match), class: 'btn db-side-btn'
             .card-body 
               .card-text.text-end
                 = link_to 'All Fixtures', player_upcoming_matches_path, class: 'btn db-side-btn'
@@ -26,7 +27,7 @@
           = link_to 'Team Invites', player_invites_path, class: 'btn db-side-btn'
         .row.my-2 
           = link_to 'Create Team', create_team_path, class: 'btn db-side-btn'
-    .col-sm-8.my-3
+    .col-xl-8.my-3
       .row
         .text-center.my-2
           %h2 Your Teams

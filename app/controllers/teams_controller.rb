@@ -59,7 +59,7 @@ class TeamsController < ApplicationController
   # PATCH/PUT /teams/1
   def update
     if @team.update(team_params)
-      redirect_to @team, notice: I18n.t('team.update.success'), status: :see_other
+      redirect_to request.referer || @team, notice: I18n.t('team.update.success'), status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
@@ -98,7 +98,7 @@ class TeamsController < ApplicationController
     @team = Team.find(params[:id]).decorate
     @matches = @team.matches
                     .where('start_time > ?', Time.current)
-                    .order(:start_time)
+                    .order(:start_time).decorate
     @invites = @team.invites.where('time > ?', Time.current).order(:time)
   end
 

@@ -4,59 +4,43 @@
       .row.m-3
         .col
           %h1= @team.name.to_s
-        .col.text-end
+        .col
           %h4= "Joined: #{@team.created_at.strftime('%d %B %Y')}"
-
+        .col.text-end
+          - if current_user.owner_of_team?(@team, current_user)
+            = link_to 'Edit Team', edit_team_path(@team), class: 'btn db-side-btn'
+            = link_to 'Delete Team', team_path(@team), method: :delete, data: { confirm: 'Are you sure you want to delete the team?' }, class: 'btn btn-danger mt-1'
   .row 
-    .container
+    .container.p-0
       .row  
-        .col-sm-4 
+        .col-lg-4 
           .card
             .row.text-center.my-3
               %h4 Upcoming Fixtures
-            %table.table.text-center
-              %thead 
-                %tr 
-                  %th{ scope: 'col' } Opposition
-                  %th{ scope: 'col' } Location 
-                  %th{ scope: 'col' } Kick Off 
-              %tbody
-                - @matches.first(3).each do | match |
-                  %tr
-                    %td.py-3= match.opposition 
-                    %td.py-3= match.location 
-                    %td.py-3= match.start_time.strftime('%A, %B %-d, %Y %I:%M %p')
+            - @matches.first(3).each do | match |
+              .card.m-2
+                .card-body.p-2.px-3
+                  .row.mb-2
+                    .col-6.text-start
+                      %h5= match.opposition
+                    .col-6.text-end.text-muted
+                      %p= match.display_days_until
+                  .row
+                    .col-6.d-flex.align-items-center
+                      = image_pack_tag('images/location.svg', alt: 'Location')
+                      %span.ms-2= match.location
+                    .col-6.text-end
+                      = link_to 'View Match', team_match_path(match.team, match), class: 'btn db-side-btn'
             .card-body 
               .card-text.text-end
                 .col  
                   - if current_user.owner_of_team?(@team, current_user)
                     = link_to 'Add a Match', new_team_match_path(@team), class: 'btn db-side-btn'
                   = link_to 'All Fixtures', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn'
-          .card
-            .row.text-center.my-3
-              %h4 Published Public Invites
-            %table.table.text-center
-              %thead 
-                %tr 
-                  %th{ scope: 'col' } Time
-                  %th{ scope: 'col' } Location 
-                  %th{ scope: 'col' } Description 
-              %tbody
-                - @invites.first(3).each do | invite |
-                  %tr
-                    %td.py-3= invite.time.strftime('%A, %B %-d, %Y %I:%M %p')
-                    %td.py-3= invite.location 
-                    %td.py-3= invite.description
-            .card-body 
-              .card-text.text-end
-                .col  
-                  - if current_user.owner_of_team?(@team, current_user)
-                    = link_to 'Publish a new public invite', new_team_invite_path(@team), class: 'btn db-side-btn'
-                  = link_to 'All Published Public Invites', team_published_invites_path(team_id: @team.id), class: 'btn db-side-btn'
-        .col-sm-8
+        .col-lg-8.px-4
           .row 
             .container.border.rounded
-              .row.text-center.m-4 
+              .row.text-center.m-3
                 %h5 Team Record 
               .row.m-2
                 .col  
@@ -69,8 +53,9 @@
                   %p= "Losses: #{@team.loss_count}"
               .row.m-2
                 = link_to 'League Table', league_team_path(@team), class: 'btn db-side-btn', id: 'league-table-button'
-            .container.border.rounded.my-4
-              .row.text-center.m-4 
+
+            .container.border.rounded.my-3
+              .row.text-center.m-3
                 %h5 Squad 
               .row.my-2
                 .col
@@ -83,11 +68,16 @@
                 .col.text-end
                   - if current_user.owner_of_team?(@team, current_user)
                     = link_to 'Invite a Player', new_team_user_team_path(@team), class: 'btn db-side-btn'
-  .row.my-4
-    .container.text-end 
-      .row.text-end
-        .col
-          - if current_user.owner_of_team?(@team, current_user)
-            = link_to 'Edit Team Details', edit_team_path(@team), class: 'btn db-side-btn'
-            = link_to 'Delete Team', team_path(@team), method: :delete, data: { confirm: 'Are you sure you want to delete the team?' }, class: 'btn btn-danger db-side-btn'
+
+            .container.border.rounded.my-4
+              .row.text-center.m-4 
+
+            .container.border.rounded
+              .row.text-center.m-3
+                %h5 Find a Match
+              .row.text-center
+                .col.mb-3
+                  - if current_user.owner_of_team?(@team, current_user)
+                    = link_to 'Publish a new public invite', new_team_invite_path(@team), class: 'btn db-side-btn'
+                  = link_to 'All Published Public Invites', team_published_invites_path(team_id: @team.id), class: 'btn db-side-btn'
           

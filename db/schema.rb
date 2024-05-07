@@ -39,10 +39,68 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_200218) do
     t.index ["team_id"], name: "index_invites_on_team_id"
   end
 
+  create_table "landing_page_views", force: :cascade do |t|
+    t.bigint "landing_page_id"
+    t.datetime "visit_at", null: false
+    t.decimal "view_duration", default: "0.0", null: false
+    t.bigint "landing_viewer_id"
+    t.index ["landing_page_id"], name: "index_landing_page_views_on_landing_page_id"
+  end
+
+  create_table "landing_pages", force: :cascade do |t|
+    t.string "page_name", null: false
+  end
+
+  create_table "landing_users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
+    t.integer "failed_attempts", default: 0, null: false
+    t.string "unlock_token"
+    t.datetime "locked_at"
+    t.integer "role", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "latitude", default: "0.0", null: false
+    t.decimal "longitude", default: "0.0", null: false
+    t.index ["email"], name: "index_landing_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_landing_users_on_reset_password_token", unique: true
+  end
+
   create_table "landing_viewers", force: :cascade do |t|
     t.bigint "landing_user_id"
     t.integer "selected_plan", default: 0, null: false
     t.index ["landing_user_id"], name: "index_landing_viewers_on_landing_user_id"
+  end
+
+  create_table "landing_visitor_locations", force: :cascade do |t|
+    t.decimal "latitude", default: "0.0", null: false
+    t.decimal "longitude", default: "0.0", null: false
+  end
+
+  create_table "like_answers", force: :cascade do |t|
+    t.bigint "landing_user_id", null: false
+    t.bigint "question_answer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["landing_user_id"], name: "index_like_answers_on_landing_user_id"
+    t.index ["question_answer_id"], name: "index_like_answers_on_question_answer_id"
+  end
+
+  create_table "like_reviews", force: :cascade do |t|
+    t.bigint "review_id", null: false
+    t.bigint "landing_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["landing_user_id"], name: "index_like_reviews_on_landing_user_id"
+    t.index ["review_id"], name: "index_like_reviews_on_review_id"
   end
 
   create_table "match_events", force: :cascade do |t|
@@ -99,6 +157,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_200218) do
     t.integer "clicks", default: 0, null: false
   end
 
+  create_table "reviews", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.text "experience"
+    t.boolean "visibility"
+    t.integer "likes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "display_priority", limit: 2, default: 1, null: false
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.string "session_id", null: false
     t.text "data"
@@ -110,7 +179,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_200218) do
 
   create_table "site_admins", force: :cascade do |t|
     t.bigint "user_id"
-    t.index ["user_id"], name: "index_site_admins_on_user_id"
+    t.index ["user_id"], name: "index_site_admins_on_user_id", unique: true
   end
 
   create_table "site_visit_groupings", force: :cascade do |t|
@@ -177,11 +246,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_200218) do
   end
 
   add_foreign_key "invites", "teams"
+  add_foreign_key "like_answers", "landing_users"
+  add_foreign_key "like_answers", "question_answers"
+  add_foreign_key "like_reviews", "landing_users"
+  add_foreign_key "like_reviews", "reviews"
   add_foreign_key "match_events", "matches"
   add_foreign_key "match_events", "users"
   add_foreign_key "matches", "teams"
   add_foreign_key "player_ratings", "matches"
   add_foreign_key "player_ratings", "users"
+  add_foreign_key "site_admins", "users"
   add_foreign_key "team_activities", "teams"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"

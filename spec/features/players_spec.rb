@@ -26,6 +26,7 @@ RSpec.describe 'Players' do
       expect(page).to have_content 'Some Opposition'
     end
 
+    # TODO: fix after UI changes
     specify 'then i can view the date of a match fixture' do
       expect(page).to have_content 'Wednesday, May 1, 2024 02:07 PM'
     end
@@ -34,6 +35,7 @@ RSpec.describe 'Players' do
       expect(page).to have_content 'Some Location'
     end
 
+    # TODO: fix after UI changes
     specify 'then i can view the score of a match fixture' do
       expect(page).to have_content '2-1 win'
     end
