@@ -51,6 +51,17 @@ class User < ApplicationRecord
               .exists?(teams: { id: team.id }, roles: { type: 0 })
   end
 
+  def managed_teams
+    Team.where(owner_id: id).to_a
+  end
+
+  def player_teams
+    user_teams.includes(:team)
+              .where.not(teams: { owner_id: id })
+              .where(accepted: true)
+              .map(&:team)
+  end
+
   has_many :owned_teams, class_name: :Team, foreign_key: :owner_id, dependent: :destroy, inverse_of: :owner do
     def destroy(team)
       # TODO
