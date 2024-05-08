@@ -54,6 +54,9 @@ gem 'daemons'
 gem 'delayed_job'
 gem 'delayed_job_active_record'
 gem 'whenever'
+gem 'faker'
+gem 'factory_bot_rails'
+gem 'rspec-rails'
 
 gem 'sanitize_email'
 
