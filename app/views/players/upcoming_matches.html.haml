@@ -14,7 +14,7 @@
 
         %tbody 
           - @matches.each do | match |
-            %tr{ data: { href: team_match_path(match.team, match) } } 
+            %tr{ data: { href: team_match_path(match.team, match) }, class: 'clickable-row' }
               %td= match.team.name 
               %td= match.opposition 
               %td= match.location 
