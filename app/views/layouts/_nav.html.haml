@@ -9,7 +9,7 @@
         - if user_signed_in?
           %li.nav-item
             = link_to 'Home', dashboard_path, class: 'nav-link'
-          - unless current_user.site_admin.nil?
+          - if current_user.decorate.admin?
             %li.nav-item
               = link_to 'Admin', admin_index_path(current_user), class: 'nav-link'
           - unless current_user.managed_teams.empty?

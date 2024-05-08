@@ -28,7 +28,6 @@ window.$ = (function(jQuery) {
           name += nameParts[i].capitalise();
       }
 
-      console.log(name);
       data[name] = processAttrib(this.value);
     });
     return data;

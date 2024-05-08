@@ -1,0 +1,12 @@
+-# Admin Role Entry
+-# HAML for a team role entry
+-#
+-# @param [TeamRole] role - The role to be rendered
+-# @param [Hash] data     - Extra data to add to element
+
+- data[:role_id] = role.id
+%span.team-role{ data: data }
+  %button.tr_remove Remove
+
+  %span.re-name= role.name
+  %span.re-type= role.type_name
