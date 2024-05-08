@@ -53,10 +53,10 @@ gem 'devise'
 gem 'daemons'
 gem 'delayed_job'
 gem 'delayed_job_active_record'
-gem 'whenever'
-gem 'faker'
 gem 'factory_bot_rails'
+gem 'faker'
 gem 'rspec-rails'
+gem 'whenever'
 
 gem 'sanitize_email'
 

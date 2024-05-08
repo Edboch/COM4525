@@ -24,36 +24,32 @@
 #  fk_rails_...  (team_id => teams.id)
 #
 require 'rails_helper'
+require 'spec_helper'
 
 RSpec.describe Match do
   describe '#result' do
-    before do
-      @draw = Match.new(:goals_for => 0, :goals_against => 0)
-      @win = Match.new(:goals_for => 1, :goals_against => 0)
-      @loss = Match.new(:goals_for => 0, :goals_against => 1)
-
-    end
+    let(:draw) { described_class.new(goals_for: 0, goals_against: 0) }
+    let(:win) { described_class.new(goals_for: 2, goals_against: 1) }
+    let(:loss) { described_class.new(goals_for: 0, goals_against: 1) }
 
     it 'retrieves the results as a draw' do
-      expect(@draw.result).to eq 'draw'
+      print draw
+      expect(draw.result).to eq 'draw'
     end
 
     it 'retrieves the results as a win' do
-      expect(@win.result).to eq 'win'
+      expect(win.result).to eq 'win'
     end
 
     it 'retrieves the results as a loss' do
-      expect(@loss.result).to eq 'loss'
+      expect(loss.result).to eq 'loss'
     end
   end
 
   describe '#scoreline' do
-    before do
-      @match = Match.new(:goals_for => 0, :goals_against => 0)
-    end
-
     it 'retrieves the score as a string' do
-      expect(@match.scoreline).to eq '0-0'
+      match = described_class.new(goals_for: 0, goals_against: 0)
+      expect(match.scoreline).to eq '0-0'
     end
   end
 end
