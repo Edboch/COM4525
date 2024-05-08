@@ -58,39 +58,39 @@ RSpec.describe 'Managing Matches' do
       expect(page).to have_content 'Past Opposition'
     end
 
-    # TODO: fix after UI change
     # test the future and past differences with editing a match
     specify 'then I am able to edit the goals of a past match' do
       within('tr', text: 'Past Opposition') do
         click_on 'View Match'
       end
+      click_on 'Edit Match Details'
       expect(page).to have_content 'Goals for'
     end
 
-    # TODO: fix after UI changes
     specify 'then I am not able to edit the goals of a future match' do
       within('tr', text: 'Future Opposition') do
-        click_on 'Edit'
+        click_on 'View Match'
       end
+      click_on 'Edit Match Details'
       expect(page).to have_no_content 'Goals for'
     end
 
-    # TODO: fix after UI changes
     # test general editing functionality of a match
     specify 'then I can edit a match' do
       within('tr', text: 'Future Opposition') do
-        click_on 'Edit'
+        click_on 'View Match'
       end
+      click_on 'Edit Match Details'
       fill_in 'location', with: 'Edited Location'
       click_on 'Submit'
       expect(page).to have_content 'Match was successfully updated.'
     end
 
-    # TODO: fix after UI changes
-    specify 'then i can delete a match' do
+    specify 'then I can delete a match' do
       within('tr', text: 'Future Opposition') do
-        click_on 'Delete'
+        click_on 'View Match'
       end
+      click_on 'Delete Match'
       expect(page).to have_content 'Match was successfully deleted.'
     end
   end

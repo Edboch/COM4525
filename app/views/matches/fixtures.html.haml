@@ -26,6 +26,7 @@
     
         
   - if current_user.owner_of_team?(@team, current_user)
+    = link_to 'Add a Match', new_team_match_path(@team), class: 'btn db-side-btn m-1'
     = link_to 'Sync Fixtures', sync_fixtures_team_path(@team), class: 'btn db-side-btn m-1', id: 'sync-fixtures-button'
     = link_to 'League Table', league_team_path(@team), class: 'btn db-side-btn m-1', id: 'league-table-button'
   = paginate @matches
