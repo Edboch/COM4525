@@ -26,5 +26,34 @@
 require 'rails_helper'
 
 RSpec.describe Match do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe '#result' do
+    before do
+      @draw = Match.new(:goals_for => 0, :goals_against => 0)
+      @win = Match.new(:goals_for => 1, :goals_against => 0)
+      @loss = Match.new(:goals_for => 0, :goals_against => 1)
+
+    end
+
+    it 'retrieves the results as a draw' do
+      expect(@draw.result).to eq 'draw'
+    end
+
+    it 'retrieves the results as a win' do
+      expect(@win.result).to eq 'win'
+    end
+
+    it 'retrieves the results as a loss' do
+      expect(@loss.result).to eq 'loss'
+    end
+  end
+
+  describe '#scoreline' do
+    before do
+      @match = Match.new(:goals_for => 0, :goals_against => 0)
+    end
+
+    it 'retrieves the score as a string' do
+      expect(@match.scoreline).to eq '0-0'
+    end
+  end
 end
