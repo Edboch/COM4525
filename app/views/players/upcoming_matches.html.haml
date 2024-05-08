@@ -2,21 +2,22 @@
   .row.text-center.my-2
     %h3 Your Upcoming Fixtures
   .row
-    %table.table
-      %thead 
-        %tr 
-          %th{ scope: 'col' } Opposition
-          %th{ scope: 'col' } Location 
-          %th{ scope: 'col' } Date
-          %th{ scope: 'col' } Team
-          %th{ scope: 'col' } 
-
-      %tbody 
-        - @matches.each do | match |
+    .table-responsive
+      %table.table
+        %thead 
           %tr 
-            %td= match.opposition 
-            %td= match.location 
-            %td= match.start_time.strftime('%d/%m/%y') 
-            %td= match.team.name 
-            %td= link_to 'View Match', team_match_path(match.team, match), class: 'btn db-side-btn'
+            %th{ scope: 'col' } Team
+            %th{ scope: 'col' } Opposition
+            %th{ scope: 'col' } Location 
+            %th{ scope: 'col' } Date
+            %th{ scope: 'col' } 
+
+        %tbody 
+          - @matches.each do | match |
+            %tr{ data: { href: team_match_path(match.team, match) } } 
+              %td= match.team.name 
+              %td= match.opposition 
+              %td= match.location 
+              %td= match.start_time.strftime('%d/%m/%y') 
+              %td= link_to 'View Match', team_match_path(match.team, match), class: 'btn db-side-btn'
     = paginate @matches

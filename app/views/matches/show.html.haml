@@ -14,18 +14,18 @@
                   .modal-content
                     = render 'match_event_form', match: @match, players: @players
               = link_to 'Edit Match Details', edit_team_match_path(@team, @match), class: 'btn db-side-btn mt-1'
-              = link_to 'Delete Match', team_match_path(@team, @match), class: 'btn db-side-btn mt-1', method: :delete, data: { confirm: 'Are you sure?' } 
-            = link_to 'Back to Team', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn mt-1'
+              = link_to 'Back to Team', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn mt-1'
+              = link_to 'Delete Match', team_match_path(@team, @match), class: 'btn btn-danger mt-1', method: :delete, data: { confirm: 'Are you sure?' } 
         %ul.list-group.list-group-flush.event-scroll
           - @match.match_events.order(:event_minute).each do |event|
             %li.list-group-item
               .row.justify-content-center.align-items-center
                 .col
-                  %p.m-0= "#{event.event_minute}' "
+                  %p.m-0= event.user.name.to_s
                 .col
                   %strong.m-0= event.event_type.titleize.to_s
                 .col
-                  %p.m-0= event.user.name.to_s
+                  %p.m-0= "#{event.event_minute}' "
                 - if current_user.owner_of_team?(@match.team, current_user)
                   .col.text-end
                     = button_to 'Delete', team_match_match_event_path(@match.team, @match, event), method: :delete, class: 'btn btn-danger'

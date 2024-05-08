@@ -6,27 +6,28 @@
     %h3= "#{@team.name} Fixtures"
   .row 
     .col
-      %table.table
-        %thead 
-          %tr 
-            %th{ scope: 'col' } Opposition
-            %th{ scope: 'col' } Location 
-            %th{ scope: 'col' } Kick Off 
-            %th{ scope: 'col' } Score
-            %td{ scope: 'col' } 
-        %tbody 
-          - @matches.each do | match |
+      .table-responsive
+        %table.table
+          %thead 
             %tr 
-              %td= match.opposition 
-              %td= match.location 
-              %td= match.start_time.strftime('%d/%m/%y') 
-              %td= match.scoreline 
-              %td= link_to 'View Match', team_match_path(@team, match), class: 'btn db-side-btn'
-  
-      
-      - if current_user.owner_of_team?(@team, current_user)
-        = link_to 'Sync Fixtures', sync_fixtures_team_path(@team), class: 'btn db-side-btn'
-      = link_to 'League Table', league_team_path(@team), class: 'btn db-side-btn'
+              %th{ scope: 'col' } Opposition
+              %th{ scope: 'col' } Location 
+              %th{ scope: 'col' } Kick Off 
+              %th{ scope: 'col' } Score
+              %td{ scope: 'col' } 
+          %tbody 
+            - @matches.each do | match |
+              %tr{ data: { href: team_match_path(match.team, match) }, class: 'clickable-row' }
+                %td= match.opposition 
+                %td= match.location 
+                %td= match.start_time.strftime('%d/%m/%y') 
+                %td= match.scoreline 
+                %td= link_to 'View Match', team_match_path(@team, match), class: 'btn db-side-btn'
+    
+        
+  - if current_user.owner_of_team?(@team, current_user)
+    = link_to 'Sync Fixtures', sync_fixtures_team_path(@team), class: 'btn db-side-btn m-1', id: 'sync-fixtures-button'
+    = link_to 'League Table', league_team_path(@team), class: 'btn db-side-btn m-1', id: 'league-table-button'
   = paginate @matches
 
   

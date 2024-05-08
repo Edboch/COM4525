@@ -14,7 +14,7 @@
               = link_to 'Admin', admin_index_path(current_user), class: 'nav-link'
           - unless current_user.managed_teams.empty?
             %li.nav-item.dropdown
-              %a.nav-link.dropdown-toggle{href: "#", role: "button", data: { bs_toggle: "dropdown" }, aria: { expanded: "false" }}
+              %a.nav-link.dropdown-toggle{ href: '#', role: 'button', data: { bs_toggle: 'dropdown' }, aria: { expanded: 'false' } }
                 Managed Teams
               %ul.dropdown-menu
                 - current_user.managed_teams.each do |team|

@@ -15,6 +15,8 @@ class TeamsController < ApplicationController
   def sync_fixtures
     scraper = Scrapers::ScraperFactory.create_scraper(@team.url, @team.team_name)
     @fixtures = scraper.fetch_fixtures + scraper.fetch_results
+  rescue NotImplementedError, StandardError
+    @fixtures = []
   end
 
   # POST /teams/:id/sync_fixtures
