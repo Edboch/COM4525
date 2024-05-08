@@ -3,7 +3,7 @@
     .col-xl-4.my-3
       .container
         .row.my-2
-          .card
+          .card.my-3
             .text-center.my-3
               %h5 Your Upcoming Games
               - @future_matches.first(3).each do | match |
@@ -34,10 +34,10 @@
         .container
           - if @teams.any?
             - @teams.each_slice(2) do |team_pair|
-              .row
+              .row.my-3
                 - team_pair.each do |team|
-                  .col-md-6
-                    .card.h-100.text-center.m-3
+                  .col-md-6.my-3
+                    .card.h-100.text-center.my-3
                       .my-2
                         %h2= team.name
                       .card-body

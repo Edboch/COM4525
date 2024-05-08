@@ -6,10 +6,9 @@
           %li.text-danger= message
 
 = form_with(model: [@team, @user_team], local: true) do |form|
-  .field.d-flex.align-items-center.my-3
-    .mx-4
-      = form.label :email, "Player's Email"
-    = form.email_field :email, id: :email
+  .form-group.mb-4
+    = form.label :email, "Player's Email"
+    = form.email_field :email, id: :email, class: 'max-width-100'
 
-  .actions.actions.text-end.m-3
+  .actions
     = form.submit 'Invite', class: 'btn db-side-btn'
