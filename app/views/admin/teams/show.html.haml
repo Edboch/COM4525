@@ -1,6 +1,6 @@
 :javascript
-  let LIVE_SEARCH = { users: #{@js_users}, team_roles: #{@js_roles} };
-  let TEAM = { name: #{@team.name}, location: { name: #{@team.location_name} },
+  let LIVE_SEARCH = { users: #{json_escape(@js_users)}, team_roles: #{@js_roles} };
+  let TEAM = { name: "#{@team.name}", location: { name: "#{@team.location_name}" },
                owner: #{@team.owner.to_json},
                members: #{@js_team_members} };
 
@@ -11,10 +11,14 @@
 %input(name='team-name'){ value: @team.name }
 %input(name='team-location-name'){ value: @team.name }
 
-%span= @team.owner.name
-= render(partial: 'snippets/live_search',
-         locals: { name: 'new-owner', placeholder: 'New Owner',
-                   search_data_var: 'users', search_fields: %w[name email] })
+#owner
+  %span= @team.owner.name
+
+  .search
+    = render(partial: 'snippets/live_search',
+             locals: { name: 'new-owner', placeholder: 'New Owner',
+                       search_data_var: 'users', search_fields: %w[name email] })
+    %button.set-owner Set New Owner
 
 #members-block
   #add-member
@@ -23,7 +27,7 @@
                        placeholder: 'Member Name/Email',
                        search_data_var: 'users',
                        search_fields: %w[name email] })
-    = render partial: 'snippets/multi_role_selection', locals: { name: 'new-team-roles' }
+    = render partial: 'snippets/multi_role_selection', locals: { name: 'new-member-roles' }
 
     %button.add Add
 

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let changesMade = JSON.stringify(USER) === JSON.stringify(EDIT_USER);
 
     $('button.save, button.revert').prop('disabled', changesMade);
-  }
+  };
 
   const onLeaveTeamClick = function() {
     let dom_team = $(this).parent();

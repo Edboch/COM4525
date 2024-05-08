@@ -146,6 +146,23 @@ RSpec.describe 'Admin Edit Users', :js do
 
         expect(regular.reload.teams.exists?(id: team.id)).to be false
       end
+
+      specify 'I can remove user from a role on a team' do
+        team = regular.teams.first
+        ut = UserTeam.find_by user: regular, team: team
+        role = ut.roles.first
+
+        within :css, ".au-team[data-id='#{team.id}']" do
+          find(:css, "[data-role-id='#{role.id}']").click
+        end
+
+        click_on 'Save'
+
+        sleep 0.1
+
+        ut.reload
+        expect(ut.roles.exists?(role).to_be false
+      end
     end
   end
 

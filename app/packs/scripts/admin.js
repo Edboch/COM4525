@@ -366,7 +366,7 @@ function wireupTeamsView() {
       return entry;
     });
 
-  $('button.tr-remove').on('click', async function() {
+  $('button.tr-remove').on('click.team-role', async function() {
     let memberCard = $(this).parents('.tc-member');
     let roleIDs = memberCard.domData('role-ids');
     let roleID = $(this).domData('role-id');
