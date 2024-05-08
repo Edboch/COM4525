@@ -29,7 +29,6 @@ RSpec.describe 'Admin Edit Users', :js do
     end
 
     specify 'A user\'s name can be changed' do
-      # save_and_open_page
       within user_card do
         find(:css, 'input[name="name"]').set 'Dominic'
         find(:css, 'button.save').click
@@ -70,6 +69,91 @@ RSpec.describe 'Admin Edit Users', :js do
       sleep 0.2
       user = User.find_by id: regular.id
       expect(user).to be_nil
+    end
+
+    context 'when I enter the dedicated page' do
+      let!(:tr_player) { create(:team_role, :manager) }
+      let!(:tr_manager) { create(:team_role, :player) }
+
+      before do
+        create_list(:team, 5)
+
+        ut = UserTeam.new user: regular, team: Team.offset(rand(Team.count)).first
+        ut.roles << tr_player
+        ut.save
+
+        within user_card do
+          click_on 'Go'
+        end
+
+        sleep 0.1
+      end
+
+      specify 'A user\'s name can be changed' do
+        find(:css, '[name="usr-name"]').set 'Dominic'
+        click_on 'Save'
+
+        sleep 0.2
+        expect(regular.reload.name).to eq 'Dominic'
+      end
+
+      specify 'A user\'s email can be changed' do
+        email = 'get.me.out.of.here@outlook.com'
+
+        find(:css, '[name="usr-email"]').set email
+        click_on 'Save'
+
+        sleep 0.2
+        expect(regular.reload.email).to eq email
+      end
+
+      specify 'A user can be made a site admin' do
+        find(:css, '[name="usr-admin"]').set true
+        click_on 'Save'
+
+        sleep 0.2
+        regular.reload
+        expect(regular.site_admin).not_to be_nil
+      end
+
+      specify 'I can add the user to a team as a manager' do
+        team_ids_to_avoid = regular.teams.pluck(:id)
+        team = Team.where.not(id: team_ids_to_avoid).first
+
+        within :css, 'div.live-search-new-team' do
+          find(:css, 'input').set team.name
+          sleep 0.1
+          find(:css, '.live-search-entry').click
+        end
+
+        within :css, 'div.live-search-new-team-roles' do
+          find(:css, 'input').set tr_manager.name
+          sleep 0.1
+          find(:css, '.live-search-entry').click
+        end
+
+        click_on 'Add'
+        sleep 0.1
+        click_on 'Save'
+
+        sleep 0.1
+
+        regular.reload
+        expect(regular.teams.find_by(id: team.id)).not_to be_nil
+      end
+
+      specify 'I can remove a user from a team' do
+        team = regular.teams.first
+
+        within :css, ".au-team[data-id='#{team.id}']" do
+          click_on 'Leave Team'
+        end
+
+        click_on 'Save'
+        sleep 0.1
+
+        expect(regular.reload.teams.exists?(id: team.id)).to be false
+      end
     end
   end
 
