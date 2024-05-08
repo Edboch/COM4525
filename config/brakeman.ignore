@@ -1,0 +1,40 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
+      "fingerprint": "84ff4af8182e9a9afe6114fd1bca97b9c05b8a8fb15c48d8c9e45c2c1bb093f6",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/admin/users/show.html.haml",
+      "line": 3,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "sanitize(User.find_by(:id => params[:id]).decorate.name)",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "Admin::UsersController",
+          "method": "show",
+          "line": 23,
+          "file": "app/controllers/admin/users_controller.rb",
+          "rendered": {
+            "name": "admin/users/show",
+            "file": "app/views/admin/users/show.html.haml"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "admin/users/show"
+      },
+      "user_input": "User.find_by(:id => params[:id]).decorate",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    }
+  ],
+  "updated": "2024-05-08 12:13:31 +0100",
+  "brakeman_version": "6.1.1"
+}

@@ -20,8 +20,12 @@ String.prototype.asHTMLToken = function() {
   let out = '';
   return this.split('')
     .flatMap(function(char) {
-      if (char === char.toUpperCase())
+      // if (char === char.toUpperCase())
+      //   return [ '-', char.toLowerCase() ];
+      if (char.match(/\\p{Lu}/i))
         return [ '-', char.toLowerCase() ];
+      if (char === '_')
+        return [ '-' ];
 
       return [ char ];
     }).join('');

@@ -7,8 +7,8 @@
     -#       Would work by giving the selected class to the appropriate button
     -#       and then the JS will handle the rest
     %button#general General Stats
-    %button#users Users
-    %button#teams.selected Teams
+    %button#users.selected Users
+    %button#teams Teams
 
   %section#info-block
     #general
@@ -86,11 +86,11 @@
 
           %button#new-user-submit Submit
 
-      .card-list
+      .user-list
         - @users.each do |user|
           = render partial: 'admin/user_card', locals: { user: user }
 
-    #teams    
+    #teams
       .stats-block
         .statistic.num-teams
           %h3.label Number of Teams

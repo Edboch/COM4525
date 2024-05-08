@@ -172,29 +172,10 @@ async function wireUpCreateNewUser() {
  */
 function wireupUserCards() {
   let idxCard = 0;
+  UTIL.wireupPillFoldout($('.user-list'), '.user-card', 'input, button');
   USER_CARDS.children().each(function() {
     let card = $(this);
     const index = idxCard; // Necessary due to closures
-    card.on('click', function(evt) {
-      // When a closed card is clicked, close an other open card then
-      // open the clicked card
-      // When an open card is clicked close it
-      let target = $(evt.target);
-      if (IDX_OPEN_CARD == index) {
-        if (!(target.is(card) || target.is(card.find('.uc-enlarge'))))
-          return;
-
-        card.removeClass('open');
-        IDX_OPEN_CARD = -1;
-        return;
-      }
-
-      if (IDX_OPEN_CARD > -1)
-        USER_CARDS.children().eq(IDX_OPEN_CARD).removeClass('open');
-
-      card.addClass('open');
-      IDX_OPEN_CARD = index;
-    });
 
     let id = card.attr('id').split('-')[2];
     let inp_name = card.find('[name="name"]');
@@ -211,13 +192,16 @@ function wireupUserCards() {
       // TODO 'Are you sure' alert if a role change is detected
       // If site admin is changed also ask for password confirmation
       let admin = inp_admin.prop('checked');
-      SERVER.send('update-user', { id: id, name: name, email: email, site_admin: admin });
+
+      let url = $(this).domData('url');
+      SERVER.sendUrl(url, { name: name, email: email, site_admin: admin });
     });
 
     card.find('button.remove').on('click',function(){
       let name = inp_name.val();
       let email = inp_email.val();
-      SERVER.send('remove-user', { 'id': id, 'name': name, 'email': email });
+      let url = $(this).domData('url');
+      SERVER.sendUrl(url, { 'id': id, 'name': name, 'email': email });
     })
 
     idxCard++;
@@ -283,34 +267,7 @@ function wireupTeamsView() {
 
   UTIL.wireupLiveSearch(
     'nm-team-role',
-    function(container, role) {
-      let selectedRoles = container.domData('roles');
-      if (selectedRoles.includes(role.id))
-        return;
-
-      let entry = UTIL.createLiveSearchEntry(container, role, false);
-      entry.on('click', function() {
-        const roles = container.domData('roles');
-        let newRoles = roles.slice(0);
-        newRoles.push(role.id);
-        container.domData('roles', newRoles);
-
-        let roleList = container.siblings('.role-list');
-        let roleEntry = $('<span></span>');
-        roleEntry.text(role.name);
-        roleEntry.on('click', function() {
-          let roles = container.domData('roles');
-          roles.remove(role.id);
-          container.domData('roles', roles);
-          $(this).remove();
-        });
-
-        roleList.append(roleEntry);
-        container.find('input').val('');
-      });
-
-      return entry;
-    });
+    ADMIN.createRoleSearchEntry);
 
   $('.tc-new-member form').on('submit', async function(e) {
     e.preventDefault();
@@ -468,7 +425,7 @@ document.addEventListener('DOMContentLoaded', function() {
     avg_year: k_popularity.find('.avgy .value'),
   };
 
-  USER_CARDS = $('#users .card-list');
+  USER_CARDS = $('#users .user-list');
 
   let buttons = $(Q_CONTROL_BUTTON).toArray();
   let infoViews = $('#info-block > *').toArray();

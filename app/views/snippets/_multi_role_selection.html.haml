@@ -1,0 +1,11 @@
+-# Multiple Role Selection Box
+-#
+-# @param [String] name: The name for the search box
+
+.roles-selection
+  = render(partial: 'snippets/live_search',
+           locals: { name: name, field_label: 'Team Role',
+                     search_data_var: 'team_roles',
+                     search_fields: ['name'], other_data: { roles: [] } })
+  .roles-selected
+
