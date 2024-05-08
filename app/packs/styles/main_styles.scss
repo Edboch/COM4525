@@ -48,7 +48,7 @@ body {
 }
 
 .db-side-btn {
-  background-color: var(--secondary-color); /* Primary color */
+  background-color: var(--secondary-color);
   color: #ffffff;
   border: none;
   padding: 10px 20px;
@@ -65,4 +65,12 @@ body {
 
 .footer a {
   color: white;
+}
+
+.max-width-100 {
+  max-width: 100%;
+}
+
+.clickable-row {
+  cursor: pointer;
 }

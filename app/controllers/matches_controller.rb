@@ -10,7 +10,7 @@ class MatchesController < ApplicationController
 
   # passed a team_id to display that teams matches
   def fixtures
-    @matches = Match.where(team_id: @team.id).order(:start_time)
+    @matches = Match.where(team_id: @team.id).order(:start_time).page(params[:page]).per(6)
     @team = Team.find(@team.id)
   end
 
@@ -77,7 +77,7 @@ class MatchesController < ApplicationController
   # DELETE /matches/1
   def destroy
     @match.destroy
-    redirect_back(fallback_location: root_path, notice: I18n.t('match.destroy'), status: :see_other)
+    redirect_to team_fixtures_path(@match.team), notice: I18n.t('match.destroy')
   end
 
   private

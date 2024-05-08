@@ -1,5 +1,16 @@
 - if @league.nil?
-  %p This league URL doesn't seem to exist! Any issues, don't hesitate to request support!
+  .container.text-center.mt-5
+    %h2 Your league URL hasn't been recognised by our system!
+    %p.text-lg Please update your league URL below and ensure your details are correct.
+    %p.text-lg Any issues, don't hesitate to contact our support team!
+
+    .row.justify-content-center
+      .col-sm-12.col-md-9.col-lg-6
+        .card
+          .card-header
+            %h3 Update League Details
+          .m-2
+            = render 'scraper_form'
 - else
   %h1 League Table
 
@@ -27,4 +38,3 @@
           %td= team.goals_against
           %td= team.goal_difference
           %td= team.points
-

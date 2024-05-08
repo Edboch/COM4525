@@ -3,17 +3,17 @@
   .field 
     = form.hidden_field :team_id, value: @team.id
 
-  .field
+  .form-group.mb-4
     = form.label :time
-    = form.datetime_select :time, id: :time
+    = form.datetime_select :time, id: :time, class: 'max-width-100'
 
-  .field
+  .form-group.mb-4
     = form.label :location
-    = form.text_field :location, id: :location
+    = form.text_field :location, id: :location, class: 'max-width-100'
 
-  .field
+  .form-group.mb-4
     = form.label :description
-    = form.text_field :description, id: :description
+    = form.text_field :description, id: :description, class: 'max-width-100'
 
   .actions
-    = form.submit
+    = form.submit 'Create Invite', class: 'btn db-side-btn'

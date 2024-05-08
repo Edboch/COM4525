@@ -1,0 +1,14 @@
+%table.table
+  %thead 
+    %tr 
+      %th{ scope: 'col' } Name
+      %th{ scope: 'col' } Status
+      - if current_user.owner_of_team?(@team, current_user) # include remove player column
+        %th{ scope: 'col' }
+  %tbody 
+    - @players.each do |player|
+      %tr 
+        %td= link_to player.name, player_stats_team_path(@team, player), class: 'btn btn-link'
+        %td= player.team_status(@team)
+        - if current_user.owner_of_team?(@team, current_user) # include remove player button
+          %td= link_to 'Remove', remove_team_player_path(team_id: @team.id, user_id: player.id), method: :delete, class: 'btn btn-danger', data: { confirm: 'Are you sure you want to remove this player from your team?' }
