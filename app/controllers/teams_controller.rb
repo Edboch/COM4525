@@ -15,6 +15,8 @@ class TeamsController < ApplicationController
   def sync_fixtures
     scraper = Scrapers::ScraperFactory.create_scraper(@team.url, @team.team_name)
     @fixtures = scraper.fetch_fixtures + scraper.fetch_results
+  rescue NotImplementedError, StandardError
+    @fixtures = []
   end
 
   # POST /teams/:id/sync_fixtures
@@ -59,7 +61,7 @@ class TeamsController < ApplicationController
   # PATCH/PUT /teams/1
   def update
     if @team.update(team_params)
-      redirect_to @team, notice: I18n.t('team.update.success'), status: :see_other
+      redirect_to request.referer || @team, notice: I18n.t('team.update.success'), status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
@@ -73,21 +75,17 @@ class TeamsController < ApplicationController
 
   def players
     # fetch all userteams with this team id and accepted invite
-    user_teams = UserTeam.where(team_id: @team.id, accepted: true)
+    user_teams = UserTeam.where(team_id: @team.id)
 
     # fetch all players with userteams user id
-    players = []
-    user_teams.each do |user_team|
-      players.append(User.find_by(id: user_team.user_id))
-    end
-
-    # send all players to view
-    @players = players
+    @players = user_teams.map do |user_team|
+      User.find_by(id: user_team.user_id).decorate
+    end.compact
   end
 
   def league
     @league = Scrapers::ScraperFactory.create_scraper(@team.url, @team.team_name).fetch_league
-  rescue StandardError
+  rescue NotImplementedError, StandardError
     @league = nil
   end
 
@@ -102,7 +100,7 @@ class TeamsController < ApplicationController
     @team = Team.find(params[:id]).decorate
     @matches = @team.matches
                     .where('start_time > ?', Time.current)
-                    .order(:start_time)
+                    .order(:start_time).decorate
     @invites = @team.invites.where('time > ?', Time.current).order(:time)
   end
 

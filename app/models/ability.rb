@@ -7,6 +7,8 @@ class Ability
   def initialize(user)
     user ||= User.new # guest user (not logged in)
 
+    can :manage, :admin_dashboard unless user.site_admin.nil?
+
     user.owned_teams.each do |team|
       manager_permissions(team)
     end

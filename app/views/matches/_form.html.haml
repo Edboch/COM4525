@@ -1,31 +1,25 @@
 = form_with(model: [@team, @match], local: true) do |f|
 
-  .container.m-4
-    .field.d-flex.align-items-center
-      .mx-4
-        = f.label :start_time, 'Date and Time of Kick Off'
-      = f.datetime_select :start_time, id: :start_time, start_year: Time.zone.today.year - 2, end_year: Time.zone.today.year + 5
+  .form-group.mb-4
+    = f.label :start_time, 'Date and Time of Kick Off'
+    = f.datetime_select :start_time, id: :start_time, start_year: Time.zone.today.year - 2, end_year: Time.zone.today.year + 5, class: 'max-width-100'
 
-    .field.d-flex.align-items-center.my-3
-      .mx-4
-        = f.label :location
-      = f.text_field :location, id: :location
+  .form-group.mb-4
+    = f.label :location
+    = f.text_field :location, id: :location, class: 'max-width-100'
 
-    .field.d-flex.align-items-center.my-3
-      .mx-4
-        = f.label :opposition
-      = f.text_field :opposition, id: :opposition
-    
-    - if match_in_past?(@match)
-      .field.d-flex.align-items-center.my-3
-        .mx-4
-          = f.label :goals_for
-        = f.number_field :goals_for, min: 0, step: 1, value: @match.goals_for || 0
+  .form-group.mb-4
+    = f.label :opposition
+    = f.text_field :opposition, id: :opposition, class: 'max-width-100'
+  
+  - if match_in_past?(@match)
+    .form-group.mb-4
+      = f.label :goals_for
+      = f.number_field :goals_for, min: 0, step: 1, value: @match.goals_for || 0, class: 'max-width-100'
 
-      .field.d-flex.align-items-center.my-3
-        .mx-4
-          = f.label :goals_against
-        = f.number_field :goals_against, min: 0, step: 1, value: @match.goals_against || 0
+    .form-group.mb-4
+      = f.label :goals_against
+      = f.number_field :goals_against, min: 0, step: 1, value: @match.goals_against || 0, class: 'max-width-100'
 
   .actions.text-end.m-3
     = f.submit 'Submit', class: 'btn db-side-btn'

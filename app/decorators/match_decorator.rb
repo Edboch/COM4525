@@ -19,4 +19,8 @@ class MatchDecorator < ApplicationDecorator
       'Upcoming'
     end
   end
+
+  def display_days_until
+    "in #{object.days_until} days"
+  end
 end

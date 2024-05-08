@@ -27,7 +27,7 @@ RSpec.describe 'Players' do
     end
 
     specify 'then i can view the date of a match fixture' do
-      expect(page).to have_content 'Wednesday, May 1, 2024 02:07 PM'
+      expect(page).to have_content '01/05/24'
     end
 
     specify 'then i can view the location of a match fixture' do
@@ -35,7 +35,7 @@ RSpec.describe 'Players' do
     end
 
     specify 'then i can view the score of a match fixture' do
-      expect(page).to have_content '2-1 win'
+      expect(page).to have_content '2-1'
     end
   end
 

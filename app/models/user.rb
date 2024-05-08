@@ -54,6 +54,17 @@ class User < ApplicationRecord
               .exists?(teams: { id: team.id }, roles: { type: 0 })
   end
 
+  def managed_teams
+    Team.where(owner_id: id).to_a
+  end
+
+  def player_teams
+    user_teams.includes(:team)
+              .where.not(teams: { owner_id: id })
+              .where(accepted: true)
+              .map(&:team)
+  end
+
   has_many :owned_teams, class_name: :Team, foreign_key: :owner_id, dependent: :destroy, inverse_of: :owner do
     def destroy(team)
       # TODO
@@ -105,6 +116,10 @@ class User < ApplicationRecord
       .where(match_events: { event_type: MatchEvent.event_types[event_type], user_id: id })
       .where(team_id: team)
       .count
+  end
+
+  def accepted_team?(team)
+    user_teams.find_by(user_id: id, team_id: team)&.accepted || false
   end
 
   has_one :site_admin, dependent: :destroy

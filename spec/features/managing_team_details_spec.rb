@@ -35,6 +35,7 @@ RSpec.describe 'Managing team details' do
       expect(page).to have_content team.name
     end
 
+    # TODO: fix after UI changes
     specify 'Then I can edit the team details' do
       click_on 'View Team'
       click_on 'Edit Team'

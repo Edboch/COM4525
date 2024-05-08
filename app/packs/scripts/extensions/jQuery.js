@@ -28,7 +28,6 @@ window.$ = (function(jQuery) {
           name += nameParts[i].capitalise();
       }
 
-      console.log(name);
       data[name] = processAttrib(this.value);
     });
     return data;
@@ -63,6 +62,13 @@ window.$ = (function(jQuery) {
         break;
     }
   };
+
+  // make specified rows clickable
+  $(document).ready(function() {
+    $(".clickable-row").click(function() {
+      window.location = $(this).data("href");
+    });
+  });
 
   return jQuery;
 }($));

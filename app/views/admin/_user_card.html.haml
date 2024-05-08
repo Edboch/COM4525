@@ -1,14 +1,30 @@
-.user-card{ id: "user-card-#{user.id}" }
-  .uc-pill
-    .email= user.email
+-# Admin User Card
+-# HAML for a user card on the admin dashboard
+-#
+-# @param [ActiveRecord] user - The user to be rendered
 
-  .uc-enlarge
-    %input(name='name'){ value: user.name }
-    %input(name='email'){ value: user.email }
+- user_path = user.id.nil? ? '' : admin_user_path(current_user, user)
+- update_path = user.id.nil? ? '' : admin_user_update_path(current_user, user)
+- destroy_path = user.id.nil? ? '' : admin_user_destroy_path(current_user, user)
+.user-card.pill-foldout{ id: "user-card-#{user.id}" }
+  .pf-pill
+    .uc-pill
+      %a.page-link{ href: user_path }
+        %span Go
 
-    %input(type='checkbox' name='site-admin'){ checked: !user.site_admin.nil? }
-    %label(for='site-admin') Site Admin
+      .email= user.email
 
-    %button.save Save
-    %button.pwreset Reset Password
-    %button.remove Remove Account
+  .pf-body
+    .uc-enlarge
+      %a.page-link{ href: user_path }
+        %span Go
+
+      %input(name='name'){ value: user.name }
+      %input(name='email'){ value: user.email }
+
+      %input(type='checkbox' name='site-admin'){ checked: !user.site_admin.nil? }
+      %label(for='site-admin') Site Admin
+
+      %button.save{ data: { url: update_path } } Save
+      %button.pwreset Reset Password
+      = link_to 'Remove Account', destroy_path
