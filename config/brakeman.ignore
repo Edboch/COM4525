@@ -3,13 +3,13 @@
     {
       "warning_type": "Cross-Site Scripting",
       "warning_code": 2,
-      "fingerprint": "f88686d1b5bf6ed94922452663613391341be24959ee5099035ec6a676cc533a",
+      "fingerprint": "84ff4af8182e9a9afe6114fd1bca97b9c05b8a8fb15c48d8c9e45c2c1bb093f6",
       "check_name": "CrossSiteScripting",
       "message": "Unescaped model attribute",
       "file": "app/views/admin/users/show.html.haml",
       "line": 3,
       "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
-      "code": "User.find_by(:id => params[:id]).decorate.name",
+      "code": "sanitize(User.find_by(:id => params[:id]).decorate.name)",
       "render_path": [
         {
           "type": "controller",
@@ -27,14 +27,14 @@
         "type": "template",
         "template": "admin/users/show"
       },
-      "user_input": null,
-      "confidence": "Medium",
+      "user_input": "User.find_by(:id => params[:id]).decorate",
+      "confidence": "Weak",
       "cwe_id": [
         79
       ],
       "note": ""
     }
   ],
-  "updated": "2024-05-07 22:14:40 +0100",
+  "updated": "2024-05-08 12:13:31 +0100",
   "brakeman_version": "6.1.1"
 }
