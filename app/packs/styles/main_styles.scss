@@ -47,6 +47,11 @@ body {
   transform: translateX(0%); 
 }
 
+.text-lnd {
+  color: white;
+  text-shadow: #000 1px 0 10px;
+}
+
 .db-side-btn {
   background-color: var(--secondary-color);
   color: #ffffff;
