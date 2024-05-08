@@ -2,7 +2,7 @@
 
 # Extension methods for the String class
 class String
-  TRUTHY = %w[true yes t].freeze
+  TRUTHY = %w[true yes t on].freeze
 
   def to_b
     TRUTHY.include? self

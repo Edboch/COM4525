@@ -105,6 +105,9 @@ GEM
     base64 (0.1.1)
     bcrypt (3.1.20)
     bcrypt_pbkdf (1.1.0)
+    benchmark-malloc (0.2.0)
+    benchmark-perf (0.6.0)
+    benchmark-trend (0.4.0)
     bigdecimal (3.1.8)
     bindex (0.8.1)
     bootsnap (1.18.3)
@@ -220,6 +223,18 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.7.2)
+    kaminari (1.2.2)
+      activesupport (>= 4.1.0)
+      kaminari-actionview (= 1.2.2)
+      kaminari-activerecord (= 1.2.2)
+      kaminari-core (= 1.2.2)
+    kaminari-actionview (1.2.2)
+      actionview
+      kaminari-core (= 1.2.2)
+    kaminari-activerecord (1.2.2)
+      activerecord
+      kaminari-core (= 1.2.2)
+    kaminari-core (1.2.2)
     language_server-protocol (3.17.0.3)
     launchy (3.0.1)
       addressable (~> 2.8)
@@ -243,7 +258,7 @@ GEM
     multi_xml (0.7.1)
       bigdecimal (~> 3.1)
     mutex_m (0.2.0)
-    net-imap (0.4.10)
+    net-imap (0.4.11)
       date
       net-protocol
     net-pop (0.1.2)
@@ -257,7 +272,15 @@ GEM
     net-smtp (0.5.0)
       net-protocol
     net-ssh (7.2.3)
-    nio4r (2.7.2)
+    nio4r (2.7.3)
+    nokogiri (1.16.4-aarch64-linux)
+      racc (~> 1.4)
+    nokogiri (1.16.4-arm-linux)
+      racc (~> 1.4)
+    nokogiri (1.16.4-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.4-x86-linux)
+      racc (~> 1.4)
     nokogiri (1.16.4-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.4-x86_64-linux)
@@ -328,12 +351,21 @@ GEM
       actionpack (>= 5.2)
       railties (>= 5.2)
     rexml (3.2.6)
+    rspec (3.13.0)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
+    rspec-benchmark (0.6.0)
+      benchmark-malloc (~> 0.2)
+      benchmark-perf (~> 0.6)
+      benchmark-trend (~> 0.4)
+      rspec (>= 3.0)
     rspec-core (3.13.0)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-mocks (3.13.0)
+    rspec-mocks (3.13.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-rails (6.1.2)
@@ -448,8 +480,11 @@ GEM
     zeitwerk (2.6.13)
 
 PLATFORMS
-  x86_64-darwin-20
-  x86_64-darwin-22
+  aarch64-linux
+  arm-linux
+  arm64-darwin
+  x86-linux
+  x86_64-darwin
   x86_64-linux
 
 DEPENDENCIES
@@ -482,6 +517,7 @@ DEPENDENCIES
   hamlit
   hamlit-rails
   httparty
+  kaminari
   launchy
   letter_opener
   nokogiri
@@ -489,6 +525,7 @@ DEPENDENCIES
   puma (~> 6.0)
   rack (>= 3.0.9.1)
   rails (>= 7.0.8.1)
+  rspec-benchmark
   rspec-rails
   rubocop
   rubocop-capybara

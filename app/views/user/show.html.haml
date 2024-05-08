@@ -1,5 +1,5 @@
-.container.m-5
-  .row.text-center  
+.container.my-5
+  .row.text-center.max-width-100
     %h1 My Profile 
   .row.text-center.my-3
     .col 
@@ -13,5 +13,5 @@
     .col
   .row.mt-5
     .col.text-end
-      = link_to 'Edit Profile', edit_user_profile_path, class: 'btn db-side-btn mx-4'
+      = link_to 'Edit Profile', edit_user_profile_path, class: 'btn db-side-btn mb-2 mx-4'
       = link_to 'Delete account', delete_user_profile_path, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn db-side-btn'

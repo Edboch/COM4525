@@ -14,6 +14,7 @@ class PlayersController < ApplicationController
     joined_teams = current_user.teams.where({ user_teams: { accepted: true } })
 
     @teams = (owned_teams + joined_teams).uniq
-    @matches = Match.where(team: @teams)
+    @matches = Match.where(team: @teams).where('start_time > ?',
+                                               Time.zone.now).order(:start_time).page(params[:page]).per(6)
   end
 end
