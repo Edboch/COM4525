@@ -23,8 +23,9 @@ require 'spec_helper'
 
 RSpec.describe User do
   describe 'user match events' do
+    let!(:manager) { create(:user) }
     let!(:user) { create(:user) }
-    let!(:team) { create(:team) }
+    let!(:team) { create(:team, owner_id: manager.id) }
     let!(:match) { create(:match, team: team) }
 
     before do
@@ -51,9 +52,6 @@ RSpec.describe User do
     end
 
     it 'calculates goals scored for team correctly' do
-      puts user.goals_scored_for_team(team)
-      puts user.teams
-      puts user.match_events
       expect(user.goals_scored_for_team(team)).to eq(2)
     end
 
@@ -91,6 +89,12 @@ RSpec.describe User do
 
     it 'calculates offsides for team correctly' do
       expect(user.offside_for_team(team)).to eq(3)
+    end
+
+    describe '#owner_of_team?' do
+      it 'checks if a user is the owner of a team' do
+        expect(manager.owner_of_team?(team,manager)).to be true
+      end
     end
   end
 end
