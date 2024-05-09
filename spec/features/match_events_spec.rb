@@ -54,7 +54,7 @@ RSpec.describe 'match events' do
       create(:match_event, match: match, user: player, event_type: 'goal', event_minute: 33)
       visit current_path
 
-      expect(page).to have_content('Goal: Minute 33') & have_content("Player: #{player.name}")
+      expect(page).to have_content(player.name) & have_content('Goal') & have_content("33'")
     end
 
     it 'allows manager to view player summary page' do
@@ -80,7 +80,7 @@ RSpec.describe 'match events' do
       create(:match_event, match: match, user: player, event_type: 'goal', event_minute: 33)
       visit current_path
 
-      expect(page).to have_content('Goal: Minute 33') & have_content("Player: #{player.name}")
+      expect(page).to have_content(player.name) & have_content('Goal') & have_content("33'")
     end
 
     it 'allows player to view their own player page within their team' do

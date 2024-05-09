@@ -1,14 +1,14 @@
-= form_with(model: [@team, @user_team], local: true) do |form|
+.container
   - if @user_team.errors.any?
     #error_explanation
-      %h2= "#{pluralize(@user_team.errors.count, 'error')} prohibited this team from being saved:"
-      %ul
+      %ul.list-unstyled
         - @user_team.errors.full_messages.each do |message|
-          %li= message
-  .field.d-flex.align-items-center.my-3
-    .mx-4
-      = form.label :email, "Player's Email"
-    = form.email_field :email, id: :email
+          %li.text-danger= message
 
-  .actions.actions.text-end.m-3
+= form_with(model: [@team, @user_team], local: true) do |form|
+  .form-group.mb-4
+    = form.label :email, "Player's Email"
+    = form.email_field :email, id: :email, class: 'max-width-100'
+
+  .actions
     = form.submit 'Invite', class: 'btn db-side-btn'

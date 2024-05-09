@@ -28,7 +28,10 @@ class Team < ApplicationRecord
   belongs_to :owner, class_name: :User, inverse_of: :owned_teams
 
   def played_count
-    matches.where('start_time < ?', Time.current).count
+    matches.where('start_time < ?', Time.current)
+           .where.not(goals_for: nil)
+           .where.not(goals_against: nil)
+           .count
   end
 
   def win_count

@@ -2,13 +2,34 @@
   .container-fluid
     %a.navbar-brand{ href: root_path }
       = image_pack_tag('images/logo.svg', width: '250', height: '60', alt: 'PitchWize')
+    %button.navbar-toggler{ 'aria-controls': 'navbarNav', 'aria-expanded': 'false', 'aria-label': 'Toggle navigation', 'data-bs-target': '#navbarNav', 'data-bs-toggle': 'collapse', type: 'button' }
+      %span.navbar-toggler-icon
     #navbarNav.collapse.navbar-collapse.my-2.mx-4
       %ul.navbar-nav.ms-auto
         - if user_signed_in?
+          %li.nav-item
+            = link_to 'Home', dashboard_path, class: 'nav-link'
           - if current_user.decorate.admin?
             %li.nav-item
               = link_to 'Admin', admin_index_path(current_user), class: 'nav-link'
-          %li.nav-item
-            = button_to 'Logout', destroy_user_session_path, method: :delete, class: 'nav-link'
+          - unless current_user.managed_teams.empty?
+            %li.nav-item.dropdown
+              %a.nav-link.dropdown-toggle{ href: '#', role: 'button', data: { bs_toggle: 'dropdown' }, aria: { expanded: 'false' } }
+                Managed Teams
+              %ul.dropdown-menu
+                - current_user.managed_teams.each do |team|
+                  %li
+                    = link_to team.name, team_path(team), class: 'dropdown-item'
+          - unless current_user.player_teams.empty?
+            %li.nav-item.dropdown
+              %a.nav-link.dropdown-toggle{ href: '#', role: 'button', data: { bs_toggle: 'dropdown' }, aria: { expanded: 'false' } }
+                Player Teams
+              %ul.dropdown-menu
+                - current_user.player_teams.each do |team|
+                  %li
+                    = link_to team.name, team_path(team), class: 'dropdown-item'
           %li.nav-item
             = link_to 'My Profile', user_profile_path, class: 'nav-link'
+          %li.nav-item
+            = button_to 'Logout', destroy_user_session_path, method: :delete, class: 'nav-link'
+

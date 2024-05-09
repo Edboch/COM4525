@@ -40,15 +40,15 @@ gem 'activerecord-session_store'
 gem 'bootstrap_form'
 gem 'hamlit'
 gem 'hamlit-rails'
-
+gem 'rspec-benchmark'
 gem 'simple_form'
 
 gem 'draper'
 
-gem 'shakapacker'
-
 gem 'cancancan'
 gem 'devise'
+gem 'kaminari'
+gem 'shakapacker'
 
 gem 'daemons'
 gem 'delayed_job'
@@ -113,10 +113,5 @@ group :test do
 end
 
 group :development, :test do
-  gem 'factory_bot_rails'
-  gem 'rspec-rails'
-
-  gem 'faker'
-
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
 end
