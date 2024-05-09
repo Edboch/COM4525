@@ -3,6 +3,8 @@
 module Admin
   # Updates the user and everything pertaining to them across the website
   class UpdateSiteUserService < ApplicationService
+    include ServiceHelper
+
     def initialize(id, user)
       @user = User.find_by id: id
       if @user.nil?

@@ -7,8 +7,10 @@
     -#       Would work by giving the selected class to the appropriate button
     -#       and then the JS will handle the rest
     %button#general General Stats
-    %button#users.selected Users
-    %button#teams Teams
+    %button#users Users
+    %button#teams.selected Teams
+    %button#unsolved_reports Unsolved Reports
+    %button#solved_reports Solved Reports
 
   %section#info-block
     #general
@@ -122,9 +124,29 @@
         - @teams.each do |team|
           = render partial: 'admin/team_card', locals: { team: team }
 
+    #unsolved_reports
+      .card-list
+
+    #solved_reports
+      .card-list
+
 
 %template.user-card
   = render partial: 'admin/user_card', locals: { user: User.new }
 
 %template.search-entry
   .search-entry
+
+%template.unsolved-report-card
+  .unsolved-report-card
+    .rc-pill
+      .content
+      .user_id
+      %button.set_report_to_solved Solved
+
+%template.solved-report-card
+  .solved-report-card
+    .rc-pill
+      .content
+      .user_id
+

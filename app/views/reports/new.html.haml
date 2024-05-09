@@ -1,0 +1,10 @@
+.container 
+  .card 
+    .card-header 
+      %h1 Submit a Report
+    .card-body
+      = form_with(model: @report, local: true) do |f|
+        = f.label :content, 'Detail your Report'
+        = f.text_area :content
+
+        = f.submit 'Submit Report', class: 'btn db-side-btn'

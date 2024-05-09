@@ -71,3 +71,11 @@ en:
       success: "Invite was successfully updated."
     destroy:
       success: "Invite was successfully deleted."
+  availability:
+    success: "Availability updated successfully."
+    fail: "Failed to update availability."
+  lineup:
+    success: "Lineup submitted successfully."
+  report:
+    create:
+      success: "Report was successfully submitted."
