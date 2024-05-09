@@ -9,7 +9,7 @@
 %a{ href: admin_index_path(current_user) } Back
 
 %input(name='team-name'){ value: @team.name }
-%input(name='team-location-name'){ value: @team.name }
+%input(name='team-location-name'){ value: @team.location_name }
 
 #owner
   %span= @team.owner.name

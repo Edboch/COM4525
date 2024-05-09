@@ -231,156 +231,18 @@ function wireupTeamsView() {
       if (user.id == currentOwnerID)
         return;
 
-      const url = container.domData('action');
-      let entry = UTIL.createLiveSearchEntry(container, user, false);
-      entry.attr('data-owner-id', user.id);
-      entry.on('click', async function() {
-        let body = { user_id: user.id }
-
-        const response = await SERVER.sendUrl(url, body);
-        const json = await response.json();
-        if (!json.success) {
-          console.error(json.message);
-          return;
-        }
-
-        // TODO Update owner fields
-      });
-      return entry;
+      return UTIL.createLiveSearchEntry(container, user);
     });
 
+  $('button.tc-save').on('click', async function() {
+    let body = $(this).parent('.tc-body');
 
-  UTIL.wireupLiveSearch(
-    'team-new-member',
-    function(container, user) {
-      let currentMembers = container.domData('member-ids');
-      if (currentMembers.includes(user.id))
-        return;
+    let name = body.find('input[name="team-name"]').val();
+    let location = body.find('input[name="team-location"]').val();
+    let owner = body.find('.live-search-owner').domData('id');
 
-      let entry = UTIL.createLiveSearchEntry(container, user);
-      entry.domData('user-id', user.id);
-      return entry;
-  });
-
-  UTIL.wireupLiveSearch(
-    'nm-team-role',
-    ADMIN.createRoleSearchEntry);
-    // function(container, role) {
-    //   let selectedRoles = container.domData('roles');
-    //   if (selectedRoles.includes(role.id))
-    //     return;
-    //
-    //   let entry = UTIL.createLiveSearchEntry(container, role, false);
-    //   entry.on('click', function() {
-    //     const roles = container.domData('roles');
-    //     let newRoles = roles.slice(0);
-    //     newRoles.push(role.id);
-    //     container.domData('roles', newRoles);
-    //
-    //     let roleList = container.siblings('.role-list');
-    //     let roleEntry = $('<span></span>');
-    //     roleEntry.text(role.name);
-    //     roleEntry.on('click', function() {
-    //       let roles = container.domData('roles');
-    //       roles.remove(role.id);
-    //       container.domData('roles', roles);
-    //       $(this).remove();
-    //     });
-    //
-    //     roleList.append(roleEntry);
-    //     container.find('input').val('');
-    //   });
-    //
-    //   return entry;
-    // });
-
-  $('.tc-new-member form').on('submit', async function(e) {
-    e.preventDefault();
-    let parentCard = $(this).parents('.team-card');
-
-    let dom_user = $(this).find('.live-search-team-new-member');//.data();
-    let dom_roles = $(this).find('.live-search-nm-team-role');//.data();
-
-    let userID = dom_user.domData('id');
-    let roleIDs = dom_roles.domData('roles');
-
-    if (userID === undefined) {
-      console.error('ADD MEMBER No user assigned');
-      return;
-    }
-
-    let body = { user_id: userID, role_ids: roleIDs };
-    const response = await SERVER.sendUrl($(this).attr('action'), body);
-    const json = await response.json();
-    if (!json.success) {
-      console.error(json.message);
-      return;
-    }
-
-    // TODO Clean up
-  });
-
-  $('button.tcm-delete').on('click', async function() {
-    let memberCard = $(this).parents('.tc-member');
-    let userTeamID = memberCard.domData('id');
-    let url = $(this).domData('url');
-
-    // TODO Some kind of are you sure dialogue
-    // TODO Make route
-    const response = await SERVER.sendUrl(url, { user_team_id: userTeamID });
-    const json = await response.json();
-    if (!json.success) {
-      console.error(json.message);
-      return;
-    }
-
-    memberCard.remove();
-  });
-
-  UTIL.wireupLiveSearch(
-    'tm-team-role',
-    function(container, role) {
-      let memberCard = container.parents('.tc-member');
-      let roleIDs = memberCard.domData('role-ids');
-      if (roleIDs.includes(role.id))
-        return;
-
-      let entry = UTIL.createLiveSearchEntry(container, role, false);
-      entry.on('click', async function() {
-        let newRoleIDs = roleIDs.slice(0);
-        newRoleIDs.push(role.id);
-
-        const url = container.domData('url');
-        const response = await SERVER.sendUrl(url, { role_ids: newRoleIDs });
-        const json = await response.json();
-        if (!json.success) {
-          console.error(json.error);
-          return;
-        }
-
-        // TODO Update DOM
-
-        container.find('input').val('');
-      });
-
-      return entry;
-    });
-
-  $('button.tr-remove').on('click.team-role', async function() {
-    let memberCard = $(this).parents('.tc-member');
-    let roleIDs = memberCard.domData('role-ids');
-    let roleID = $(this).domData('role-id');
-    roleIDs.remove(roleID);
-
-    const url = $(this).domData('url');
-    const response = await SERVER.sendUrl(url, { role_ids: roleIDs });
-    const json = await response.json();
-    if (!json.success) {
-      console.error(json.error);
-      return;
-    }
-
-    // TODO Result check + HTML Clean up
+    let url = body.parent('.team-card').domData('url');
+    const response = await SERVER.sendUrl(url, { name: name, location_name: location, owner_id: owner });
   });
 }
 

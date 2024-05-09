@@ -36,7 +36,8 @@ window.UTIL = (function($) {
 
       const cardID = card.attr('id');
 
-      card.on('click', function(evt) {
+      card.off('click.foldout');
+      card.on('click.foldout', function(evt) {
         let target = $(evt.target);
 
         let isOpen = jq_list.find('.pf-open')

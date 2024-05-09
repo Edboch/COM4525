@@ -1,9 +1,9 @@
 -# Admin Team Member
 
 - data = data.nil? ? {} : data
-- data[:id] = member.id
+- data[:id] = member.user&.id
 - data[:role_ids] = member.roles.pluck :id
-.pill-foldout.tc-member{ id: "user-team-#{member.id}", data: { id: member.id, role_ids: member.roles.pluck(:id) } }
+.pill-foldout.tc-member{ id: "user-team-#{member.id}", data: data }
   .pf-pill
     .tcm-pill
       %button.tcm-delete Delete

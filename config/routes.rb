@@ -79,7 +79,7 @@ Rails.application.routes.draw do
     # resources :teams, only: :index, module: 'admin'
     resources :teams, module: 'admin', only: :show do
       post 'update'
-      post 'set-owner'
+      post 'small-update'
       post 'add-member'
       get 'destroy'
     end

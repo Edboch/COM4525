@@ -26,13 +26,16 @@ document.addEventListener('DOMContentLoaded', function() {
     EDIT_TEAM.owner.name = name;
     EDIT_TEAM.owner.email = ownerSearch.domData('email');
 
+    $('#owner span').text(name);
+    ownerSearch.find('input').val('');
+
     checkChange();
   });
 
   UTIL.wireupLiveSearch(
     'new-member',
     function(container, user) {
-      if (user.id in EDIT_USER.members)
+      if (user.id in EDIT_TEAM.members)
         return;
 
       return UTIL.createLiveSearchEntry(container, user);
@@ -40,10 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   UTIL.wireupLiveSearch('new-member-roles', ADMIN.createRoleSearchEntry);
 
-
-
   const onClickDeleteMember = function() {
-    let dom_member = $(this).parent('.tc-member');
+    let dom_member = $(this).parents('.tc-member');
     let id = dom_member.domData('id');
 
     delete EDIT_TEAM.members[id];
@@ -52,12 +53,29 @@ document.addEventListener('DOMContentLoaded', function() {
     checkChange();
   };
 
+  const onClickDeleteRole = function() {
+    let dom_role = $(this).parent('.team-role');
+    let dom_member = $(this).parents('.tc-member');
+
+    let roleID = dom_role.domData('role-id');
+    let memberID = dom_member.domData('id');
+
+    EDIT_TEAM.members[memberID].roles.remove(roleID);
+
+    let roles = dom_member.domData('role-ids');
+    roles.remove(roleID);
+    dom_member.domData('role-ids', roles);
+
+    dom_roles.remove();
+
+    checkChange();
+  };
+
   UTIL.wireupPillFoldout($('#members-block'), '.pill-foldout', 'button');
 
   $('.tcm-delete').on('click', onClickDeleteMember);
 
-  // $('.tr-remove').off('click.team-role');
-
+  $('.tcm-roles .tr-remove').on('click.team-role', onClickDeleteRole);
 
   $('#add-member .add').on('click', function() {
     let dom_member = $('.live-search-new-member');
@@ -71,24 +89,57 @@ document.addEventListener('DOMContentLoaded', function() {
     let member = {
       name: dom_member.domData('name'),
       email: dom_member.domData('email'),
-      roles: dom_member.domData('roles')
+      roles: dom_roles.domData('roles')
     };
 
-    EDIT_USER.members[id] = member;
+    EDIT_TEAM.members[id] = member;
 
     dom_member.find('input').val('');
     dom_roles.find('input').val('');
+    dom_roles.domData('roles', []);
     dom_roles.siblings('.roles-selected').empty();
 
     let memberSlot = UTIL.fromTemplate('.member');
     memberSlot.domData('id', id);
     memberSlot.domData('role-ids', roles);
 
-    let pill = memberSlot.find('.tcm-pill');
-    pill.find('.tcm-name span').text(member.name);
-    pill.find('.tcm-roles span').text(member.roles);
+    memberSlot.find('.tcm-name span').text(member.name);
 
+    let roleNames = [];
+    let rolesBlock = memberSlot.find('.tcm-body .tcm-roles');
+
+    for (let roleID of member.roles) {
+      let roleSlot = UTIL.fromTemplate('.role');
+      let role = LIVE_SEARCH.team_roles.find(tr => tr.id === roleID);
+      if (role === undefined)
+        continue;
+
+      roleSlot.domData('role-id', role.id);
+      roleSlot.find('.re-name').text(role.name);
+      roleSlot.find('.re-type').text(role.type);
+      rolesBlock.append(roleSlot);
+
+      roleNames.push(role.name);
+    }
+
+    let pill = memberSlot.find('.tcm-pill');
+    pill.find('.tcm-roles span').text(roleNames.join(' | '));
+
+    $('#members-block').append(memberSlot);
+    UTIL.wireupPillFoldout($('#members-block'), '.pill-foldout', 'button');
+
+    checkChange();
   });
 
-  
+  $('button.revert').on('click', () => location.reload());
+
+  $('button.save').on('click', async function() {
+    let url = $(this).domData('href');
+    const response = await SERVER.sendJsonUrl(url, { team: EDIT_TEAM });
+    if (!response.ok) {
+      return;
+    }
+
+    TEAM = UTIL.jsonDup(EDIT_TEAM);
+  });
 });

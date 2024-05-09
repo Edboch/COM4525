@@ -107,6 +107,8 @@ document.addEventListener('DOMContentLoaded', function() {
       return entry;
     });
 
+  $('button.revert').on('click', () => location.reload());
+
   $('button.save').on('click', async function() {
     // I think the fact that the keys in the teams field is causing issues
     // on the server side
