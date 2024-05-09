@@ -1,8 +1,8 @@
 :javascript
   let LIVE_SEARCH = { users: #{json_escape(@js_users)}, team_roles: #{@js_roles} };
-  let TEAM = { name: "#{@team.name}", location: { name: "#{@team.location_name}" },
+  let TEAM = { name: "#{sanitize(@team.name)}", location: { name: "#{@team.location_name}" },
                owner: #{@team.owner.to_json},
-               members: #{@js_team_members} };
+               members: #{sanitize(@js_team_members)} };
 
 - append_javascript_pack_tag 'admin_teams'
 
