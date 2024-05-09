@@ -25,7 +25,7 @@
                 %td= match.start_time.strftime('%d/%m/%y') 
                 %td= match.scoreline 
                 %td= link_to 'View Match', team_match_path(@team, match), class: 'btn db-side-btn'
-                - if current_user.player_of_team?(@team) && match.start_time > Time.zone.now
+                - if current_user.player_of_team?(@team)
                   - player_match = PlayerMatch.find_by(user_id: current_user.id, match_id: match.id)
                   %td
                     = form_with(url: team_match_toggle_availability_path(match_id: match.id, user_id: current_user.id), method: :post, local: true) do |f|

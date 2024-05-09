@@ -52,7 +52,7 @@
             %p= "Location: #{@match.location}"
             %p= "Kick off: #{@match.start_time.strftime('%A, %B %-d, %Y %I:%M %p')}"
           .toggle-availability
-            - if current_user.player_of_team?(@team) && @match.start_time > Time.zone.now
+            - if current_user.player_of_team?(@team)
               - player_match = PlayerMatch.find_by(user_id: current_user.id, match_id: @match.id)
               = form_with(url: team_match_toggle_availability_path(match_id: @match.id, user_id: current_user.id), method: :post, local: true) do |f|
                 = f.submit player_match.available ? 'Available' : 'Unavailable', class: "btn #{player_match.available ? 'btn-success' : 'btn-danger'}"
