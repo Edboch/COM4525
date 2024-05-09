@@ -15,7 +15,10 @@
                     = render 'match_event_form', match: @match, players: @players
               = link_to 'Edit Match Details', edit_team_match_path(@team, @match), class: 'btn db-side-btn mt-1'
               = link_to 'Back to Team', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn mt-1'
-              = link_to 'Postpone', postpone_team_match_path(@team, @match), method: :put, data: { confirm: 'Are you sure?' }, class: 'btn db-side-btn mt-1'
+              - if @match.status == 'Postponed'
+                = link_to 'Resume', resume_team_match_path(@team, @match), method: :put, data: { confirm: 'Are you sure?' }, class: 'btn db-side-btn mt-1'
+              - elsif @match.status == 'Upcoming'
+                = link_to 'Postpone', postpone_team_match_path(@team, @match), method: :put, data: { confirm: 'Are you sure?' }, class: 'btn db-side-btn mt-1'
               = link_to 'Cancel', cancel_team_match_path(@team, @match), method: :put, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger'
               = link_to 'Delete Match', team_match_path(@team, @match), class: 'btn btn-danger mt-1', method: :delete, data: { confirm: 'Are you sure?' } 
         %ul.list-group.list-group-flush.event-scroll

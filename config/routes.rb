@@ -14,6 +14,7 @@ Rails.application.routes.draw do
         post :rate_players
         put :cancel
         put :postpone
+        put :resume
       end
     end
     get 'fixtures', to: 'matches#fixtures', as: :fixtures

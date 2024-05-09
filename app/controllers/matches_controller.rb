@@ -59,7 +59,6 @@ class MatchesController < ApplicationController
   # PATCH/PUT /matches/1
   def update
     if @match.update(match_params)
-      @match.update(status: 'Upcoming')
       redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.update'), status: :see_other
     else
       render :edit, status: :unprocessable_entity
@@ -76,6 +75,12 @@ class MatchesController < ApplicationController
   def postpone
     @match.update(status: 'Postponed')
     redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.postpone')
+  end
+
+  # PATCH/PUT /matches/1/postpone
+  def resume
+    @match.update(status: 'Upcoming')
+    redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.resume')
   end
 
   # POST /matches/:id/rate_players

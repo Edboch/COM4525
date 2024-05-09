@@ -59,6 +59,7 @@ en:
     destroy: "Match was successfully deleted."
     cancel: "Match was successfully cancelled."
     postpone: "Match was successfully postponed."
+    resume: "Match was successfully resumed."
   teammatchratings:
     update: "Ratings updated successfully"
   matchevent:
