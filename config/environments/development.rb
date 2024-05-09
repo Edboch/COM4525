@@ -87,7 +87,7 @@ Rails.application.configure do
   config.action_controller.action_on_unpermitted_parameters = :raise
 
   config.after_initialize do
-    #Enable bullet in your application
+    # Enable bullet in your application
     Bullet.enable = true
     Bullet.alert = true
     Bullet.console = true
