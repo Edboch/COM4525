@@ -73,3 +73,5 @@ en:
       success: "Invite was successfully updated."
     destroy:
       success: "Invite was successfully deleted."
+  mailer:
+    new_match_created_subject: "New Match Created"
