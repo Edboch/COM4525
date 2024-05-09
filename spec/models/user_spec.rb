@@ -93,7 +93,7 @@ RSpec.describe User do
 
     describe '#owner_of_team?' do
       it 'checks if a user is the owner of a team' do
-        expect(manager.owner_of_team?(team, manager)).to be true
+        expect(manager.owner_of_team?(team)).to be true
       end
     end
   end

@@ -72,6 +72,13 @@ body {
   color: white;
 }
 
+.match-info {
+  flex: 1; 
+}
+
+.toggle-availability {
+  flex-basis: auto; 
+}
 .max-width-100 {
   max-width: 100%;
 }
