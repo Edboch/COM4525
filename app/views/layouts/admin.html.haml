@@ -23,6 +23,10 @@
     -# %meta(name='remove-member'){ content: admin_team_remove_member_url }
     -# %meta(name='update-team-member-roles'){ content: admin_team_update_member_roles_url }
 
+    %meta(name='get-unsolved-reports'){ content: admin_unsolved_reports_url }
+    %meta(name='get-solved-reports'){ content: admin_solved_reports_url }
+    %meta(name='set-report-to-solved'){ content: admin_set_report_to_solved_url }
+
     %body
       = render 'layouts/nav'
       - if flash.present?

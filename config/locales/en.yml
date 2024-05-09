@@ -76,3 +76,6 @@ en:
     fail: "Failed to update availability."
   lineup:
     success: "Lineup submitted successfully."
+  report:
+    create:
+      success: "Report was successfully submitted."

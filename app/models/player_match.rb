@@ -6,7 +6,7 @@
 #
 #  id         :bigint           not null, primary key
 #  available  :boolean          default(FALSE)
-#  position   :integer          default("bench")
+#  position   :integer          default("Goalkeeper")
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  match_id   :bigint           not null

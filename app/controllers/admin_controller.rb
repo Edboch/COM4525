@@ -109,4 +109,35 @@ class AdminController < ApplicationController
 
     UserTeam.destroy_by team_id: team_id, user_id: player_id
   end
+
+  def retrieve_unsolved_reports
+    reports = []
+    Report.find_each do |report|
+      reports.append({ id: report.id, user_id: report.user_id, content: report.content }) if report.solved == false
+    end
+    response = { reports: reports }
+    render json: response
+  end
+
+  def retrieve_solved_reports
+    reports = []
+    Report.find_each do |report|
+      reports.append({ id: report.id, user_id: report.user_id, content: report.content }) if report.solved == true
+    end
+    response = { reports: reports }
+    render json: response
+  end
+
+  # Update the status of a report from marked to unmarked
+  #
+  # @param [BigInt] id   The id of the report
+  # @param [Boolean] solved    Whether the report is solved or unsolved
+  def set_report_to_solved
+    report = Report.find_by id: params[:id]
+    return if report.nil?
+
+    report.solved = true
+    result = report.save
+    render json: { success: result }
+  end
 end

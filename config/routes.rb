@@ -31,6 +31,9 @@ Rails.application.routes.draw do
       delete 'reject'
     end
   end
+
+  resources :reports
+
   get 'profile', to: 'user#show', as: :user_profile
   get 'profile/edit', to: 'user#edit', as: :edit_user_profile
   patch 'profile', to: 'user#update'
@@ -63,6 +66,9 @@ Rails.application.routes.draw do
     post('/remove-player',
          to: 'admin#remove_team_player',
          as: :admin_remove_team_player)
+    post '/unsolved-reports', to: 'admin#retrieve_unsolved_reports', as: :admin_unsolved_reports
+    post '/solved-reports', to: 'admin#retrieve_solved_reports', as: :admin_solved_reports
+    post '/set-report-to-solved', to: 'admin#set_report_to_solved', as: :admin_set_report_to_solved
   end
 
   # TODO: I don't think these admin routes really need the admin resource

@@ -12,7 +12,7 @@
             %td= player_match.user.name
             %td
               = select_tag "player_matches[#{player_match.id}][position]", options_for_select(PlayerMatch.positions.keys.map { |key| [key.humanize, key] }, player_match.position)
-            %td= player_match.available
+            %td= player_match.available ? 'Yes' : 'No'
     .text-end
       = f.submit 'Submit Lineup', class: 'btn db-side-btn'
 - else 

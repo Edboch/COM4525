@@ -6,8 +6,12 @@ let POP_ELEMS = {};
 let DATE_RANGES = {};
 
 let USER_CARDS;
+let UNSOLVED_REPORT_CARDS
+let SOLVED_REPORT_CARDS
 
 let IDX_OPEN_CARD = -1;
+let IDX_OPEN_UNSOLVED_REP_CARD = -1;
+let IDX_OPEN_SOLVED_REP_CARD = -1;
 
 const Q_CONTROL_BUTTON = '#control-panel > button';
 
@@ -208,6 +212,57 @@ function wireupUserCards() {
   });
 }
 
+async function populateUnsolvedReports() {
+  const response = await SERVER.fetch('get-unsolved-reports');
+  const json = await response.json();
+
+  let reportCard = $('template.unsolved-report-card').contents()[1];
+  let idxCard = 0;
+  function addCard(report) {
+    let card = $(reportCard).clone();
+    card.attr('id', 'report-' + report.id);
+    card.addClass('open');
+    card.find('.content').text(report.content);
+    card.find('.user_id').text(report.user_id);
+    card.find('button.set_report_to_solved').on('click',function(){
+      SERVER.send('set-report-to-solved', { 'id': report.id, 'user_id': report.user_id, 'content': report.content, 'solved': true });
+    })
+
+    UNSOLVED_REPORT_CARDS.append(card);
+    idxCard++;
+  }
+
+  // Players then managers then site admins
+  // This will be configurable
+  json.reports.forEach(addCard);
+}
+
+async function populateSolvedReports() {
+  const response = await SERVER.fetch('get-solved-reports');
+  const json = await response.json();
+
+  let reportCard = $('template.solved-report-card').contents()[1];
+  let idxCard = 0;
+  function addCard(report) {
+    let card = $(reportCard).clone();
+    card.attr('id', 'report-' + report.id);
+    card.addClass('open');
+    card.find('.content').text(report.content);
+    card.find('.user_id').text(report.user_id);
+    /*
+    card.find('button.remove').on('click',function(){
+      SERVER.send('remove-report', { 'id': report.id, 'user_id': report.user_id, 'content': report.content });
+    })
+    */
+
+    SOLVED_REPORT_CARDS.append(card);
+    idxCard++;
+  }
+
+  // Players then managers then site admins
+  // This will be configurable
+  json.reports.forEach(addCard);
+}
 /**
  * Wires up the functionality of the teams view
  *
@@ -316,7 +371,9 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   USER_CARDS = $('#users .user-list');
-
+  UNSOLVED_REPORT_CARDS = $('#unsolved_reports .card-list');
+  SOLVED_REPORT_CARDS = $('#solved_reports .card-list');
+  
   let buttons = $(Q_CONTROL_BUTTON).toArray();
   let infoViews = $('#info-block > *').toArray();
 
@@ -355,6 +412,8 @@ document.addEventListener('DOMContentLoaded', function() {
   setupPopularityView();
 
   wireUpCreateNewUser();
+  populateUnsolvedReports();
+  populateSolvedReports();
   wireUpCreateNewTeam();
 });
 
