@@ -7,7 +7,7 @@
         .col
           %h4= "Joined: #{@team.created_at.strftime('%d %B %Y')}"
         .col.text-end
-          - if current_user.owner_of_team?(@team, current_user)
+          - if current_user.owner_of_team?(@team)
             = link_to 'Edit Team', edit_team_path(@team), class: 'btn db-side-btn'
             = link_to 'Delete Team', team_path(@team), method: :delete, data: { confirm: 'Are you sure you want to delete the team?' }, class: 'btn btn-danger mt-1'
   .row 
@@ -36,7 +36,7 @@
             .card-body 
               .card-text.text-end
                 .col  
-                  - if current_user.owner_of_team?(@team, current_user)
+                  - if current_user.owner_of_team?(@team)
                     = link_to 'Add a Match', new_team_match_path(@team), class: 'btn db-side-btn m-1'
                   = link_to 'All Fixtures', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn m-1'
         .col-lg-8.px-4
@@ -68,7 +68,7 @@
                 .col  
                   = link_to 'Show all Players', team_players_path(@team), class: 'btn db-side-btn'
                 .col.text-end
-                  - if current_user.owner_of_team?(@team, current_user)
+                  - if current_user.owner_of_team?(@team)
                     = link_to 'Invite a Player', new_team_user_team_path(@team), class: 'btn db-side-btn'
 
             .container.border.rounded
@@ -76,7 +76,7 @@
                 %h5 Find a Match
               .row.text-center
                 .col.mb-3
-                  - if current_user.owner_of_team?(@team, current_user)
+                  - if current_user.owner_of_team?(@team)
                     = link_to 'Publish a new public invite', new_team_invite_path(@team), class: 'btn db-side-btn m-1'
                   = link_to 'All Published Public Invites', team_published_invites_path(team_id: @team.id), class: 'btn db-side-btn m-1'
           

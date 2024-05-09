@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# controller for managing creating and editing a team's Matches
-# in the application
+# controller for managing matches in the application
 class MatchesController < ApplicationController
   before_action :authenticate_user!
   load_and_authorize_resource
@@ -16,20 +15,8 @@ class MatchesController < ApplicationController
 
   # GET /matches/1
   def show
-    @team = @match.team
-    @match_decorator = @match.decorate
-
-    if current_user.staff_of_team?(@team, current_user)
-      user_teams = UserTeam.where(team_id: @team.id, accepted: true)
-      @players = user_teams.map { |user_team| User.find_by(id: user_team.user_id) }
-      @options = [['N/A', -1]]
-      (0..10).each do |v|
-        @options << [v, v]
-      end
-    else
-      rating = current_user.player_ratings.find_by(match: @match)&.rating
-      @rating = rating == -1 ? 'N/A' : rating || 'N/A'
-    end
+    @player_matches = ordered_player_matches
+    @players, @options, @rating = fetch_staff_or_player_info
   end
 
   # GET /matches/new
@@ -42,11 +29,12 @@ class MatchesController < ApplicationController
 
   # POST /matches
   def create
-    @match = @team.matches.new(match_params)
-    @match.status = get_status(@match.start_time)
+    @match = @team.matches.new(match_params).decorate
+    @match.status = @match.get_status(@match.start_time)
     @match.team_id = @team.id
 
     if @match.save
+      create_player_matches(@team, @match)
       redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.create')
     else
       render :new, status: :unprocessable_entity
@@ -74,6 +62,32 @@ class MatchesController < ApplicationController
     render :edit, status: :unprocessable_entity
   end
 
+  # POST
+  def submit_lineup
+    ActiveRecord::Base.transaction do
+      params[:player_matches].each do |player_match_id, attributes|
+        player_match = PlayerMatch.find(player_match_id)
+        player_match.update!(position: PlayerMatch.positions[attributes[:position]])
+      end
+    end
+    redirect_to team_match_path(@match.team, @match), notice: I18n.t('lineup.success')
+  rescue ActiveRecord::RecordInvalid
+    render :show, status: :unprocessable_entity
+  end
+
+  # players toggle their availability for a match (updates the PlayerMatch object)
+  def toggle_availability
+    player_match = PlayerMatch.find_by(match_id: params[:match_id], user_id: params[:user_id])
+
+    if player_match&.update(available: !player_match.available)
+      redirect_back(fallback_location: team_match_path(player_match.match.team, player_match.match),
+                    notice: I18n.t('availability.success'))
+    else
+      redirect_back(fallback_location: team_match_path(player_match.match.team, player_match.match),
+                    alert: I18n.t('availability.fail'))
+    end
+  end
+
   # DELETE /matches/1
   def destroy
     @match.destroy
@@ -82,15 +96,28 @@ class MatchesController < ApplicationController
 
   private
 
-  def match_event_params
-    params.require(:match_event).permit(:user_id, :event_type, :event_minute)
+  def ordered_player_matches
+    # sort the player_matches by their position to display appropriately
+    @match.player_matches.sort_by { |player_match| PlayerMatch.positions[player_match.position] }
   end
 
-  def get_status(start_time)
-    if start_time < Time.current
-      'Completed'
+  def fetch_staff_or_player_info
+    if current_user.staff_of_team?(@team)
+      user_teams = UserTeam.where(team_id: @team.id, accepted: true)
+      players = user_teams.map { |user_team| User.find_by(id: user_team.user_id) }
+      options = [['N/A', -1]]
+      (0..10).each { |v| options << [v, v] }
+      [players, options, nil]
     else
-      'Upcoming'
+      rating = current_user.player_ratings.find_by(match: @match)&.rating
+      rating = rating == -1 ? 'N/A' : rating || 'N/A'
+      [nil, nil, rating]
+    end
+  end
+
+  def create_player_matches(team, match)
+    team.users.each do |player|
+      match.player_matches.create(user: player, position: 5)
     end
   end
 
@@ -99,7 +126,7 @@ class MatchesController < ApplicationController
   end
 
   def set_match
-    @match = Match.find(params[:id])
+    @match = Match.find(params[:id]).decorate
   end
 
   # only allow a list of trusted parameters through.

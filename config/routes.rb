@@ -9,9 +9,11 @@ Rails.application.routes.draw do
     resources :invites
     get 'published_invites', to: 'invites#published_invites', as: :published_invites
     resources :matches do
+      post 'toggle_availability/:user_id', to: 'matches#toggle_availability', as: :toggle_availability
       resources :match_events, only: %i[create destroy]
       member do
         post :rate_players
+        post :submit_lineup
       end
     end
     get 'fixtures', to: 'matches#fixtures', as: :fixtures
