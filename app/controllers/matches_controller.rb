@@ -47,6 +47,7 @@ class MatchesController < ApplicationController
     @match.team_id = @team.id
 
     if @match.save
+      UserMailer.create_match_email(UserTeam.where(team_id: @team.id, accepted: true).map { |user_team| User.find_by(id: user_team.user_id) }).deliver
       redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.create')
     else
       render :new, status: :unprocessable_entity
