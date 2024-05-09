@@ -10,16 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_07_125944) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_09_185749) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "admin_reports", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_admin_reports_on_user_id", unique: true
-  end
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
@@ -46,12 +39,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_07_125944) do
     t.index ["team_id"], name: "index_invites_on_team_id"
   end
 
-  create_table "landing_viewers", force: :cascade do |t|
-    t.bigint "landing_user_id"
-    t.integer "selected_plan", default: 0, null: false
-    t.index ["landing_user_id"], name: "index_landing_viewers_on_landing_user_id"
-  end
-
   create_table "match_events", force: :cascade do |t|
     t.bigint "match_id", null: false
     t.bigint "user_id", null: false
@@ -76,28 +63,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_07_125944) do
     t.index ["team_id"], name: "index_matches_on_team_id"
   end
 
-  create_table "page_to_page_step_counts", force: :cascade do |t|
-    t.bigint "landing_page_id_from", null: false
-    t.bigint "landing_page_id_to", null: false
-    t.integer "count", default: 0, null: false
-  end
-
-  create_table "penultimate_page_counts", force: :cascade do |t|
-    t.bigint "landing_page_id", null: false
-    t.integer "count", default: 0, null: false
-  end
-
-  create_table "player_matches", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "match_id", null: false
-    t.integer "position", default: 0
-    t.boolean "available", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["match_id"], name: "index_player_matches_on_match_id"
-    t.index ["user_id"], name: "index_player_matches_on_user_id"
-  end
-
   create_table "player_ratings", force: :cascade do |t|
     t.bigint "match_id", null: false
     t.bigint "user_id", null: false
@@ -106,15 +71,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_07_125944) do
     t.datetime "updated_at", null: false
     t.index ["match_id"], name: "index_player_ratings_on_match_id"
     t.index ["user_id"], name: "index_player_ratings_on_user_id"
-  end
-
-  create_table "question_answers", force: :cascade do |t|
-    t.string "question", null: false
-    t.string "answer"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "show", default: false, null: false
-    t.integer "clicks", default: 0, null: false
   end
 
   create_table "reports", force: :cascade do |t|
@@ -136,7 +92,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_07_125944) do
 
   create_table "site_admins", force: :cascade do |t|
     t.bigint "user_id"
-    t.index ["user_id"], name: "index_site_admins_on_user_id"
+    t.index ["user_id"], name: "index_site_admins_on_user_id", unique: true
   end
 
   create_table "site_visit_groupings", force: :cascade do |t|
@@ -202,15 +158,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_07_125944) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "admin_reports", "users"
   add_foreign_key "invites", "teams"
   add_foreign_key "match_events", "matches"
   add_foreign_key "match_events", "users"
   add_foreign_key "matches", "teams"
-  add_foreign_key "player_matches", "matches"
-  add_foreign_key "player_matches", "users"
   add_foreign_key "player_ratings", "matches"
   add_foreign_key "player_ratings", "users"
+  add_foreign_key "site_admins", "users"
   add_foreign_key "team_activities", "teams"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"
