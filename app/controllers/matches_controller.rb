@@ -66,13 +66,13 @@ class MatchesController < ApplicationController
   # PATCH/PUT /matches/1/cancel
   def cancel
     @match.update(status: 'Cancelled')
-    redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.cancelled')
+    redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.cancel')
   end
 
   # PATCH/PUT /matches/1/postpone
   def postpone
     @match.update(status: 'Postponed')
-    redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.postponed')
+    redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.postpone')
   end
 
   # POST /matches/:id/rate_players
