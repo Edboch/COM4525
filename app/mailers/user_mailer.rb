@@ -3,7 +3,7 @@ class UserMailer < ApplicationMailer
 
   def create_match_email(user)
     @user = user
-    mail(to: 'no-reply@sheffield.ac.uk', bcc: @user.email, subject: 'New Match Created')
+    mail(to: 'no-reply@sheffield.ac.uk', bcc: @user.pluck(:email), subject: 'New Match Created')
   end
 
 end
