@@ -371,7 +371,9 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   USER_CARDS = $('#users .user-list');
-
+  UNSOLVED_REPORT_CARDS = $('#unsolved_reports .card-list');
+  SOLVED_REPORT_CARDS = $('#solved_reports .card-list');
+  
   let buttons = $(Q_CONTROL_BUTTON).toArray();
   let infoViews = $('#info-block > *').toArray();
 
