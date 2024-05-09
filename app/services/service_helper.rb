@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
+# Helper to provide functions for creating responses for classes classes
 module ServiceHelper
   def success(payload = nil)
-    return { success?: true, payload: payload }
+    { success?: true, payload: payload }
   end
 
   def failure(message)
-    return { success?: false, error: message }
+    { success?: false, error: message }
   end
 end

@@ -3,6 +3,8 @@
 module Admin
   # Updates the user pointed to by id
   class UpdateUserService < ApplicationService
+    include ServiceHelper
+
     def initialize(id, name, email, is_admin)
       @user = User.find_by id: id
       if @user.nil?

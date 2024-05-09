@@ -15,7 +15,21 @@ document.addEventListener('DOMContentLoaded', function() {
     dom_team.remove();
 
     checkChange();
-  }
+  };
+
+  const onRemoveRoleClick = function() {
+    let dom_role = $(this).parents('.team-role');
+
+    let roleID = dom_role.domData('role-id');
+    let teamID = dom_role.domData('team-id');
+
+    EDIT_USER.teams[teamID].roles.remove(roleID);
+
+    dom_role.remove();
+    checkChange();
+  };
+
+  $('.tr-remove').on('click', onRemoveRoleClick);
 
   UTIL.wireupLiveSearch(
     'new-team',
@@ -54,6 +68,21 @@ document.addEventListener('DOMContentLoaded', function() {
     teamSlot.find('.team-name').text(team.name);
     teamSlot.find('.team-location').text(team.location_name);
     teamSlot.find('.leave').on('click', onLeaveTeamClick);
+
+    let rolesContainer = teamSlot.find('.roles');
+    for (let roleID of roles) {
+      let role = LIVE_SEARCH.team_roles.find(tr => tr.id === roleID);
+      if (role === undefined)
+        continue;
+
+      let roleSlot = UTIL.fromTemplate('.role');
+      roleSlot.domData('role-id', roleID);
+      roleSlot.domData('team-id', id);
+      roleSlot.find('.re-name').text(role.name);
+      roleSlot.find('.re-type').text(role.type);
+      roleSlot.find('.tr-remove').on('click', onRemoveRoleClick);
+      rolesContainer.append(roleSlot);
+    }
 
     $('#teams-block').append(teamSlot);
     checkChange();

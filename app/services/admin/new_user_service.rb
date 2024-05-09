@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
-# TODO: Docs
 module Admin
   # Inserts a new user into the data base
   class NewUserService < ApplicationService
+    include ServiceHelper
+
     def initialize(name, email, password, site_admin)
       @name = name
       @email = email

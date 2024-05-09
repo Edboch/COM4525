@@ -14,13 +14,9 @@ module Admin
       @js_roles = TeamRole.all.to_json
       json_members = @team.user_teams.map do |ut|
         "#{ut.user.id}: { name: \"#{ut.user.name}\", email: '#{ut.user.email}', roles: #{ut.roles.pluck(:id)} }"
-        end
+      end
 
       @js_team_members = "{ #{json_members.join(', ')} }"
-    end
-
-    def destroy
-
     end
 
     ###################
@@ -31,8 +27,16 @@ module Admin
       render json: result.to_json
     end
 
+    def destroy
+      team = Team.find_by id: params[:team_id]
+      name = team.name
+      team.destroy
+      redirect_to admin_index_path(current_user), notice: "Team '#{name}' successfully deleted"
+    end
+
     def small_update
-      result = Admin::SmallTeamUpdateService.call params[:team_id], params[:name], params[:location_name], params[:owner_id]
+      result = Admin::SmallTeamUpdateService.call params[:team_id], params[:name], params[:location_name],
+                                                  params[:owner_id]
       render json: result.to_json
     end
 

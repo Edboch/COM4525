@@ -1,6 +1,6 @@
 -# Admin Team Member
 
-- data = data.nil? ? {} : data
+- data = {} if data.nil?
 - data[:id] = member.user&.id
 - data[:role_ids] = member.roles.pluck :id
 .pill-foldout.tc-member{ id: "user-team-#{member.id}", data: data }
@@ -18,7 +18,7 @@
       %h5.tcm-name
         %span= member.user&.name
 
-    - update_roles_url =  member.id.nil? ? '' : admin_user_team_update_roles_url(current_user.id, member.id)
+    - update_roles_url = member.id.nil? ? '' : admin_user_team_update_roles_url(current_user.id, member.id)
     = render(partial: 'snippets/live_search',
              locals: { name: 'tm-team-role', placeholder: 'New Role',
                        search_data_var: 'team_roles',

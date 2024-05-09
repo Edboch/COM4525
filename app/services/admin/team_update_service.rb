@@ -1,5 +1,7 @@
+# frozen_string_literal: true
 
 module Admin
+  # Service for updating everything in a team
   class TeamUpdateService < ApplicationService
     include ServiceHelper
 

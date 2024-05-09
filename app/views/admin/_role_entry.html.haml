@@ -4,7 +4,7 @@
 -# @param [TeamRole] role - The role to be rendered
 -# @param [Hash] data     - Extra data to add to element
 
-- data = data.nil? ? {} : data
+- data = {} if data.nil?
 - data[:role_id] = role.id
 %span.team-role{ data: data }
   %button.tr-remove Remove

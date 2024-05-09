@@ -1,5 +1,7 @@
+# frozen_string_literal: true
 
 module Admin
+  # Service for update the name, location and owner of a team
   class SmallTeamUpdateService < ApplicationService
     include ServiceHelper
 
@@ -11,11 +13,13 @@ module Admin
         return
       end
 
-      @owner = User.find_by id: owner
-      if @owner.nil?
-        @valid = false
-        @message = "No User of ID #{id}"
-        return
+      unless owner.nil? || owner == 'undefined'
+        @owner = User.find_by id: owner
+        if @owner.nil?
+          @valid = false
+          @message = "No User of ID #{owner}"
+          return
+        end
       end
 
       @name = name
@@ -28,10 +32,10 @@ module Admin
 
       @team.name = @name
       @team.location_name = @location_name
-      @team.owner = @owner
+      @team.owner = @owner unless @owner.nil?
 
       result = @team.save
-      return result ? success(result) : failure('Could not save team')
+      result ? success(result) : failure('Could not save team')
     end
   end
 end
