@@ -85,4 +85,13 @@ Rails.application.configure do
 
   # Make sure we know about it if params haven't been whitelisted
   config.action_controller.action_on_unpermitted_parameters = :raise
+
+  config.after_initialize do
+    #Enable bullet in your application
+    Bullet.enable = true
+    Bullet.alert = true
+    Bullet.console = true
+    Bullet.rails_logger = true
+    Bullet.bullet_logger = true
+  end
 end
