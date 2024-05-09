@@ -15,20 +15,8 @@ class MatchesController < ApplicationController
 
   # GET /matches/1
   def show
-    @team = @match.team
-    @match_decorator = @match.decorate
-
-    if current_user.staff_of_team?(@team)
-      user_teams = UserTeam.where(team_id: @team.id, accepted: true)
-      @players = user_teams.map { |user_team| User.find_by(id: user_team.user_id) }
-      @options = [['N/A', -1]]
-      (0..10).each do |v|
-        @options << [v, v]
-      end
-    else
-      rating = current_user.player_ratings.find_by(match: @match)&.rating
-      @rating = rating == -1 ? 'N/A' : rating || 'N/A'
-    end
+    @player_matches = ordered_player_matches
+    @players, @options, @rating = fetch_staff_or_player_info
   end
 
   # GET /matches/new
@@ -79,8 +67,8 @@ class MatchesController < ApplicationController
     ActiveRecord::Base.transaction do
       params[:player_matches].each do |player_match_id, attributes|
         player_match = PlayerMatch.find(player_match_id)
-        pos_value = PlayerMatch.positions[attributes[:position]]
-        player_match.update!(position: pos_value)
+        # pos_value = PlayerMatch.positions[attributes[:position]]
+        player_match.update!(position: PlayerMatch.positions[attributes[:position]])
       end
     end
     redirect_to team_match_path(@match.team, @match), notice: I18n.t('lineup.success')
@@ -109,9 +97,27 @@ class MatchesController < ApplicationController
 
   private
 
+  def ordered_player_matches
+    @match.player_matches.sort_by { |player_match| PlayerMatch.positions[player_match.position] }
+  end
+
+  def fetch_staff_or_player_info
+    if current_user.staff_of_team?(@team)
+      user_teams = UserTeam.where(team_id: @team.id, accepted: true)
+      players = user_teams.map { |user_team| User.find_by(id: user_team.user_id) }
+      options = [['N/A', -1]]
+      (0..10).each { |v| options << [v, v] }
+      [players, options, nil]
+    else
+      rating = current_user.player_ratings.find_by(match: @match)&.rating
+      rating = rating == -1 ? 'N/A' : rating || 'N/A'
+      [nil, nil, rating]
+    end
+  end
+
   def create_player_matches(team, match)
     team.users.each do |player|
-      match.player_matches.create(user: player)
+      match.player_matches.create(user: player, position: 5)
     end
   end
 
@@ -120,7 +126,7 @@ class MatchesController < ApplicationController
   end
 
   def set_match
-    @match = Match.find(params[:id])
+    @match = Match.find(params[:id]).decorate
   end
 
   # only allow a list of trusted parameters through.
