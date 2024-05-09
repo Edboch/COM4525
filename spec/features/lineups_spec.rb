@@ -53,7 +53,7 @@ RSpec.describe 'lineups' do
     specify 'then i can see the player availability' do
       click_on 'All Fixtures'
       click_on 'View'
-      expect(page).to have_content 'false'
+      expect(page).to have_content 'No'
     end
 
     specify 'then i can give a position for a player for the next match' do
