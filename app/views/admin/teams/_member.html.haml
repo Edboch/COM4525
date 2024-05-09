@@ -1,0 +1,30 @@
+-# Admin Team Member
+
+- data = {} if data.nil?
+- data[:id] = member.user&.id
+- data[:role_ids] = member.roles.pluck :id
+.pill-foldout.tc-member{ id: "user-team-#{member.id}", data: data }
+  .pf-pill
+    .tcm-pill
+      %button.tcm-delete Delete
+      %h5.tcm-name
+        %span= member.user&.name
+      .tcm-roles
+        %span= member.roles.pluck(:name).join ' | '
+
+  .pf-body.tcm-body
+    .head
+      %button.tcm-delete Delete
+      %h5.tcm-name
+        %span= member.user&.name
+
+    - update_roles_url = member.id.nil? ? '' : admin_user_team_update_roles_url(current_user.id, member.id)
+    = render(partial: 'snippets/live_search',
+             locals: { name: 'tm-team-role', placeholder: 'New Role',
+                       search_data_var: 'team_roles',
+                       search_fields: ['name'],
+                       other_data: { url: update_roles_url } })
+
+    .tcm-roles
+      - member.roles.decorate.each do |role|
+        = render partial: 'admin/role_entry', locals: { role: role }

@@ -5,6 +5,8 @@
 #
 # @param [User] user The user whose activity to log
 class TeamActivityService < ApplicationService
+  include ServiceHelper
+
   def initialize(user)
     @user = user
   end

@@ -4,6 +4,8 @@
 module Admin
   # Inserts a new user into the data base
   class NewTeamService < ApplicationService
+    include ServiceHelper
+
     def initialize(location, team_name, owner_email)
       @team_name = team_name
       @location = location
