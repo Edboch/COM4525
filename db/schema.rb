@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_20_183647) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_02_200218) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,6 +27,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_183647) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+  end
+
+  create_table "invites", force: :cascade do |t|
+    t.datetime "time"
+    t.string "location"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "team_id", null: false
+    t.index ["team_id"], name: "index_invites_on_team_id"
   end
 
   create_table "landing_page_views", force: :cascade do |t|
@@ -93,6 +103,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_183647) do
     t.index ["review_id"], name: "index_like_reviews_on_review_id"
   end
 
+  create_table "match_events", force: :cascade do |t|
+    t.bigint "match_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "event_type"
+    t.integer "event_minute"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["match_id"], name: "index_match_events_on_match_id"
+    t.index ["user_id"], name: "index_match_events_on_user_id"
+  end
+
   create_table "matches", force: :cascade do |t|
     t.string "location", null: false
     t.string "opposition", null: false
@@ -112,20 +133,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_183647) do
     t.integer "count", default: 0, null: false
   end
 
-  create_table "page_visit_groupings", force: :cascade do |t|
-    t.string "category", null: false
-    t.integer "count", default: 0, null: false
-    t.datetime "period_start"
-  end
-
-  create_table "page_visits", force: :cascade do |t|
-    t.datetime "visit_start"
-    t.datetime "visit_end"
-  end
-
   create_table "penultimate_page_counts", force: :cascade do |t|
     t.bigint "landing_page_id", null: false
     t.integer "count", default: 0, null: false
+  end
+
+  create_table "player_ratings", force: :cascade do |t|
+    t.bigint "match_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "rating", default: -1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["match_id"], name: "index_player_ratings_on_match_id"
+    t.index ["user_id"], name: "index_player_ratings_on_user_id"
   end
 
   create_table "question_answers", force: :cascade do |t|
@@ -159,7 +179,25 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_183647) do
 
   create_table "site_admins", force: :cascade do |t|
     t.bigint "user_id"
-    t.index ["user_id"], name: "index_site_admins_on_user_id"
+    t.index ["user_id"], name: "index_site_admins_on_user_id", unique: true
+  end
+
+  create_table "site_visit_groupings", force: :cascade do |t|
+    t.string "category", null: false
+    t.integer "count", default: 0, null: false
+    t.datetime "period_start"
+  end
+
+  create_table "site_visits", force: :cascade do |t|
+    t.datetime "visit_start"
+    t.datetime "visit_end"
+  end
+
+  create_table "team_activities", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.integer "active_users", default: 0, null: false
+    t.datetime "day_start", null: false
+    t.index ["team_id"], name: "index_team_activities_on_team_id"
   end
 
   create_table "team_roles", force: :cascade do |t|
@@ -173,6 +211,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_183647) do
     t.string "name"
     t.string "location_name"
     t.bigint "owner_id"
+    t.string "url"
+    t.string "team_name"
   end
 
   create_table "user_team_roles", id: false, force: :cascade do |t|
@@ -205,11 +245,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_183647) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "invites", "teams"
   add_foreign_key "like_answers", "landing_users"
   add_foreign_key "like_answers", "question_answers"
   add_foreign_key "like_reviews", "landing_users"
   add_foreign_key "like_reviews", "reviews"
+  add_foreign_key "match_events", "matches"
+  add_foreign_key "match_events", "users"
   add_foreign_key "matches", "teams"
+  add_foreign_key "player_ratings", "matches"
+  add_foreign_key "player_ratings", "users"
+  add_foreign_key "site_admins", "users"
+  add_foreign_key "team_activities", "teams"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"
 end

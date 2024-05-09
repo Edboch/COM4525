@@ -1,0 +1,13 @@
+= form_with(model: @team, local: true) do |form|
+  .form-group.mb-4
+    = form.label :url, 'League URL'
+    = form.text_field :url, class: 'max-width-100'
+    %p This is the URL that you normally access your team's league.
+
+  .form-group
+    = form.label :team_name, 'Team Name'
+    = form.text_field :team_name, class: 'max-width-100'
+    %p This should be exactly as is displayed on your league website.
+
+  .actions
+    = form.submit 'Update', class: 'btn db-side-btn'

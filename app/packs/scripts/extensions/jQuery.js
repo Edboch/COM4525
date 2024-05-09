@@ -63,5 +63,12 @@ window.$ = (function(jQuery) {
     }
   };
 
+  // make specified rows clickable
+  $(document).ready(function() {
+    $(".clickable-row").click(function() {
+      window.location = $(this).data("href");
+    });
+  });
+
   return jQuery;
 }($));

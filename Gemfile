@@ -40,19 +40,22 @@ gem 'activerecord-session_store'
 gem 'bootstrap_form'
 gem 'hamlit'
 gem 'hamlit-rails'
-
+gem 'rspec-benchmark'
 gem 'simple_form'
 
 gem 'draper'
 
-gem 'shakapacker'
-
 gem 'cancancan'
 gem 'devise'
+gem 'kaminari'
+gem 'shakapacker'
 
 gem 'daemons'
 gem 'delayed_job'
 gem 'delayed_job_active_record'
+gem 'factory_bot_rails'
+gem 'faker'
+gem 'rspec-rails'
 gem 'whenever'
 
 gem 'sanitize_email'
@@ -68,6 +71,11 @@ gem 'sentry-rails'
 gem 'sentry-ruby'
 
 gem 'rack', '>= 3.0.9.1'
+gem 'stringio', '>= 3.0.1.1'
+
+# for scraping
+gem 'httparty'
+gem 'nokogiri'
 
 group :development do
   gem 'annotate'
@@ -101,13 +109,9 @@ group :test do
   gem 'launchy'
   gem 'selenium-webdriver'
   gem 'simplecov'
+  gem 'webmock'
 end
 
 group :development, :test do
-  gem 'factory_bot_rails'
-  gem 'rspec-rails'
-
-  gem 'faker'
-
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
 end

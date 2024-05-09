@@ -25,6 +25,9 @@
 #
 class Match < ApplicationRecord
   belongs_to :team
+  has_many :player_ratings, dependent: :destroy
+  has_many :match_events, dependent: :destroy
+  has_many :users, through: :team
 
   # get the result as a string for displaying in fixture list
   def result
@@ -42,5 +45,9 @@ class Match < ApplicationRecord
   # get the scoreline for displaying in fixture list
   def scoreline
     "#{goals_for}-#{goals_against}"
+  end
+
+  def days_until
+    (start_time.to_date - Time.zone.today).to_i
   end
 end

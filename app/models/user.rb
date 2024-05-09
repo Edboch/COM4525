@@ -28,6 +28,11 @@ class User < ApplicationRecord
   has_many :user_teams, dependent: :destroy
   has_many :teams, through: :user_teams
 
+  has_many :player_ratings, dependent: :destroy
+  has_many :match_events, dependent: :nullify
+  has_many :rating_matches, through: :player_ratings, source: :match
+  has_many :event_matches, through: :match_events, source: :match
+
   def owner_of_team?(team, user)
     team.owner_id == user.id
   end
@@ -46,10 +51,72 @@ class User < ApplicationRecord
               .exists?(teams: { id: team.id }, roles: { type: 0 })
   end
 
+  def managed_teams
+    Team.where(owner_id: id).to_a
+  end
+
+  def player_teams
+    user_teams.includes(:team)
+              .where.not(teams: { owner_id: id })
+              .where(accepted: true)
+              .map(&:team)
+  end
+
   has_many :owned_teams, class_name: :Team, foreign_key: :owner_id, dependent: :destroy, inverse_of: :owner do
     def destroy(team)
       # TODO
     end
+  end
+
+  def goals_scored_for_team(team)
+    count_match_event_of_type_for_team(:goal, team)
+  end
+
+  def assists_for_team(team)
+    count_match_event_of_type_for_team(:assist, team)
+  end
+
+  def saves_made_for_team(team)
+    count_match_event_of_type_for_team(:save_made, team)
+  end
+
+  def fouls_for_team(team)
+    count_match_event_of_type_for_team(:foul, team)
+  end
+
+  def yellows_for_team(team)
+    count_match_event_of_type_for_team(:yellow, team)
+  end
+
+  def reds_for_team(team)
+    count_match_event_of_type_for_team(:red, team)
+  end
+
+  def goals_conceded_for_team(team)
+    count_match_event_of_type_for_team(:goal_conceded, team)
+  end
+
+  def penalties_won_for_team(team)
+    count_match_event_of_type_for_team(:penalty_won, team)
+  end
+
+  def penalties_conceded_for_team(team)
+    count_match_event_of_type_for_team(:penalty_conceded, team)
+  end
+
+  def offside_for_team(team)
+    count_match_event_of_type_for_team(:offside, team)
+  end
+
+  def count_match_event_of_type_for_team(event_type, team)
+    event_matches
+      .where(match_events: { event_type: MatchEvent.event_types[event_type], user_id: id })
+      .where(team_id: team)
+      .count
+  end
+
+  def accepted_team?(team)
+    user_teams.find_by(user_id: id, team_id: team)&.accepted || false
   end
 
   has_one :site_admin, dependent: :destroy

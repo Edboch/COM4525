@@ -1,5 +1,8 @@
 .row.justify-content-center
-  .col-sm-8.col-lg-6
+  .col-sm-12.col-lg-6
     .card
-      .card-header New Match
-      = render 'form'
+      .m-2
+        .card-header.text-center Add a New Match
+        = render 'form'
+      .container
+        = link_to 'Add Match From League Site', sync_fixtures_team_path(@team), class: 'btn db-side-btn w-100', id: 'sync-fixtures-button'

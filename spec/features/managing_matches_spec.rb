@@ -24,19 +24,34 @@ RSpec.describe 'Managing Matches' do
 
   # Creating match testing
   context 'when I am logged in as a manager on the team view' do
-    specify 'then I can create a new match' do
+    before do
       click_on 'Add a Match'
+    end
+
+    specify 'then I can create a new match' do
       fill_in 'location', with: 'New Location'
       fill_in 'opposition', with: 'New Opposition'
       click_on 'Submit'
       expect(page).to have_content 'Match was successfully created.'
+    end
+
+    specify 'then i can edit a match with a specific date' do
+      fill_in 'location', with: 'New Location'
+      fill_in 'opposition', with: 'New Opposition'
+      select '2024', from: 'match[start_time(1i)]'
+      select 'May', from: 'match[start_time(2i)]'
+      select '5', from: 'match[start_time(3i)]'
+      select '13', from: 'match[start_time(4i)]'
+      select '00', from: 'match[start_time(5i)]'
+      click_on 'Submit'
+      expect(page).to have_content '05/05/24'
     end
   end
 
   # Viewing and editing match testing
   context 'when I am logged in as a manager on the fixture view' do
     before do
-      click_on 'View Fixtures'
+      click_on 'All Fixtures'
     end
 
     specify 'then I can view a match' do
@@ -46,26 +61,37 @@ RSpec.describe 'Managing Matches' do
     # test the future and past differences with editing a match
     specify 'then I am able to edit the goals of a past match' do
       within('tr', text: 'Past Opposition') do
-        click_on 'Edit'
+        click_on 'View Match'
       end
+      click_on 'Edit Match Details'
       expect(page).to have_content 'Goals for'
     end
 
     specify 'then I am not able to edit the goals of a future match' do
       within('tr', text: 'Future Opposition') do
-        click_on 'Edit'
+        click_on 'View Match'
       end
+      click_on 'Edit Match Details'
       expect(page).to have_no_content 'Goals for'
     end
 
     # test general editing functionality of a match
     specify 'then I can edit a match' do
       within('tr', text: 'Future Opposition') do
-        click_on 'Edit'
+        click_on 'View Match'
       end
+      click_on 'Edit Match Details'
       fill_in 'location', with: 'Edited Location'
       click_on 'Submit'
       expect(page).to have_content 'Match was successfully updated.'
+    end
+
+    specify 'then I can delete a match' do
+      within('tr', text: 'Future Opposition') do
+        click_on 'View Match'
+      end
+      click_on 'Delete Match'
+      expect(page).to have_content 'Match was successfully deleted.'
     end
   end
 end

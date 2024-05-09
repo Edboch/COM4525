@@ -2,6 +2,7 @@
 
 # Controller for managing user team relations in the application
 class UserTeamsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_team, only: %i[new create destroy]
   before_action :set_user_team, only: %i[accept reject]
 
@@ -9,16 +10,23 @@ class UserTeamsController < ApplicationController
 
   def new
     @user_team = @team.user_teams.build
+    @players = @team.user_teams.reject(&:accepted)
+                    .map { |user_team| User.find_by(id: user_team.user_id)&.decorate }
+                    .compact
+    authorize! :new, @user_team
   end
 
   def create
     @team = Team.find(params[:team_id])
     user = User.find_by(email: user_team_params[:email])
+    return handle_no_user unless user
 
-    if user
-      create_user_team(user)
+    if UserTeam.find_by(user_id: user.id, team_id: @team.id)
+      handle_user_exist
+    elsif user.owner_of_team?(@team, user)
+      handle_user_is_manager
     else
-      handle_no_user
+      create_user_team(user)
     end
   end
 
@@ -50,15 +58,32 @@ class UserTeamsController < ApplicationController
 
   def create_user_team(user)
     @user_team = @team.user_teams.build(user_id: user.id)
+    authorize! :create, @user_team
+
+    return unless @user_team.save
 
     if @user_team.save
-      redirect_to dashboard_path, notice: I18n.t('userteam.create.success')
+      redirect_to new_team_user_team_path(@team), notice: I18n.t('userteam.create.success')
     else
       render :new, status: :unprocessable_entity
     end
   end
 
+  def handle_user_is_manager
+    @user_team = @team.user_teams.build
+    @user_team.errors.add(:email, 'error: The user with this email manages the team.')
+    render :new, status: :unprocessable_entity
+  end
+
   def handle_no_user
+    @user_team = @team.user_teams.build
+    @user_team.errors.add(:email, 'error: No user found with this email.')
+    render :new, status: :unprocessable_entity
+  end
+
+  def handle_user_exist
+    @user_team = @team.user_teams.build
+    @user_team.errors.add(:email, 'error: User already exists in the team.')
     render :new, status: :unprocessable_entity
   end
 

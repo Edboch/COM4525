@@ -5,6 +5,7 @@
 
 - user_path = user.id.nil? ? '' : admin_user_path(current_user, user)
 - update_path = user.id.nil? ? '' : admin_user_update_path(current_user, user)
+- destroy_path = user.id.nil? ? '' : admin_user_destroy_path(current_user, user)
 .user-card.pill-foldout{ id: "user-card-#{user.id}" }
   .pf-pill
     .uc-pill
@@ -24,5 +25,6 @@
       %input(type='checkbox' name='site-admin'){ checked: !user.site_admin.nil? }
       %label(for='site-admin') Site Admin
 
-      %button.save{ data: { id: update_path } } Save
+      %button.save{ data: { url: update_path } } Save
       %button.pwreset Reset Password
+      = link_to 'Remove Account', destroy_path

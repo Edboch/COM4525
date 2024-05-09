@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Users
+  # Custom controller to handle devise sessopms
   class SessionsController < Devise::SessionsController
     # before_action :configure_sign_in_params, only: [:create]
 
@@ -10,9 +11,12 @@ module Users
     # end
 
     # POST /resource/sign_in
-    # def create
-    #   super
-    # end
+    def create
+      super
+      return if current_user.nil?
+
+      TeamActivityService.call current_user
+    end
 
     # DELETE /resource/sign_out
     # def destroy

@@ -1,3 +1,5 @@
+const { map } = require("jquery");
+
 let BUTTON_VIEWS = {};
 
 let POP_ELEMS = {};
@@ -191,14 +193,15 @@ function wireupUserCards() {
       // If site admin is changed also ask for password confirmation
       let admin = inp_admin.prop('checked');
 
-      let url = $(this).domData('id');
+      let url = $(this).domData('url');
       SERVER.sendUrl(url, { name: name, email: email, site_admin: admin });
     });
 
     card.find('button.remove').on('click',function(){
       let name = inp_name.val();
       let email = inp_email.val();
-      SERVER.send('remove-user', { 'id': id, 'name': name, 'email': email });
+      let url = $(this).domData('url');
+      SERVER.sendUrl(url, { 'id': id, 'name': name, 'email': email });
     })
 
     idxCard++;
@@ -246,6 +249,42 @@ function wireupTeamsView() {
   });
 }
 
+async function wireUpCreateNewTeam() {
+  const domNewTeam = $('#new-team');
+  let inp_teamname = domNewTeam.find('[name="team_name"]');
+  let inp_location = domNewTeam.find('[name="location_name"]');
+  let inp_owneremail = domNewTeam.find('[name="live-search-first-owner"]');
+
+  domNewTeam.find('#new-team-submit').on('click', async function() {
+    if (inp_teamname.val() === '') {
+      console.error('NEW TEAM No team name provided');
+      return;
+    }
+    if (inp_location.val() === '') {
+      console.error('NEW TEAM No location name provided');
+      return;
+    }
+    if (inp_owneremail.val() === '') {
+      console.error("NEW TEAM Manager's email not provided");
+      return;
+    }
+    const response = await SERVER.send('new-team', {
+      team_name: inp_teamname.val(), location_name: inp_location.val(), owner_email: inp_owneremail.val()
+    });
+    inp_teamname.val('');
+    inp_location.val('');
+    inp_owneremail.val('');
+    
+  });
+
+  UTIL.wireupLiveSearch(
+    'first-owner',
+    function(container, user) {
+      let entry = UTIL.createLiveSearchEntry(container, user);
+      return entry;},
+    maxOptionsWhenEmpty = 0
+  );
+}
 
 function mkfn_selectInfoView(target) {
   return function() {
@@ -316,5 +355,6 @@ document.addEventListener('DOMContentLoaded', function() {
   setupPopularityView();
 
   wireUpCreateNewUser();
+  wireUpCreateNewTeam();
 });
 

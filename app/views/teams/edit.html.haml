@@ -1,5 +1,15 @@
-.row.justify-content-center
-  .col-sm-8.col-lg-6
+.row.justify-content-center.my-3
+  .col-sm-12.col-lg-6
     .card
-      .card-header Editing Team
-      = render 'form'
+      .card-header.text-center
+        %h3 Edit Team Details
+      .m-2
+        = render 'form'
+
+.row.justify-content-center.mb-4
+  .col-sm-12.col-lg-6
+    .card
+      .card-header.text-center
+        %h3 Your Team's League
+      .m-2
+        = render 'scraper_form'

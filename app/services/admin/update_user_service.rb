@@ -2,6 +2,11 @@
 
 module Admin
   # Updates the user pointed to by id
+  #
+  # @param [String] id       The id of the user
+  # @param [String] name     The new name of the user
+  # @param [String] email    The new email of the user
+  # @param [String] is_admin Whether or not the user is admin
   class UpdateUserService < ApplicationService
     include ServiceHelper
 

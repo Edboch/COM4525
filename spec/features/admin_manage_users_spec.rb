@@ -29,7 +29,6 @@ RSpec.describe 'Admin Edit Users', :js do
     end
 
     specify 'A user\'s name can be changed' do
-      # save_and_open_page
       within user_card do
         find(:css, 'input[name="name"]').set 'Dominic'
         find(:css, 'button.save').click
@@ -60,6 +59,16 @@ RSpec.describe 'Admin Edit Users', :js do
       sleep 0.2
       regular.reload
       expect(regular.site_admin).not_to be_nil
+    end
+
+    specify 'A user can be deleted' do
+      within user_card do
+        click_on 'Remove Account'
+      end
+
+      sleep 0.2
+      user = User.find_by id: regular.id
+      expect(user).to be_nil
     end
 
     context 'when I enter the dedicated page' do
@@ -113,7 +122,6 @@ RSpec.describe 'Admin Edit Users', :js do
 
         within :css, 'div.live-search-new-team' do
           find(:css, 'input').set team.name
-          # save_and_open_page
           sleep 0.1
           find(:css, '.live-search-entry').click
         end

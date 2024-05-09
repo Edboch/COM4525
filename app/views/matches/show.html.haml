@@ -1,10 +1,41 @@
 .row.justify-content-center
-  .col-sm-8.col-lg-6
-    .card
-      .card-header
-        Match details
+  .col-lg-8
+    .card.m-4
+      .card-header.text-center
+        %h3= @match_decorator.match_header
       .card-body
-        %dl.row.mb-0
-      .card-footer.d-flex
-        = link_to 'Edit', edit_match_path(@match), class: 'btn btn-link'
-        = link_to 'Back', matches_path, class: 'btn btn-link ms-auto'
+        .row.text-end 
+          .col 
+            - if current_user.owner_of_team?(@team, current_user)
+              %button.btn.btn-primary{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#matchEventModal', 'class' => 'btn db-side-btn mt-1' }
+                Add Match Event
+              #matchEventModal.modal.fade{ 'tabindex' => '-1', 'role' => 'dialog', 'aria-labelledby' => 'matchEventModalLabel', 'aria-hidden' => 'true' }
+                .modal-dialog
+                  .modal-content
+                    = render 'match_event_form', match: @match, players: @players
+              = link_to 'Edit Match Details', edit_team_match_path(@team, @match), class: 'btn db-side-btn mt-1'
+              = link_to 'Back to Team', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn mt-1'
+              = link_to 'Delete Match', team_match_path(@team, @match), class: 'btn btn-danger mt-1', method: :delete, data: { confirm: 'Are you sure?' } 
+        %ul.list-group.list-group-flush.event-scroll
+          - @match.match_events.order(:event_minute).each do |event|
+            %li.list-group-item
+              .row.justify-content-center.align-items-center
+                .col
+                  %p.m-0= event.user.name.to_s
+                .col
+                  %strong.m-0= event.event_type.titleize.to_s
+                .col
+                  %p.m-0= "#{event.event_minute}' "
+                - if current_user.owner_of_team?(@match.team, current_user)
+                  .col.text-end
+                    = button_to 'Delete', team_match_match_event_path(@match.team, @match, event), method: :delete, class: 'btn btn-danger'
+        %p= "Location: #{@match.location}"
+        %p= "Kick off: #{@match.start_time.strftime('%A, %B %-d, %Y %I:%M %p')}"
+        .container
+          - if current_user.staff_of_team?(@team, current_user)
+            .text-center 
+              %h3 Player Ratings
+            = render 'player_ratings_form', match: @match
+          - else
+            %h1 Match Rating: #{@rating}
+
