@@ -1,7 +1,7 @@
 = form_with(model: @team, local: true) do |form|
   - if @team.errors.any?
     #error_explanation
-      %h2= "#{pluralize(team.errors.count, 'error')} prohibited this team from being saved:"
+      %h2= "#{pluralize(@team.errors.count, 'error')} prohibited this team from being saved:"
       %ul
         - @team.errors.full_messages.each do |message|
           %li= message
@@ -9,15 +9,13 @@
   .field 
     =form.hidden_field :owner_id, value: current_user.id
 
-  .field.d-flex.align-items-center.my-3
-    .mx-4
-      = form.label :name
-    = form.text_field :name, id: :team_name
+  .form-group.mb-4
+    = form.label :name
+    = form.text_field :name, id: :team_name, class: 'max-width-100'
 
-  .field.d-flex.align-items-center.my-3
-    .mx-4
-      = form.label :location_name
-    = form.text_field :location_name, id: :team_location
+  .form-group.mb-4
+    = form.label :location_name
+    = form.text_field :location_name, id: :team_location, class: 'max-width-100'
 
-  .actions.text-end.m-3
+  .actions
     = form.submit 'Submit', class: 'btn db-side-btn'

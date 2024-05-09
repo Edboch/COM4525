@@ -1,5 +1,16 @@
 - if @fixtures.empty?
-  %p You have no fixtures or results to sync. Are you sure the URL you entered is correct and your team name is exactly as it appears on your league website?
+  .container.text-center.mt-5
+    %h2 No results or fixtures to sync
+    %p.text-lg Make sure your league URL is correct and the team name is exactly as displayed on your team's league website.
+    %p.text-lg Any issues, don't hesitate to contact our support team!
+
+    .row.justify-content-center
+      .col-sm-12.col-md-9.col-lg-6
+        .card
+          .card-header
+            %h3 Update League Details
+          .m-2
+            = render 'scraper_form'
 - else
   %h1
     Sync Fixtures for #{@team.name}

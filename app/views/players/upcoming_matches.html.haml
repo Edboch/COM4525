@@ -1,28 +1,23 @@
-.container.justify-content-center.m-5.text-center 
-  .row
+.container.mb-3
+  .row.text-center.my-2
     %h3 Your Upcoming Fixtures
-  .row 
-    .col
+  .row
+    .table-responsive
       %table.table
         %thead 
           %tr 
-            %th{ scope: 'col' } #
+            %th{ scope: 'col' } Team
             %th{ scope: 'col' } Opposition
             %th{ scope: 'col' } Location 
-            %th{ scope: 'col' } Kick Off 
-            %th{ scope: 'col' } Score
-            %td{ scope: 'col' } Result
+            %th{ scope: 'col' } Date
             %th{ scope: 'col' } 
-            %td{ scope: 'col' } 
 
         %tbody 
-          - @matches.each_with_index do | match, index |
-            %tr 
-              %th{ scope: 'row' }= index + 1
+          - @matches.each do | match |
+            %tr{ data: { href: team_match_path(match.team, match) }, class: 'clickable-row' }
+              %td= match.team.name 
               %td= match.opposition 
               %td= match.location 
-              %td= match.start_time.strftime('%A, %B %-d, %Y %I:%M %p') 
-              %td= match.scoreline 
-              %td= match.result
-              %td= link_to 'Line Up', class: 'btn db-side-btn'
-              %td= link_to 'Available', class: 'btn db-side-btn'
+              %td= match.start_time.strftime('%d/%m/%y') 
+              %td= link_to 'View Match', team_match_path(match.team, match), class: 'btn db-side-btn'
+    = paginate @matches

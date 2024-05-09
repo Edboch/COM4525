@@ -1,0 +1,108 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
+      "fingerprint": "4365edc4296f6663815eaa34698ac630520474a782eecce7a3fb97289b1def54",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/admin/teams/show.html.haml",
+      "line": 3,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "sanitize(Team.find_by(:id => params[:id]).name)",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "Admin::TeamsController",
+          "method": "show",
+          "line": 20,
+          "file": "app/controllers/admin/teams_controller.rb",
+          "rendered": {
+            "name": "admin/teams/show",
+            "file": "app/views/admin/teams/show.html.haml"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "admin/teams/show"
+      },
+      "user_input": "Team.find_by(:id => params[:id]).name",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
+      "fingerprint": "84ff4af8182e9a9afe6114fd1bca97b9c05b8a8fb15c48d8c9e45c2c1bb093f6",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/admin/users/show.html.haml",
+      "line": 3,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "sanitize(User.find_by(:id => params[:id]).decorate.name)",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "Admin::UsersController",
+          "method": "show",
+          "line": 23,
+          "file": "app/controllers/admin/users_controller.rb",
+          "rendered": {
+            "name": "admin/users/show",
+            "file": "app/views/admin/users/show.html.haml"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "admin/users/show"
+      },
+      "user_input": "User.find_by(:id => params[:id]).decorate",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
+      "fingerprint": "9922c953e899dc65799232da686252c98821bef2ec788e5c6735bab5b62b315b",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/admin/teams/show.html.haml",
+      "line": 5,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "sanitize(\"{ #{Team.find_by(:id => params[:id]).user_teams.map do\n \"#{ut.user.id}: { name: \\\"#{ut.user.name}\\\", email: '#{ut.user.email}', roles: #{ut.roles.pluck(:id)} }\"\n end.join(\", \")} }\")",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "Admin::TeamsController",
+          "method": "show",
+          "line": 20,
+          "file": "app/controllers/admin/teams_controller.rb",
+          "rendered": {
+            "name": "admin/teams/show",
+            "file": "app/views/admin/teams/show.html.haml"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "admin/teams/show"
+      },
+      "user_input": "Team.find_by(:id => params[:id]).user_teams",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    }
+  ],
+  "updated": "2024-05-09 18:48:10 +0100",
+  "brakeman_version": "6.1.1"
+}

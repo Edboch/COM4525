@@ -5,6 +5,12 @@ window.UTIL = (function($) {
     return $(`meta[name='${name}']`).attr('content');
   }
 
+  mod.fromTemplate = function(query) {
+    return $($('template' + query).contents()[1]);
+  };
+
+  mod.jsonDup = function(obj) { return JSON.parse(JSON.stringify(obj)); };
+
   /**
    * Sets up pill foldout functionality. Only always you to fold
    * the pill back in when the event target is `q_pill_body`.
@@ -30,10 +36,11 @@ window.UTIL = (function($) {
 
       const cardID = card.attr('id');
 
-      card.on('click', function(evt) {
+      card.off('click.foldout');
+      card.on('click.foldout', function(evt) {
         let target = $(evt.target);
 
-        let isOpen = jq_list.find('.open')
+        let isOpen = jq_list.find('.pf-open')
                             .toArray()
                             .some((el) => $(el).attr('id') === cardID);
 
@@ -45,20 +52,20 @@ window.UTIL = (function($) {
           // if (!(target.is(card) || target.is(card.find(q_pill_body))))
           //   return;
 
-          card.removeClass('open');
+          card.removeClass('pf-open');
           fn_onFoldChange(card, false);
           return;
         }
 
         let cards = jq_list.find(q_pill);
         cards.toArray()
-             .filter((card) => $(card).hasClass('open'))
+             .filter((card) => $(card).hasClass('pf-open'))
              .forEach(function(elem) {
                 fn_onFoldChange($(elem), false);
-                elem.classList.remove('open');
+                elem.classList.remove('pf-open');
               });
 
-        card.addClass('open');
+        card.addClass('pf-open');
         fn_onFoldChange(card, true);
       });
     });
@@ -85,9 +92,9 @@ window.UTIL = (function($) {
   // TODO: New Documentation
   mod.wireupLiveSearch = function(liveSearchName, fn_createEntry,
                                   maxOptionsWhenEmpty = 10) {
-    const allContainers = $(`.live-search-${liveSearchName}`);
-    const searchFields = allContainers.domData('search-fields');
-    let varName = allContainers.domData('search-data-var');
+    const liveSearch = $(`.live-search-${liveSearchName}`);
+    const searchFields = liveSearch.domData('search-fields');
+    let varName = liveSearch.domData('search-data-var');
     if (varName === undefined)
       return;
 
@@ -133,6 +140,10 @@ window.UTIL = (function($) {
 
       matches.forEach(makeEntry);
     });
+
+    const dropdown = liveSearch.find('.live-search-dropdown');
+    $(window).on('click', function() { dropdown.empty(); });
+
   };
 
   // TODO Documentation
@@ -160,7 +171,7 @@ window.UTIL = (function($) {
 
     let entryHTML = string;
     let entry = $('<div class="live-search-entry"></div>');
-    entry.html(entryHTML);
+    entry.text(entryHTML);
 
     if (defaultOnClick)
       entry.on('click', function() {

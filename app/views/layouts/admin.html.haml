@@ -11,12 +11,9 @@
     %meta(name='popularity'){ content: metrics_popularity_url }
     %meta(name='pop-date-range'){ content: metrics_popularity_range_url }
 
-    %meta(name='get-users'){ content: admin_all_users_url }
-    %meta(name='update-user'){ content: admin_update_user_url }
-    %meta(name='new-user'){ content: admin_new_user_url }
-    %meta(name='remove-user'){ content: admin_remove_user_url }
-    %meta(name='new-team'){ content: admin_new_team_url }
+    %meta(name='new-user'){ content: admin_users_new_path(current_user) }
 
+    %meta(name='new-team'){ content: admin_new_team_url }
     %meta(name='update-manager'){ content: admin_update_team_manager_url }
     %meta(name='add-player'){ content: admin_add_team_player_url }
     %meta(name='remove-player'){ content: admin_remove_team_player_url }
@@ -32,6 +29,11 @@
 
     %body
       = render 'layouts/nav'
+      - if flash.present?
+        .container-fluid.flash-messages
+          - flash.each do |message_type, message|
+            - next unless message_type == 'alert' || message_type == 'notice'
+            .alert{ class: "alert-#{message_type == 'notice' ? 'success' : 'danger'}" }= message
 
       %main
         = yield

@@ -56,15 +56,6 @@ Rails.application.routes.draw do
   end
 
   scope '/admin' do
-    post '/all-users', to: 'admin#retrieve_users', as: :admin_all_users
-    post '/update-user', to: 'admin#update_user', as: :admin_update_user
-    post '/new-user', to: 'admin#new_user', as: :admin_new_user
-    post '/remove-user', to: 'admin#remove_user', as: :admin_remove_user
-    post '/unsolved-reports', to: 'admin#retrieve_unsolved_reports', as: :admin_unsolved_reports
-    post '/solved-reports', to: 'admin#retrieve_solved_reports', as: :admin_solved_reports
-
-    post '/set-report-to-solved', to: 'admin#set_report_to_solved', as: :admin_set_report_to_solved
-
     post('/update-manager',
          to: 'admin#update_team_manager',
          as: :admin_update_team_manager)
@@ -75,16 +66,40 @@ Rails.application.routes.draw do
          as: :admin_remove_team_player)
   end
 
+  # TODO: I don't think these admin routes really need the admin resource
+  # E.g.:
+  # scope '/admin', shallow_prefix: 'admin' do
+  # namespace 'admin'
+  #   resources :users, module: 'admin', shallow: true, only: :show do
+  #     post 'new'
+  #     post 'update'
+  #     post 'remove'
+  #   end
+  # end
+
   resources :admin, only: :index do
-    resources :teams, only: :index, module: 'admin'
-    resources :teams, only: [] do
-      post 'set-owner', to: 'admin/teams#set_owner'
-      post 'add-member', to: 'admin/teams#add_member'
+    scope module: 'admin' do
+      post 'users/new'
     end
 
-    resources :user_teams, only: [] do
-      post 'remove', to: 'admin/teams#remove_member'
-      post 'update-roles', to: 'admin/teams#update_member_roles'
+    resources :users, module: 'admin', only: :show do
+      post 'update'
+      post 'wide_update'
+      post 'remove'
+      get 'destroy'
+    end
+
+    # resources :teams, only: :index, module: 'admin'
+    resources :teams, module: 'admin', only: :show do
+      post 'update'
+      post 'small-update'
+      post 'add-member'
+      get 'destroy'
+    end
+
+    resources :user_teams, module: 'admin', only: [] do
+      post 'remove', to: 'teams#remove_member'
+      post 'update-roles', to: 'teams#update_member_roles'
     end
   end
 

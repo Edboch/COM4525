@@ -44,7 +44,7 @@ RSpec.describe 'Managing Matches' do
       select '13', from: 'match[start_time(4i)]'
       select '00', from: 'match[start_time(5i)]'
       click_on 'Submit'
-      expect(page).to have_content 'Sunday, May 5, 2024 01:00 PM'
+      expect(page).to have_content '05/05/24'
     end
   end
 
@@ -61,32 +61,36 @@ RSpec.describe 'Managing Matches' do
     # test the future and past differences with editing a match
     specify 'then I am able to edit the goals of a past match' do
       within('tr', text: 'Past Opposition') do
-        click_on 'Edit'
+        click_on 'View Match'
       end
+      click_on 'Edit Match Details'
       expect(page).to have_content 'Goals for'
     end
 
     specify 'then I am not able to edit the goals of a future match' do
       within('tr', text: 'Future Opposition') do
-        click_on 'Edit'
+        click_on 'View Match'
       end
+      click_on 'Edit Match Details'
       expect(page).to have_no_content 'Goals for'
     end
 
     # test general editing functionality of a match
     specify 'then I can edit a match' do
       within('tr', text: 'Future Opposition') do
-        click_on 'Edit'
+        click_on 'View Match'
       end
+      click_on 'Edit Match Details'
       fill_in 'location', with: 'Edited Location'
       click_on 'Submit'
       expect(page).to have_content 'Match was successfully updated.'
     end
 
-    specify 'then i can delete a match' do
+    specify 'then I can delete a match' do
       within('tr', text: 'Future Opposition') do
-        click_on 'Delete'
+        click_on 'View Match'
       end
+      click_on 'Delete Match'
       expect(page).to have_content 'Match was successfully deleted.'
     end
   end

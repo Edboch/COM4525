@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
+# TODO: Introduce pagination to the users and teams lists
+
 # Controller for the admin page
 class AdminController < ApplicationController
-  include FrontendHelper
   include AdminHelper
   include MetricsHelper
 
@@ -14,7 +15,7 @@ class AdminController < ApplicationController
 
   def index
     # TODO: Implement sorting defaults, saved in the SiteAdmin table
-    @users = User.all
+    @users = User.includes(:site_admin)
     @visit_metrics = popularity_data
     @earliest = SiteVisitGrouping.where(category: 'earliest')
                                  .first&.period_start || 1.day.ago
@@ -24,9 +25,6 @@ class AdminController < ApplicationController
     @teams = Team.all
     @js_users = @users.to_json
     @js_roles = TeamRole.all.to_json
-
-    @template_user = FE_User.new id: 0, name: '', email: '', is_admin: false
-    @template_member = FE_Member.new id: '{1}', name: ''
 
     @visits_teams_ratio = SiteVisit.count / [1, @teams.size].max
 
@@ -61,57 +59,6 @@ class AdminController < ApplicationController
     # TODO: Implement sorting options
     response = get_fe_users User.all
     render json: response
-  end
-
-  def update_user
-    result = Admin::UpdateUserService.call params[:id], params[:name], params[:email], params[:is_admin]
-    render json: result.to_json
-  end
-
-  def new_user
-    result = Admin::NewUserService.call params[:name], params[:email], params[:password], params[:site_admin]
-    render json: result.to_json
-  end
-
-  def remove_user
-    user = User.find_by id: params[:id]
-    user&.destroy
-  end
-
-  def retrieve_unsolved_reports
-    reports = []
-    Report.find_each do |report|
-      reports.append({ id: report.id, user_id: report.user_id, content: report.content }) if report.solved == false
-    end
-    response = { reports: reports }
-    render json: response
-  end
-
-  def retrieve_solved_reports
-    reports = []
-    Report.find_each do |report|
-      reports.append({ id: report.id, user_id: report.user_id, content: report.content }) if report.solved == true
-    end
-    response = { reports: reports }
-    render json: response
-  end
-
-  # def remove_report
-  # report = Report.find_by id: params[:id]
-  # return if report.nil?
-
-  # report.user_id = params[:user_id]
-  # report.content = params[:content]
-  # report.destroy
-  # end
-
-  def set_report_to_solved
-    report = Report.find_by id: params[:id]
-    return if report.nil?
-
-    report.solved = true
-    result = report.save
-    render json: { success: result }
   end
 
   # Updates the team manager of the corresponding team
@@ -161,14 +108,5 @@ class AdminController < ApplicationController
     return if player_id.nil? || team_id.nil?
 
     UserTeam.destroy_by team_id: team_id, user_id: player_id
-  end
-
-  private
-
-  ############
-  # ACTIONS
-
-  def check_access_rights
-    authorize! :manage, :admin_dashboard
   end
 end
