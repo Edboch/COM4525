@@ -7,7 +7,7 @@ TeamRole.destroy_all
 
 User.destroy_all
 SiteAdmin.destroy_all
-
+Report.destroy_all
 ############
 # Known Users
 # So we can log in is a specific role during development
@@ -25,6 +25,12 @@ rand(80..100).times do
   user = FactoryBot.create :user
 
   SiteAdmin.create user_id: user.id if rand(30) < 1
+
+  if rand(30) > 10
+    Report.create user_id: user.id, content: 'see if work', solved: true
+  else
+    Report.create user_id: user.id, content: 'see if work', solved: false
+  end
 end
 
 ##############
