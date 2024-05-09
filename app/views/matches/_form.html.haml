@@ -5,7 +5,7 @@
     = f.datetime_select :start_time, id: :start_time, start_year: Time.zone.today.year - 2, end_year: Time.zone.today.year + 5, class: 'max-width-100'
 
   .form-group.mb-4
-    = f.label :location
+    = f.label :location, 'Location (City)'
     = f.text_field :location, id: :location, class: 'max-width-100'
 
   .form-group.mb-4
