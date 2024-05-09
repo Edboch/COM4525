@@ -12,7 +12,7 @@ RSpec.describe 'lineups' do
   let!(:ut_player) { create(:user_team, user: player, team: team, accepted: true) }
 
   before do
-    create(:player_match, match_id: match.id, user_id: player.id)
+    create(:player_match, match_id: match.id, user_id: player.id, position: 5) # default 'reserve' position added
     ut_player.roles << tr_player
   end
 

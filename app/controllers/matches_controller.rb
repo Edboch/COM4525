@@ -67,7 +67,6 @@ class MatchesController < ApplicationController
     ActiveRecord::Base.transaction do
       params[:player_matches].each do |player_match_id, attributes|
         player_match = PlayerMatch.find(player_match_id)
-        # pos_value = PlayerMatch.positions[attributes[:position]]
         player_match.update!(position: PlayerMatch.positions[attributes[:position]])
       end
     end
@@ -98,6 +97,7 @@ class MatchesController < ApplicationController
   private
 
   def ordered_player_matches
+    # sort the player_matches by their position to display appropriately
     @match.player_matches.sort_by { |player_match| PlayerMatch.positions[player_match.position] }
   end
 
