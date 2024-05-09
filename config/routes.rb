@@ -30,6 +30,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :reports
+
   get 'profile', to: 'user#show', as: :user_profile
   get 'profile/edit', to: 'user#edit', as: :edit_user_profile
   patch 'profile', to: 'user#update'
@@ -62,11 +64,15 @@ Rails.application.routes.draw do
     post('/remove-player',
          to: 'admin#remove_team_player',
          as: :admin_remove_team_player)
+    post '/unsolved-reports', to: 'admin#retrieve_unsolved_reports', as: :admin_unsolved_reports
+    post '/solved-reports', to: 'admin#retrieve_solved_reports', as: :admin_solved_reports
+    post '/set-report-to-solved', to: 'admin#set_report_to_solved', as: :admin_set_report_to_solved
   end
 
   # TODO: I don't think these admin routes really need the admin resource
   # E.g.:
   # scope '/admin', shallow_prefix: 'admin' do
+  # namespace 'admin'
   #   resources :users, module: 'admin', shallow: true, only: :show do
   #     post 'new'
   #     post 'update'
@@ -88,8 +94,10 @@ Rails.application.routes.draw do
 
     # resources :teams, only: :index, module: 'admin'
     resources :teams, module: 'admin', only: :show do
-      post 'set-owner'
+      post 'update'
+      post 'small-update'
       post 'add-member'
+      get 'destroy'
     end
 
     resources :user_teams, module: 'admin', only: [] do

@@ -6,6 +6,8 @@ require 'nokogiri'
 module Scrapers
   # scraper specific to campus leagues
   class CampusLeaguesScraper < BaseScraper
+    include ServiceHelper
+
     KEY_MAPPING = {
       'Team' => :name,
       'P' => :played,

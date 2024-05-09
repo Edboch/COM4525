@@ -1,0 +1,51 @@
+:javascript
+  let LIVE_SEARCH = { users: #{json_escape(@js_users)}, team_roles: #{@js_roles} };
+  let TEAM = { name: "#{sanitize(@team.name)}", location: { name: "#{@team.location_name}" },
+               owner: #{@team.owner.to_json},
+               members: #{sanitize(@js_team_members)} };
+
+- append_javascript_pack_tag 'admin_teams'
+
+%a{ href: admin_index_path(current_user) } Back
+
+%input(name='team-name'){ value: @team.name }
+%input(name='team-location-name'){ value: @team.location_name }
+
+#owner
+  %span= @team.owner.name
+
+  .search
+    = render(partial: 'snippets/live_search',
+             locals: { name: 'new-owner', placeholder: 'New Owner',
+                       search_data_var: 'users', search_fields: %w[name email] })
+    %button.set-owner Set New Owner
+
+#members-block
+  #add-member
+    = render(partial: 'snippets/live_search',
+             locals: { name: 'new-member',
+                       placeholder: 'Member Name/Email',
+                       search_data_var: 'users',
+                       search_fields: %w[name email] })
+    = render partial: 'snippets/multi_role_selection', locals: { name: 'new-member-roles' }
+
+    %button.add Add
+
+  - if @team.user_teams.empty?
+    %h3 No Members
+  - else
+    %h3 Members
+    - @team.user_teams.each do |member|
+      = render partial: 'admin/teams/member', locals: { member: member }
+
+
+%button.save(disabled='disabled'){ data: { href: admin_team_update_path(current_user, @team) } } Save Changes
+%button.revert(disabled='disabled') Revert
+
+= link_to 'Delete', admin_team_destroy_path(current_user, @team)
+
+%template.member
+  = render partial: 'admin/teams/member', locals: { member: UserTeam.new }
+
+%template.role
+  = render partial: 'admin/role_entry', locals: { role: TeamRole.new.decorate }
