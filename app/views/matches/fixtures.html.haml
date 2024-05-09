@@ -12,6 +12,7 @@
             %tr 
               %th{ scope: 'col' } Opposition
               %th{ scope: 'col' } Location 
+              %th{ scope: 'col' } Status
               %th{ scope: 'col' } Kick Off 
               %th{ scope: 'col' } Score
               %td{ scope: 'col' } 
@@ -20,6 +21,7 @@
               %tr{ data: { href: team_match_path(match.team, match) }, class: 'clickable-row' }
                 %td= match.opposition 
                 %td= match.location 
+                %td= match.status 
                 %td= match.start_time.strftime('%d/%m/%y') 
                 %td= match.scoreline 
                 %td= link_to 'View Match', team_match_path(@team, match), class: 'btn db-side-btn'

@@ -12,6 +12,8 @@ Rails.application.routes.draw do
       resources :match_events, only: %i[create destroy]
       member do
         post :rate_players
+        put :cancel
+        put :postpone
       end
     end
     get 'fixtures', to: 'matches#fixtures', as: :fixtures

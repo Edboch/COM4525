@@ -5,7 +5,7 @@
 class MatchesController < ApplicationController
   before_action :authenticate_user!
   load_and_authorize_resource
-  before_action :set_team, only: %i[create new show edit update fixtures]
+  before_action :set_team, only: %i[create new show edit update cancel postpone fixtures]
   before_action :set_match, only: %i[show edit update destroy rate_players]
 
   # passed a team_id to display that teams matches
@@ -61,6 +61,18 @@ class MatchesController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  # PATCH/PUT /matches/1/cancel
+  def cancel
+    @match.update(status: 'Cancelled')
+    redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.cancelled')
+  end
+
+  # PATCH/PUT /matches/1/postpone
+  def postpone
+    @match.update(status: 'Postponed')
+    redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.postponed')
   end
 
   # POST /matches/:id/rate_players
