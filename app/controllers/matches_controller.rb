@@ -57,6 +57,7 @@ class MatchesController < ApplicationController
   # PATCH/PUT /matches/1
   def update
     if @match.update(match_params)
+      @match.update(status: 'Upcoming')
       redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.update'), status: :see_other
     else
       render :edit, status: :unprocessable_entity
