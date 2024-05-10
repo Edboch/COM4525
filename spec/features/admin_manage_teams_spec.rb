@@ -8,7 +8,7 @@ RSpec.describe 'Admin Manage Teams', :js do
   let!(:manager) { create(:user) }
   let!(:new_user) { create(:user) }
 
-  let!(:team) { create(:team, owner_id: manager.id) }
+  let!(:team) { create(:team, owner_id: manager.id, name: 'Sample Team') }
 
   let!(:tr_player) { create(:team_role, :player) }
   let!(:tr_manager) { create(:team_role, :manager) }
@@ -133,6 +133,11 @@ RSpec.describe 'Admin Manage Teams', :js do
 
       user_team = UserTeam.find_by user_id: member_id, team_id: team.id
       expect(user_team).to be_nil
+    end
+
+    specify 'I can remove this team' do
+      click_on 'Delete This Team'
+      expect(page).to have_content "Team 'Sample Team' successfully deleted"
     end
 
     context 'when adding members' do
