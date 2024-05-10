@@ -8,6 +8,8 @@ module Admin
   # @param [String] email    The new email of the user
   # @param [String] is_admin Whether or not the user is admin
   class UpdateUserService < ApplicationService
+    include ServiceHelper
+
     def initialize(id, name, email, is_admin)
       @user = User.find_by id: id
       if @user.nil?

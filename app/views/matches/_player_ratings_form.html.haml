@@ -1,14 +1,18 @@
-= form_with(model: @match, url: rate_players_team_match_path(@match), local: true, method: :post) do |f|
-  %table.table.table-striped
-    %thead
-      %tr
-        %th Player Name
-        %th Rating
-    %tbody
-      - @players.each do |player|
+- if !@match.player_matches.nil?
+  = form_with(model: @match, url: rate_players_team_match_path(@match), local: true, method: :post) do |f|
+    %table.table.table-striped
+      %thead
         %tr
-          %td= player.name
-          %td
-            = select_tag "player_ratings[#{player.id}]", options_for_select(@options, player.player_ratings.find_by(match: @match)&.rating || -1)
-  .text-end
-    = f.submit 'Submit Ratings', class: 'btn db-side-btn'
+          %th Player Name
+          %th Rating
+      %tbody
+        - @players.each do |player|
+          %tr
+            %td= player.name
+            %td
+              = select_tag "player_ratings[#{player.id}]", options_for_select(@options, player.player_ratings.find_by(match: @match)&.rating || -1)
+    .text-end
+      = f.submit 'Submit Ratings', class: 'btn db-side-btn'
+- else 
+  .text-center.m-2 
+    %h5 There are no players to rate

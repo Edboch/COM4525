@@ -9,6 +9,8 @@ window.UTIL = (function($) {
     return $($('template' + query).contents()[1]);
   };
 
+  mod.jsonDup = function(obj) { return JSON.parse(JSON.stringify(obj)); };
+
   /**
    * Sets up pill foldout functionality. Only always you to fold
    * the pill back in when the event target is `q_pill_body`.
@@ -34,7 +36,8 @@ window.UTIL = (function($) {
 
       const cardID = card.attr('id');
 
-      card.on('click', function(evt) {
+      card.off('click.foldout');
+      card.on('click.foldout', function(evt) {
         let target = $(evt.target);
 
         let isOpen = jq_list.find('.pf-open')
@@ -168,7 +171,7 @@ window.UTIL = (function($) {
 
     let entryHTML = string;
     let entry = $('<div class="live-search-entry"></div>');
-    entry.html(entryHTML);
+    entry.text(entryHTML);
 
     if (defaultOnClick)
       entry.on('click', function() {
