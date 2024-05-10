@@ -6,8 +6,12 @@ let POP_ELEMS = {};
 let DATE_RANGES = {};
 
 let USER_CARDS;
+let UNSOLVED_REPORT_CARDS
+let SOLVED_REPORT_CARDS
 
 let IDX_OPEN_CARD = -1;
+let IDX_OPEN_UNSOLVED_REP_CARD = -1;
+let IDX_OPEN_SOLVED_REP_CARD = -1;
 
 const Q_CONTROL_BUTTON = '#control-panel > button';
 
@@ -208,6 +212,57 @@ function wireupUserCards() {
   });
 }
 
+async function populateUnsolvedReports() {
+  const response = await SERVER.fetch('get-unsolved-reports');
+  const json = await response.json();
+
+  let reportCard = $('template.unsolved-report-card').contents()[1];
+  let idxCard = 0;
+  function addCard(report) {
+    let card = $(reportCard).clone();
+    card.attr('id', 'report-' + report.id);
+    card.addClass('open');
+    card.find('.content').text(report.content);
+    card.find('.user_id').text(report.user_id);
+    card.find('button.set_report_to_solved').on('click',function(){
+      SERVER.send('set-report-to-solved', { 'id': report.id, 'user_id': report.user_id, 'content': report.content, 'solved': true });
+    })
+
+    UNSOLVED_REPORT_CARDS.append(card);
+    idxCard++;
+  }
+
+  // Players then managers then site admins
+  // This will be configurable
+  json.reports.forEach(addCard);
+}
+
+async function populateSolvedReports() {
+  const response = await SERVER.fetch('get-solved-reports');
+  const json = await response.json();
+
+  let reportCard = $('template.solved-report-card').contents()[1];
+  let idxCard = 0;
+  function addCard(report) {
+    let card = $(reportCard).clone();
+    card.attr('id', 'report-' + report.id);
+    card.addClass('open');
+    card.find('.content').text(report.content);
+    card.find('.user_id').text(report.user_id);
+    /*
+    card.find('button.remove').on('click',function(){
+      SERVER.send('remove-report', { 'id': report.id, 'user_id': report.user_id, 'content': report.content });
+    })
+    */
+
+    SOLVED_REPORT_CARDS.append(card);
+    idxCard++;
+  }
+
+  // Players then managers then site admins
+  // This will be configurable
+  json.reports.forEach(addCard);
+}
 /**
  * Wires up the functionality of the teams view
  *
@@ -234,128 +289,18 @@ function wireupTeamsView() {
       if (user.id == currentOwnerID)
         return;
 
-      const url = container.domData('action');
-      let entry = UTIL.createLiveSearchEntry(container, user, false);
-      entry.attr('data-owner-id', user.id);
-      entry.on('click', async function() {
-        let body = { user_id: user.id }
-
-        const response = await SERVER.sendUrl(url, body);
-        const json = await response.json();
-        if (!json.success) {
-          console.error(json.message);
-          return;
-        }
-
-        // TODO Update owner fields
-      });
-      return entry;
+      return UTIL.createLiveSearchEntry(container, user);
     });
 
+  $('button.tc-save').on('click', async function() {
+    let body = $(this).parent('.tc-body');
 
-  UTIL.wireupLiveSearch(
-    'team-new-member',
-    function(container, user) {
-      let currentMembers = container.domData('member-ids');
-      if (currentMembers.includes(user.id))
-        return;
+    let name = body.find('input[name="team-name"]').val();
+    let location = body.find('input[name="team-location"]').val();
+    let owner = body.find('.live-search-owner').domData('id');
 
-      let entry = UTIL.createLiveSearchEntry(container, user);
-      entry.domData('user-id', user.id);
-      return entry;
-  });
-
-  UTIL.wireupLiveSearch(
-    'nm-team-role',
-    ADMIN.createRoleSearchEntry);
-
-  $('.tc-new-member form').on('submit', async function(e) {
-    e.preventDefault();
-    let parentCard = $(this).parents('.team-card');
-
-    let dom_user = $(this).find('.live-search-team-new-member');//.data();
-    let dom_roles = $(this).find('.live-search-nm-team-role');//.data();
-
-    let userID = dom_user.domData('id');
-    let roleIDs = dom_roles.domData('roles');
-
-    if (userID === undefined) {
-      console.error('ADD MEMBER No user assigned');
-      return;
-    }
-
-    let body = { user_id: userID, role_ids: roleIDs };
-    const response = await SERVER.sendUrl($(this).attr('action'), body);
-    const json = await response.json();
-    if (!json.success) {
-      console.error(json.message);
-      return;
-    }
-
-    // TODO Clean up
-  });
-
-  $('button.tcm-delete').on('click', async function() {
-    let memberCard = $(this).parents('.tc-member');
-    let userTeamID = memberCard.domData('id');
-    let url = $(this).domData('url');
-
-    // TODO Some kind of are you sure dialogue
-    // TODO Make route
-    const response = await SERVER.sendUrl(url, { user_team_id: userTeamID });
-    const json = await response.json();
-    if (!json.success) {
-      console.error(json.message);
-      return;
-    }
-
-    memberCard.remove();
-  });
-
-  UTIL.wireupLiveSearch(
-    'tm-team-role',
-    function(container, role) {
-      let memberCard = container.parents('.tc-member');
-      let roleIDs = memberCard.domData('role-ids');
-      if (roleIDs.includes(role.id))
-        return;
-
-      let entry = UTIL.createLiveSearchEntry(container, role, false);
-      entry.on('click', async function() {
-        let newRoleIDs = roleIDs.slice(0);
-        newRoleIDs.push(role.id);
-
-        const url = container.domData('url');
-        const response = await SERVER.sendUrl(url, { role_ids: newRoleIDs });
-        const json = await response.json();
-        if (!json.success) {
-          console.error(json.error);
-          return;
-        }
-
-        // TODO Update DOM
-
-        container.find('input').val('');
-      });
-
-      return entry;
-    });
-
-  $('button.tr-remove').on('click', async function() {
-    let memberCard = $(this).parents('.tc-member');
-    let roleIDs = memberCard.domData('role-ids');
-    let roleID = $(this).domData('role-id');
-    roleIDs.remove(roleID);
-
-    const url = $(this).domData('url');
-    const response = await SERVER.sendUrl(url, { role_ids: roleIDs });
-    const json = await response.json();
-    if (!json.success) {
-      console.error(json.error);
-      return;
-    }
-
-    // TODO Result check + HTML Clean up
+    let url = body.parent('.team-card').domData('url');
+    const response = await SERVER.sendUrl(url, { name: name, location_name: location, owner_id: owner });
   });
 }
 
@@ -426,7 +371,9 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   USER_CARDS = $('#users .user-list');
-
+  UNSOLVED_REPORT_CARDS = $('#unsolved_reports .card-list');
+  SOLVED_REPORT_CARDS = $('#solved_reports .card-list');
+  
   let buttons = $(Q_CONTROL_BUTTON).toArray();
   let infoViews = $('#info-block > *').toArray();
 
@@ -465,6 +412,8 @@ document.addEventListener('DOMContentLoaded', function() {
   setupPopularityView();
 
   wireUpCreateNewUser();
+  populateUnsolvedReports();
+  populateSolvedReports();
   wireUpCreateNewTeam();
 });
 

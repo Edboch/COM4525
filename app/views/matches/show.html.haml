@@ -2,11 +2,11 @@
   .col-lg-8
     .card.m-4
       .card-header.text-center
-        %h3= @match_decorator.match_header
+        %h3= @match.match_header
       .card-body
         .row.text-end 
           .col 
-            - if current_user.owner_of_team?(@team, current_user)
+            - if current_user.owner_of_team?(@team)
               %button.btn.btn-primary{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#matchEventModal', 'class' => 'btn db-side-btn mt-1' }
                 Add Match Event
               #matchEventModal.modal.fade{ 'tabindex' => '-1', 'role' => 'dialog', 'aria-labelledby' => 'matchEventModalLabel', 'aria-hidden' => 'true' }
@@ -15,11 +15,11 @@
                     = render 'match_event_form', match: @match, players: @players
               = link_to 'Edit Match Details', edit_team_match_path(@team, @match), class: 'btn db-side-btn mt-1'
               = link_to 'Back to Team', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn mt-1'
-              - if @match.status == 'Postponed'
+              - puts(@match.status)
+              - if @match.display_status == 'Postponed'
                 = link_to 'Resume', resume_team_match_path(@team, @match), method: :put, data: { confirm: 'Are you sure?' }, class: 'btn db-side-btn mt-1'
-              - elsif @match.status == 'Upcoming'
+              - elsif @match.display_status == 'Upcoming'
                 = link_to 'Postpone', postpone_team_match_path(@team, @match), method: :put, data: { confirm: 'Are you sure?' }, class: 'btn db-side-btn mt-1'
-              = link_to 'Cancel', cancel_team_match_path(@team, @match), method: :put, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger'
               = link_to 'Delete Match', team_match_path(@team, @match), class: 'btn btn-danger mt-1', method: :delete, data: { confirm: 'Are you sure?' } 
         %ul.list-group.list-group-flush.event-scroll
           - @match.match_events.order(:event_minute).each do |event|
@@ -31,13 +31,38 @@
                   %strong.m-0= event.event_type.titleize.to_s
                 .col
                   %p.m-0= "#{event.event_minute}' "
-                - if current_user.owner_of_team?(@match.team, current_user)
+                - if current_user.owner_of_team?(@match.team)
                   .col.text-end
                     = button_to 'Delete', team_match_match_event_path(@match.team, @match, event), method: :delete, class: 'btn btn-danger'
-        %p= "Location: #{@match.location}"
-        %p= "Kick off: #{@match.start_time.strftime('%A, %B %-d, %Y %I:%M %p')}"
         .container
-          - if current_user.staff_of_team?(@team, current_user)
+          .row.text-center
+            %h2 Lineup 
+            - if current_user.owner_of_team?(@team)
+              = render 'lineup_form', match: @match
+            - else
+              %table.table.table-striped
+                %thead
+                  %tr
+                    %th Name
+                    %th Position
+                    %th Available
+                %tbody
+                  - @match.player_matches.each do |player|
+                    %tr
+                      %td= player.user.name
+                      %td= player.position
+                      %td= player.available ? 'Yes' : 'No'
+        .d-flex.justify-content-between
+          .match-info
+            %p= "Location: #{@match.location}"
+            %p= "Kick off: #{@match.start_time.strftime('%A, %B %-d, %Y %I:%M %p')}"
+          .toggle-availability
+            - if current_user.player_of_team?(@team)
+              - player_match = PlayerMatch.find_by(user_id: current_user.id, match_id: @match.id)
+              = form_with(url: team_match_toggle_availability_path(match_id: @match.id, user_id: current_user.id), method: :post, local: true) do |f|
+                = f.submit player_match.available ? 'Available' : 'Unavailable', class: "btn #{player_match.available ? 'btn-success' : 'btn-danger'}", id: 'availability'
+        .container
+          - if current_user.staff_of_team?(@team)
             .text-center 
               %h3 Player Ratings
             = render 'player_ratings_form', match: @match

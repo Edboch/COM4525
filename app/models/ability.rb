@@ -27,6 +27,7 @@ class Ability
     can :manage, Match, team_id: team.id
     can :manage, Invite, team_id: team.id
     can :manage, MatchEvent, match: { team_id: team.id }
+    can :manage, PlayerMatch
   end
 
   def player_permissions(team)
@@ -36,5 +37,7 @@ class Ability
     can :read, Match, team_id: team.id
     can :fixtures, Match, team_id: team.id
     can :read, MatchEvent, match: { team_id: team.id }
+    can :read, PlayerMatch
+    can :toggle_availability, Match, team_id: team.id
   end
 end

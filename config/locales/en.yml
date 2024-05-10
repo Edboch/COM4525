@@ -76,3 +76,11 @@ en:
       success: "Invite was successfully deleted."
   mailer:
     new_match_created_subject: "New Match Created"
+  availability:
+    success: "Availability updated successfully."
+    fail: "Failed to update availability."
+  lineup:
+    success: "Lineup submitted successfully."
+  report:
+    create:
+      success: "Report was successfully submitted."

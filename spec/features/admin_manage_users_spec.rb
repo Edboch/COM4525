@@ -74,11 +74,11 @@ RSpec.describe 'Admin Edit Users', :js do
     context 'when I enter the dedicated page' do
       let!(:tr_player) { create(:team_role, :manager) }
       let!(:tr_manager) { create(:team_role, :player) }
+      let!(:first_team) { create(:team) }
+      let!(:second_team) { create(:team) }
 
       before do
-        create_list(:team, 5)
-
-        ut = UserTeam.new user: regular, team: Team.offset(rand(Team.count)).first
+        ut = UserTeam.new user: regular, team: first_team, accepted: true
         ut.roles << tr_player
         ut.save
 
@@ -117,11 +117,8 @@ RSpec.describe 'Admin Edit Users', :js do
       end
 
       specify 'I can add the user to a team as a manager' do
-        team_ids_to_avoid = regular.teams.pluck(:id)
-        team = Team.where.not(id: team_ids_to_avoid).first
-
         within :css, 'div.live-search-new-team' do
-          find(:css, 'input').set team.name
+          find(:css, 'input').set second_team.name
           sleep 0.1
           find(:css, '.live-search-entry').click
         end
@@ -139,20 +136,34 @@ RSpec.describe 'Admin Edit Users', :js do
         sleep 0.1
 
         regular.reload
-        expect(regular.teams.find_by(id: team.id)).not_to be_nil
+        expect(regular.teams.find_by(id: second_team.id)).not_to be_nil
       end
 
       specify 'I can remove a user from a team' do
-        team = regular.teams.first
-
-        within :css, ".au-team[data-id='#{team.id}']" do
+        within :css, ".au-team[data-id='#{first_team.id}']" do
           click_on 'Leave Team'
         end
 
         click_on 'Save'
         sleep 0.1
 
-        expect(regular.reload.teams.exists?(id: team.id)).to be false
+        expect(regular.reload.teams.exists?(id: first_team.id)).to be false
+      end
+
+      specify 'I can remove an associated role from one of the user\'s teams' do
+        team = regular.teams.first
+        ut = UserTeam.find_by user: regular, team: team
+        role = ut.roles.first
+
+        within :css, ".au-team[data-id='#{team.id}']" do
+          find(:css, "[data-role-id='#{role.id}'] .tr-remove").click
+        end
+
+        click_on 'Save'
+        sleep 0.1
+
+        ut = UserTeam.find_by user: regular, team: team
+        expect(ut.roles.exists?(id: role.id)).to be false
       end
     end
   end

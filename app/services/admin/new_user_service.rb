@@ -8,6 +8,8 @@ module Admin
   # @param [String] password   The new user's password
   # @param [String] site_admin Whether the new user is a site admin
   class NewUserService < ApplicationService
+    include ServiceHelper
+
     def initialize(name, email, password, site_admin)
       @name = name
       @email = email

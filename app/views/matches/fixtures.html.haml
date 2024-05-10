@@ -21,13 +21,13 @@
               %tr{ data: { href: team_match_path(match.team, match) }, class: 'clickable-row' }
                 %td= match.opposition 
                 %td= match.location 
-                %td= match.status 
+                %td= match.display_status 
                 %td= match.start_time.strftime('%d/%m/%y') 
                 %td= match.scoreline 
                 %td= link_to 'View Match', team_match_path(@team, match), class: 'btn db-side-btn'
     
         
-  - if current_user.owner_of_team?(@team, current_user)
+  - if current_user.owner_of_team?(@team)
     = link_to 'Add a Match', new_team_match_path(@team), class: 'btn db-side-btn m-1'
     = link_to 'Sync Fixtures', sync_fixtures_team_path(@team), class: 'btn db-side-btn m-1', id: 'sync-fixtures-button'
     = link_to 'League Table', league_team_path(@team), class: 'btn db-side-btn m-1', id: 'league-table-button'

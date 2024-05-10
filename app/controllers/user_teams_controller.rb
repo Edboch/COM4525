@@ -23,7 +23,7 @@ class UserTeamsController < ApplicationController
 
     if UserTeam.find_by(user_id: user.id, team_id: @team.id)
       handle_user_exist
-    elsif user.owner_of_team?(@team, user)
+    elsif user.owner_of_team?(@team)
       handle_user_is_manager
     else
       create_user_team(user)
@@ -45,6 +45,9 @@ class UserTeamsController < ApplicationController
 
     @user_team.roles << team_role unless @user_team.roles.include?(team_role)
 
+    # create the player match relations for all existing matches
+    create_player_matches(@user_team)
+
     redirect_to dashboard_path, notice: I18n.t('userteam.respond.accept')
   end
 
@@ -55,6 +58,15 @@ class UserTeamsController < ApplicationController
   end
 
   private
+
+  def create_player_matches(user_team)
+    user = user_team.user
+    team = user_team.team
+
+    team.matches.each do |match|
+      match.player_matches.create(user: user, position: 5)
+    end
+  end
 
   def create_user_team(user)
     @user_team = @team.user_teams.build(user_id: user.id)
