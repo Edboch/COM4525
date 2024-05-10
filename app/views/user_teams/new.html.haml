@@ -6,6 +6,7 @@
       .m-2
         = render 'form'
 
-  .container
-    %h3 Pending Invites
-    = render 'teams/player_table'
+  - if @players.present?
+    .container
+      %h3 Pending Invites
+      = render 'teams/player_table'
