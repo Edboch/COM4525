@@ -1,4 +1,4 @@
-- if !@match.player_matches.nil?
+- if @match.users.count.positive?
   = form_with(model: @match, url: rate_players_team_match_path(@match), local: true, method: :post) do |f|
     %table.table.table-striped
       %thead

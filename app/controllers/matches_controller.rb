@@ -9,7 +9,7 @@ class MatchesController < ApplicationController
 
   # passed a team_id to display that teams matches
   def fixtures
-    @matches = Match.where(team_id: @team.id).order(:start_time).page(params[:page]).per(6).decorate
+    @matches = Match.where(team_id: @team.id).order(:start_time).page(params[:page]).per(6).includes([:team]).decorate
     @team = Team.find(@team.id)
   end
 
@@ -59,17 +59,11 @@ class MatchesController < ApplicationController
   # PATCH/PUT /matches/1/postpone
   def postpone
     update_match_status('Postponed', 'match.postpone')
-    UserMailer.delay.postpone_match_email(UserTeam.where(team_id: @team.id, accepted: true).map do |user_team|
-      User.find_by(id: user_team.user_id)
-    end)
   end
 
   # PATCH/PUT /matches/1/postpone
   def resume
     update_match_status('Upcoming', 'match.resume')
-    UserMailer.delay.resume_match_email(UserTeam.where(team_id: @team.id, accepted: true).map do |user_team|
-      User.find_by(id: user_team.user_id)
-    end)
   end
 
   # POST /matches/:id/rate_players
@@ -119,7 +113,7 @@ class MatchesController < ApplicationController
 
   def ordered_player_matches
     # sort the player_matches by their position to display appropriately
-    @match.player_matches.sort_by { |player_match| PlayerMatch.positions[player_match.position] }
+    @match.player_matches.includes([:user]).sort_by { |player_match| PlayerMatch.positions[player_match.position] }
   end
 
   def player_ratings_data

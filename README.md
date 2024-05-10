@@ -73,35 +73,11 @@ In our app, we provide the ability to load content from a football league websit
 
 When logged in as a manager, you can use the following website address as a league web page:
 ```
+https://sportsheffield.sportpad.net/leagues/view/1471/86
 ```
 
 By navigating to this team website, you will see there are a number of team's to select from. For example, when specifying the team name from this website, you can use:
 ```
+CompSoc Greens
 ```
 (Note: this team name does not have to be the same as the team name inside our app)
-
-
-
-
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...

@@ -1,4 +1,4 @@
-- if !@match.player_matches.nil?
+- if @match.player_matches.count.positive?
   = form_with(model: @match, url: submit_lineup_team_match_path(@match), method: :post, local: true) do |f|
     %table.table.table-striped
       %thead

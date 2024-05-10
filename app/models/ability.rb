@@ -34,6 +34,7 @@ class Ability
     can :read, Team, id: team.id
     can :player_stats, Team, id: team.id
     can :players, Team, id: team.id
+    can :league, Team, id: team.id
     can :read, Match, team_id: team.id
     can :fixtures, Match, team_id: team.id
     can :read, MatchEvent, match: { team_id: team.id }
