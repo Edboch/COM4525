@@ -15,7 +15,6 @@
                     = render 'match_event_form', match: @match, players: @players
               = link_to 'Edit Match Details', edit_team_match_path(@team, @match), class: 'btn db-side-btn mt-1'
               = link_to 'Back to Team', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn mt-1'
-              - puts(@match.status)
               - if @match.display_status == 'Postponed'
                 = link_to 'Resume', resume_team_match_path(@team, @match), method: :put, data: { confirm: 'Are you sure?' }, class: 'btn db-side-btn mt-1'
               - elsif @match.display_status == 'Upcoming'
