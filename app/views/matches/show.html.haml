@@ -15,6 +15,11 @@
                     = render 'match_event_form', match: @match, players: @players
               = link_to 'Edit Match Details', edit_team_match_path(@team, @match), class: 'btn db-side-btn mt-1'
               = link_to 'Back to Team', team_fixtures_path(team_id: @team.id), class: 'btn db-side-btn mt-1'
+              - puts(@match.status)
+              - if @match.display_status == 'Postponed'
+                = link_to 'Resume', resume_team_match_path(@team, @match), method: :put, data: { confirm: 'Are you sure?' }, class: 'btn db-side-btn mt-1'
+              - elsif @match.display_status == 'Upcoming'
+                = link_to 'Postpone', postpone_team_match_path(@team, @match), method: :put, data: { confirm: 'Are you sure?' }, class: 'btn db-side-btn mt-1'
               = link_to 'Delete Match', team_match_path(@team, @match), class: 'btn btn-danger mt-1', method: :delete, data: { confirm: 'Are you sure?' } 
         %ul.list-group.list-group-flush.event-scroll
           - @match.match_events.order(:event_minute).each do |event|
@@ -55,7 +60,7 @@
             - if current_user.player_of_team?(@team)
               - player_match = PlayerMatch.find_by(user_id: current_user.id, match_id: @match.id)
               = form_with(url: team_match_toggle_availability_path(match_id: @match.id, user_id: current_user.id), method: :post, local: true) do |f|
-                = f.submit player_match.available ? 'Available' : 'Unavailable', class: "btn #{player_match.available ? 'btn-success' : 'btn-danger'}"
+                = f.submit player_match.available ? 'Available' : 'Unavailable', class: "btn #{player_match.available ? 'btn-success' : 'btn-danger'}", id: 'availability'
         .container
           - if current_user.staff_of_team?(@team)
             .text-center 

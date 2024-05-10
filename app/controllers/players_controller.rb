@@ -15,6 +15,6 @@ class PlayersController < ApplicationController
 
     @teams = (owned_teams + joined_teams).uniq
     @matches = Match.where(team: @teams).where('start_time > ?',
-                                               Time.zone.now).order(:start_time).page(params[:page]).per(6)
+                                               Time.zone.now).order(:start_time).page(params[:page]).per(6).decorate
   end
 end

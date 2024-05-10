@@ -64,6 +64,9 @@
           %span.label Number of Teams
           %span.value= @teams.length
         .w-100
+        .statistic.col#number_invites
+          %span.label Number of Public Match Invites
+          %span.value= Invite.all.length
         .statistic.col#number_matches
           %span.label Number of Matches
           %span.value= @matches.length

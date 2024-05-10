@@ -24,6 +24,7 @@ RSpec.describe 'lineups' do
 
     specify 'then i can log my availability for a match' do
       click_on 'All Fixtures'
+      click_on 'View'
       find_by_id('availability').click
       player_match = PlayerMatch.find_by user_id: player.id, match_id: match.id
       expect(player_match.available).to be true
@@ -31,6 +32,7 @@ RSpec.describe 'lineups' do
 
     specify 'then i can edit availability for a match' do
       click_on 'All Fixtures'
+      click_on 'View'
       find_by_id('availability').click
       find_by_id('availability').click
       player_match = PlayerMatch.find_by user_id: player.id, match_id: match.id
