@@ -42,7 +42,7 @@
 %button.save(disabled='disabled'){ data: { href: admin_team_update_path(current_user, @team) } } Save Changes
 %button.revert(disabled='disabled') Revert
 
-= link_to 'Delete', admin_team_destroy_path(current_user, @team)
+= link_to 'Delete This Team', admin_team_destroy_path(current_user, @team)
 
 %template.member
   = render partial: 'admin/teams/member', locals: { member: UserTeam.new }
