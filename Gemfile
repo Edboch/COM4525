@@ -3,10 +3,6 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-# set base64 and stringio version for deployment
-gem 'base64', '0.1.1'
-gem 'stringio', '3.0.1'
-
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'rails', '>= 7.0.8.1'
 
@@ -75,6 +71,7 @@ gem 'sentry-rails'
 gem 'sentry-ruby'
 
 gem 'rack', '>= 3.0.9.1'
+gem 'stringio', '>= 3.0.1.1'
 
 # for scraping
 gem 'httparty'
