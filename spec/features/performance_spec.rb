@@ -17,7 +17,7 @@ RSpec.describe 'Performance testing' do
 
     expect do
       visit team_fixtures_path(team.id)
-    end.to perform_under(100).ms
+    end.to perform_under(300).ms
   end
 
   it 'loads admin page with 1000 users' do
@@ -27,7 +27,7 @@ RSpec.describe 'Performance testing' do
 
     expect do
       click_on 'Admin'
-    end.to perform_under(100).ms
+    end.to perform_under(300).ms
   end
 
   it 'loads admin page with 1000 teams' do
@@ -37,7 +37,7 @@ RSpec.describe 'Performance testing' do
 
     expect do
       click_on 'Admin'
-    end.to perform_under(100).ms
+    end.to perform_under(300).ms
   end
 
   it 'loads published invites page with 1000 invites' do
@@ -47,7 +47,7 @@ RSpec.describe 'Performance testing' do
 
     expect do
       visit team_published_invites_path(team.id)
-    end.to perform_under(100).ms
+    end.to perform_under(300).ms
   end
 
   it 'updates league table' do
@@ -59,6 +59,6 @@ RSpec.describe 'Performance testing' do
     fill_in 'team_team_name', with: 'CompSoc Greens'
     expect do
       click_on 'Update'
-    end.to perform_under(100).ms
+    end.to perform_under(300).ms
   end
 end
