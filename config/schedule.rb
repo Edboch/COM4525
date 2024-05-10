@@ -13,3 +13,9 @@ if ENV['MY_RUBY_HOME']&.include?('rvm')
 end
 #
 #####
+
+set :output, 'log/cron.log'
+
+every 12.hours do
+  rake 'site_visits:collate'
+end
