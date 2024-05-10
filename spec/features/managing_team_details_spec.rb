@@ -44,13 +44,13 @@ RSpec.describe 'Managing team details' do
       expect(page).to have_content 'NewTeamName'
     end
 
-    # specify 'Then I cannot change details to be empty' do
-    #   click_on 'View team'
-    #   click_on 'Edit'
-    #   fill_in 'Name', with: ''
-    #   click_on 'Update Team'
-    #   expect(page).to have_content 'Cannot have empty cells'
-    # end
+    specify 'Then I cannot change details to be empty' do
+      click_on 'View Team'
+      click_on 'Edit Team'
+      fill_in 'Name', with: ''
+      click_on 'Submit'
+      expect(page).to have_content "Name can't be blank"
+    end
 
     specify 'Then I can add league URL and team name' do
       click_on 'View Team'
