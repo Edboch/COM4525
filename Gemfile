@@ -37,6 +37,7 @@ gem 'bootsnap', require: false
 # gem "image_processing", "~> 1.2"
 
 gem 'activerecord-session_store'
+gem 'base64', '0.1.1'
 gem 'bootstrap_form'
 gem 'hamlit'
 gem 'hamlit-rails'
