@@ -34,9 +34,9 @@ class MatchesController < ApplicationController
     @match.team_id = @team.id
 
     if @match.save
-      UserMailer.create_match_email(UserTeam.where(team_id: @team.id, accepted: true).map do |user_team|
-                                      User.find_by(id: user_team.user_id)
-                                    end).deliver
+      UserMailer.delay.create_match_email(UserTeam.where(team_id: @team.id, accepted: true).map do |user_team|
+                                            User.find_by(id: user_team.user_id)
+                                          end)
       create_player_matches(@team, @match)
       redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.create')
     else
@@ -47,6 +47,9 @@ class MatchesController < ApplicationController
   # PATCH/PUT /matches/1
   def update
     if @match.update(match_params)
+      UserMailer.delay.update_match_email(UserTeam.where(team_id: @team.id, accepted: true).map do |user_team|
+                                            User.find_by(id: user_team.user_id)
+                                          end)
       redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.update'), status: :see_other
     else
       render :edit, status: :unprocessable_entity
@@ -56,11 +59,17 @@ class MatchesController < ApplicationController
   # PATCH/PUT /matches/1/postpone
   def postpone
     update_match_status('Postponed', 'match.postpone')
+    UserMailer.delay.postpone_match_email(UserTeam.where(team_id: @team.id, accepted: true).map do |user_team|
+      User.find_by(id: user_team.user_id)
+    end)
   end
 
   # PATCH/PUT /matches/1/postpone
   def resume
     update_match_status('Upcoming', 'match.resume')
+    UserMailer.delay.resume_match_email(UserTeam.where(team_id: @team.id, accepted: true).map do |user_team|
+      User.find_by(id: user_team.user_id)
+    end)
   end
 
   # POST /matches/:id/rate_players
