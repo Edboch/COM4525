@@ -58,7 +58,7 @@ class MatchesController < ApplicationController
 
   # PATCH/PUT /matches/1/postpone
   def postpone
-    postpone_match_status('Postponed', 'match.postpone')
+    update_match_status('Postponed', 'match.postpone')
     UserMailer.delay.postpone_match_email(UserTeam.where(team_id: @team.id, accepted: true).map do |user_team|
       User.find_by(id: user_team.user_id)
     end)
@@ -66,7 +66,7 @@ class MatchesController < ApplicationController
 
   # PATCH/PUT /matches/1/postpone
   def resume
-    resume_match_status('Upcoming', 'match.resume')
+    update_match_status('Upcoming', 'match.resume')
     UserMailer.delay.resume_match_email(UserTeam.where(team_id: @team.id, accepted: true).map do |user_team|
       User.find_by(id: user_team.user_id)
     end)
