@@ -26,18 +26,19 @@
           %th Goals Against
           %th Location
       %tbody
-        - @fixtures.each do |fixture|
+        - @fixtures.each_with_index do |fixture, index|
           %tr
-            %td= check_box_tag 'fixtures[][selected]', 1
+            %td
+              = check_box_tag "fixtures[#{index}][selected]", 1
+              = hidden_field_tag "fixtures[#{index}][opposition]", fixture.opposition
+              = hidden_field_tag "fixtures[#{index}][start_time]", fixture.start_time
+              = hidden_field_tag "fixtures[#{index}][goals_for]", fixture.goals_for
+              = hidden_field_tag "fixtures[#{index}][goals_against]", fixture.goals_against
+              = hidden_field_tag "fixtures[#{index}][location]", fixture.location
             %td= fixture.opposition
             %td= fixture.start_time
             %td= fixture.goals_for
             %td= fixture.goals_against
             %td= fixture.location
-            = hidden_field_tag 'fixtures[][opposition]', fixture.opposition
-            = hidden_field_tag 'fixtures[][start_time]', fixture.start_time
-            = hidden_field_tag 'fixtures[][goals_for]', fixture.goals_for
-            = hidden_field_tag 'fixtures[][goals_against]', fixture.goals_against
-            = hidden_field_tag 'fixtures[][location]', fixture.location
 
     = form.submit 'Sync'

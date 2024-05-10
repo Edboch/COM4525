@@ -12,8 +12,10 @@ class MatchDecorator < ApplicationDecorator
     "#{object.team.name} #{object.goals_for}-#{object.goals_against} #{object.opposition}"
   end
 
-  def get_status(start_time)
-    if start_time < Time.current
+  def display_status
+    return 'Postponed' if object.status == 'Postponed'
+
+    if object.start_time < Time.current
       'Completed'
     else
       'Upcoming'
