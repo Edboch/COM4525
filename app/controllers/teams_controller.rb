@@ -21,7 +21,7 @@ class TeamsController < ApplicationController
 
   # POST /teams/:id/sync_fixtures
   def create_fixtures
-    params[:fixtures].each do |fixture|
+    params[:fixtures].each_value do |fixture|
       next unless fixture[:selected] == '1'
 
       @team.matches.create(
