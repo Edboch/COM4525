@@ -1,50 +1,86 @@
-# PitchWize - Team 4
+# Team 04: PitchWize - An all-in-one football management app
 
-## Demo site deployment
+PitchWize is an all-in-one football management app, designed to make tracking and organising daily management activities a more comfortable experience. Players likewise benefit having easily accessible information about all the core information happening in their team(s).
 
-### 1. Commit any changes
-Before deploying to your demo site, ensure you have committed any changes to your `main` branch.
+This file contains information on how to get started with the app both on your local device and from a deployed version on the web. The deployed version is available at https://team04.demo1.genesys.shefcompsci.org.uk/. Accessing this site will require log in from a registered University account.
 
-```
-# Add any untracked files to the next commit
-git add -A
+## Version Requirements
 
-# Commit to your repository, replacing {message} with a relevant commit message
-git commit . -m "{message}"
+This project was developed in Ruby on Rails. Rails version 7.1.3.2 and Ruby version 3.1.2p20 were used during development. For the best experience using this app, it is recommended to install these specific versions.
 
-# Push your changes to your team repository
-git push -u origin main
-```
+## Getting Started
 
-### 2. Deploying your project
+To run this project from your local device, you will first be required to connect to The University of Sheffield's VPN. This project was developed in an Ubuntu environment - it is recommended that you use Ubuntu 22.04 or later to ensure compatibility.
 
-Your project uses the epiDeploy gem to tag the release and then invoke Capistrano to deploy your project to your team demo site.
-
-epiDeploy will warn you if you have uncommitted changes, so make sure to follow the steps above before deploying to the demo site.
+To clone this project to your Ubuntu environment, enter in the terminal:
 
 ```
-# Tag a release and deploy to the demo site
-bundle exec epi_deploy release -d demo
+# with HTTPS
+git clone https://git.shefcompsci.org.uk/com4525-2023-24/team04/project.git
+# with SSH
+git clone git@git.shefcompsci.org.uk:com4525-2023-24/team04/project.git
 ```
 
-### 3. Seed the database
-
-Aside from any migrations that create tables, the database for your deployed application will initially be empty. This is unlikely to be desired, as you might want an initial administrative user to be created so that you can log in and create further users.
-
-If you have populated your `db/seeds.rb` file with initial database data, you can run the following command to seed your database on the demo server.
+Then, navigate to the project's directory using:
 
 ```
-bundle exec cap demo deploy:seed
+cd project
 ```
 
-## Developers
+You can then enter the following to set up the project:
 
-Upon freshly cloning the repository, run `.hooks/link_hooks.sh`. This script
-sets up symbolic links between the hook scripts in the .hooks directory (the
-ones that don't have a file extension) and the hooks in the .git/hooks directory.
+```
+bin/setup
+```
+
+To run the project, open another terminal and use the following two lines, separately in each terminal:
+
+```
+bundle exec rails s
+
+bin/shakapacker-dev-server
+```
+
+You can then open the project using http://localhost:3000/ in your web browser.
+
+## Using PitchWize
+
+### 1. Account Details
+
+To enter the application as an admin, use the following credentials:
+```
+E-mail: site-admin@grr.la
+Password: password
+```
+
+While you can freely create accounts to be used as a player/manager in our app, we provide account details for a user managing a team, and a user playing for that same team.
+
+Manager credentials:
+```
+E-mail: test@manager.com
+Password: password
+```
+
+Player credentials:
+```
+E-mail: test@player.com
+Password: password
+```
+
+### 2. League Scraping
+
+In our app, we provide the ability to load content from a football league website into your team. 
+
+When logged in as a manager, you can use the following website address as a league web page:
+```
+```
+
+By navigating to this team website, you will see there are a number of team's to select from. For example, when specifying the team name from this website, you can use:
+```
+```
+(Note: this team name does not have to be the same as the team name inside our app)
 
 
-## TODO: The rest of this
 
 
 This README would normally document whatever steps are necessary to get the
