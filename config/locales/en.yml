@@ -75,7 +75,10 @@ en:
     destroy:
       success: "Invite was successfully deleted."
   mailer:
-    new_match_created_subject: "New Match Created"
+    match_created_subject: "New Match Created!"
+    match_postponed_subject: "A Match Has Been Postponed"
+    match_resumed_subject: "A Match Is Resuming"
+    match_updated_subject: "Match Details Updated"
   availability:
     success: "Availability updated successfully."
     fail: "Failed to update availability."
