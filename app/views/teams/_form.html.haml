@@ -10,11 +10,11 @@
     =form.hidden_field :owner_id, value: current_user.id
 
   .form-group.mb-4
-    = form.label :name
+    = form.label :name, 'Team Name'
     = form.text_field :name, id: :team_name, class: 'max-width-100'
 
   .form-group.mb-4
-    = form.label :location_name
+    = form.label :location_name, 'Location (City)'
     = form.text_field :location_name, id: :team_location, class: 'max-width-100'
 
   .actions

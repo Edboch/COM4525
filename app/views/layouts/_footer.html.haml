@@ -1,9 +1,9 @@
 .footer.text-center
   .container.p-4
-    = image_pack_tag('images/logo.svg', width: '250', height: '60', alt: 'PitchWize')
-    .col-sm-4 
-      .row 
+    .p-3
+      = image_pack_tag('images/logo.svg', width: '250', height: '60', alt: 'PitchWize')
+    .col
+      .row
         = link_to 'My Profile', user_profile_path 
       .row
         = link_to 'Report', new_report_path
-    .col-sm-6
