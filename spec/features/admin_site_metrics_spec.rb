@@ -6,6 +6,8 @@ require 'rake'
 Rails.application.load_tasks
 
 RSpec.describe 'Admin View Site Metrics' do
+  let!(:manager) { create(:user) }
+  let!(:team) { create(:team) }
   # rubocop:disable RSpec/BeforeAfterAll
   before :all do
     create_list(:site_visit, 100)
@@ -63,6 +65,14 @@ RSpec.describe 'Admin View Site Metrics' do
       expect(find('.output')).to have_content total.to_s
     end
   end
+    specify 'The number of total public match invites is correct' do
+      # Because we have not created any public match invite this should be 0 for now
+      create(:invite, team_id: team.id)
+      refresh
+      sleep 0.2
+      click_on 'General Stats'
+      expect(find(:css, '#number_invites')).to have_content("1")
+    end
 
   context 'when viewing team metrics' do
     before do
