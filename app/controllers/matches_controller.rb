@@ -4,19 +4,19 @@
 class MatchesController < ApplicationController
   before_action :authenticate_user!
   load_and_authorize_resource
-  before_action :set_team, only: %i[create new show edit update fixtures]
+  before_action :set_team, only: %i[create new show edit update postpone fixtures]
   before_action :set_match, only: %i[show edit update destroy rate_players]
 
   # passed a team_id to display that teams matches
   def fixtures
-    @matches = Match.where(team_id: @team.id).order(:start_time).page(params[:page]).per(6)
+    @matches = Match.where(team_id: @team.id).order(:start_time).page(params[:page]).per(6).decorate
     @team = Team.find(@team.id)
   end
 
   # GET /matches/1
   def show
     @player_matches = ordered_player_matches
-    @players, @options, @rating = fetch_staff_or_player_info
+    @players, @options, @rating = player_ratings_data
   end
 
   # GET /matches/new
@@ -30,10 +30,13 @@ class MatchesController < ApplicationController
   # POST /matches
   def create
     @match = @team.matches.new(match_params).decorate
-    @match.status = @match.get_status(@match.start_time)
+    @match.status = @match.display_status
     @match.team_id = @team.id
 
     if @match.save
+      UserMailer.create_match_email(UserTeam.where(team_id: @team.id, accepted: true).map do |user_team|
+                                      User.find_by(id: user_team.user_id)
+                                    end).deliver
       create_player_matches(@team, @match)
       redirect_to team_fixtures_path(@team.id), notice: I18n.t('match.create')
     else
@@ -50,13 +53,19 @@ class MatchesController < ApplicationController
     end
   end
 
+  # PATCH/PUT /matches/1/postpone
+  def postpone
+    update_match_status('Postponed', 'match.postpone')
+  end
+
+  # PATCH/PUT /matches/1/postpone
+  def resume
+    update_match_status('Upcoming', 'match.resume')
+  end
+
   # POST /matches/:id/rate_players
   def rate_players
-    ActiveRecord::Base.transaction do
-      params[:player_ratings].each do |user_id, rating|
-        PlayerRating.find_or_initialize_by(match: @match, user_id: user_id).update!(rating: rating)
-      end
-    end
+    Matches::RatingsUpdater.new(@match, params[:player_ratings]).update_ratings
     redirect_to team_match_path(@match.team, @match), notice: I18n.t('teammatchratings.update')
   rescue ActiveRecord::RecordInvalid
     render :edit, status: :unprocessable_entity
@@ -64,12 +73,7 @@ class MatchesController < ApplicationController
 
   # POST
   def submit_lineup
-    ActiveRecord::Base.transaction do
-      params[:player_matches].each do |player_match_id, attributes|
-        player_match = PlayerMatch.find(player_match_id)
-        player_match.update!(position: PlayerMatch.positions[attributes[:position]])
-      end
-    end
+    Matches::LineupsUpdater.new(@match, params[:player_matches]).update_lineup
     redirect_to team_match_path(@match.team, @match), notice: I18n.t('lineup.success')
   rescue ActiveRecord::RecordInvalid
     render :show, status: :unprocessable_entity
@@ -96,23 +100,21 @@ class MatchesController < ApplicationController
 
   private
 
+  def update_match_status(status, message)
+    if @match.update(status: status)
+      redirect_to team_match_path(@match.team, @match), notice: I18n.t(message)
+    else
+      render :show, status: :unprocessable_entity
+    end
+  end
+
   def ordered_player_matches
     # sort the player_matches by their position to display appropriately
     @match.player_matches.sort_by { |player_match| PlayerMatch.positions[player_match.position] }
   end
 
-  def fetch_staff_or_player_info
-    if current_user.staff_of_team?(@team)
-      user_teams = UserTeam.where(team_id: @team.id, accepted: true)
-      players = user_teams.map { |user_team| User.find_by(id: user_team.user_id) }
-      options = [['N/A', -1]]
-      (0..10).each { |v| options << [v, v] }
-      [players, options, nil]
-    else
-      rating = current_user.player_ratings.find_by(match: @match)&.rating
-      rating = rating == -1 ? 'N/A' : rating || 'N/A'
-      [nil, nil, rating]
-    end
+  def player_ratings_data
+    Matches::RatingData.new(@team, current_user, @match).data
   end
 
   def create_player_matches(team, match)
