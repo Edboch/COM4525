@@ -9,7 +9,7 @@ class MatchesController < ApplicationController
 
   # passed a team_id to display that teams matches
   def fixtures
-    @matches = Match.where(team_id: @team.id).order(:start_time).page(params[:page]).per(6).decorate
+    @matches = Match.where(team_id: @team.id).order(:start_time).page(params[:page]).per(6).includes([:team]).decorate
     @team = Team.find(@team.id)
   end
 
@@ -110,7 +110,7 @@ class MatchesController < ApplicationController
 
   def ordered_player_matches
     # sort the player_matches by their position to display appropriately
-    @match.player_matches.sort_by { |player_match| PlayerMatch.positions[player_match.position] }
+    @match.player_matches.includes([:user]).sort_by { |player_match| PlayerMatch.positions[player_match.position] }
   end
 
   def player_ratings_data

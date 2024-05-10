@@ -12,7 +12,7 @@ module Admin
     def show
       @js_users = User.select(:id, :name, :email).to_json
       @js_roles = TeamRole.all.to_json
-      json_members = @team.user_teams.map do |ut|
+      json_members = @team.user_teams.includes([:user]).map do |ut|
         "#{ut.user.id}: { name: \"#{ut.user.name}\", email: '#{ut.user.email}', roles: #{ut.roles.pluck(:id)} }"
       end
 
