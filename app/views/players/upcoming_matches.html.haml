@@ -9,6 +9,7 @@
             %th{ scope: 'col' } Team
             %th{ scope: 'col' } Opposition
             %th{ scope: 'col' } Location 
+            %th{ scope: 'col' } Status
             %th{ scope: 'col' } Date
             %th{ scope: 'col' } 
 
@@ -18,6 +19,7 @@
               %td= match.team.name 
               %td= match.opposition 
               %td= match.location 
+              %td= match.display_status
               %td= match.start_time.strftime('%d/%m/%y') 
               %td= link_to 'View Match', team_match_path(match.team, match), class: 'btn db-side-btn'
     = paginate @matches

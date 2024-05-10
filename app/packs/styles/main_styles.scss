@@ -63,6 +63,11 @@ body {
   outline: none;
 }
 
+.db-side-btn.db-side-btn-danger:hover, .db-side-btn.db-side-btn-danger:focus {
+  background-color: red;
+  color: white;
+}
+
 .db-side-btn:hover, .db-side-btn:focus {
   background-color: var(--primary-color);
   color: white;
@@ -72,6 +77,13 @@ body {
   color: white;
 }
 
+.match-info {
+  flex: 1; 
+}
+
+.toggle-availability {
+  flex-basis: auto; 
+}
 .max-width-100 {
   max-width: 100%;
 }
