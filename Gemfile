@@ -72,7 +72,7 @@ gem 'sentry-rails'
 gem 'sentry-ruby'
 
 gem 'rack', '>= 3.0.9.1'
-gem 'stringio', '>= 3.0.1.1'
+gem 'stringio', '3.0.1'
 
 # for scraping
 gem 'httparty'
